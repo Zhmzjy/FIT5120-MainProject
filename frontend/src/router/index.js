@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import seasonalRoutes from './seasonal.js'
 
 const routes = [
   {
@@ -15,7 +16,8 @@ const routes = [
     path: '/find-zoo',
     name: 'FindZoo',
     component: () => import('../pages/FindZoo.vue')
-  }
+  },
+  ...seasonalRoutes
 ]
 
 const router = createRouter({

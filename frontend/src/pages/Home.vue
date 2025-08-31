@@ -29,6 +29,14 @@
             >
               Find Zoo
             </Button>
+
+            <Button
+              type="primary"
+              size="large"
+              @click="navigateToSeasonal"
+            >
+              Seasonal Activities
+            </Button>
           </div>
         </div>
       </div>
@@ -52,6 +60,9 @@ export default {
     },
     navigateToFindZoo() {
       this.$router.push('/find-zoo')
+    },
+    navigateToSeasonal() {
+      this.$router.push('/seasonal')
     }
   }
 }

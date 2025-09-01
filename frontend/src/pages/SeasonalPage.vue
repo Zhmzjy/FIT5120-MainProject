@@ -32,55 +32,159 @@
         </div>
 
         <div class="analysis-content">
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-number" :style="titleStyle">245</div>
-              <div class="stat-label">Active Species</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-number" :style="titleStyle">87%</div>
-              <div class="stat-label">Migration Rate</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-number" :style="titleStyle">156</div>
-              <div class="stat-label">Breeding Pairs</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-number" :style="titleStyle">32°C</div>
-              <div class="stat-label">Avg Temperature</div>
-            </div>
-          </div>
-
-          <div class="activity-chart">
-            <h3 class="chart-title">Animal Activity Levels</h3>
-            <div class="chart-bars">
-              <div class="chart-bar">
-                <div class="bar-fill" :style="{ height: '80%', backgroundColor: getSeasonColor() }"></div>
-                <span class="bar-label">Morning</span>
-              </div>
-              <div class="chart-bar">
-                <div class="bar-fill" :style="{ height: '95%', backgroundColor: getSeasonColor() }"></div>
-                <span class="bar-label">Afternoon</span>
-              </div>
-              <div class="chart-bar">
-                <div class="bar-fill" :style="{ height: '65%', backgroundColor: getSeasonColor() }"></div>
-                <span class="bar-label">Evening</span>
-              </div>
-              <div class="chart-bar">
-                <div class="bar-fill" :style="{ height: '40%', backgroundColor: getSeasonColor() }"></div>
-                <span class="bar-label">Night</span>
+          <div class="season-kpi-section">
+            <div class="kpi-card main-kpi">
+              <div class="kpi-icon">🐨</div>
+              <div class="kpi-content">
+                <div class="kpi-number" :style="titleStyle">245</div>
+                <div class="kpi-label">Active Species This Season</div>
+                <div class="kpi-detail">+12% from last season</div>
               </div>
             </div>
           </div>
 
-          <div class="featured-animals">
-            <h3 class="animals-title">Featured {{ selectedSeason }} Animals</h3>
-            <div class="animals-grid">
-              <div class="animal-card" v-for="animal in getSeasonAnimals()" :key="animal.name">
-                <img :src="animal.image" :alt="animal.name" class="animal-image">
-                <div class="animal-info">
+          <div class="activity-time-chart">
+            <h3 class="chart-title">Activity Time Distribution</h3>
+            <div class="time-chart-container">
+              <div class="time-period">
+                <div class="time-bar">
+                  <div class="bar-fill morning" :style="{ height: '65%', backgroundColor: getSeasonColor() }"></div>
+                </div>
+                <div class="time-label">
+                  <span class="time-name">Morning</span>
+                  <span class="time-range">6AM - 12PM</span>
+                  <span class="observation-count">1,234 observations</span>
+                </div>
+              </div>
+              <div class="time-period">
+                <div class="time-bar">
+                  <div class="bar-fill afternoon" :style="{ height: '85%', backgroundColor: getSeasonColor() }"></div>
+                </div>
+                <div class="time-label">
+                  <span class="time-name">Afternoon</span>
+                  <span class="time-range">12PM - 6PM</span>
+                  <span class="observation-count">1,678 observations</span>
+                </div>
+              </div>
+              <div class="time-period">
+                <div class="time-bar">
+                  <div class="bar-fill evening" :style="{ height: '70%', backgroundColor: getSeasonColor() }"></div>
+                </div>
+                <div class="time-label">
+                  <span class="time-name">Evening</span>
+                  <span class="time-range">6PM - 12AM</span>
+                  <span class="observation-count">1,456 observations</span>
+                </div>
+              </div>
+              <div class="time-period">
+                <div class="time-bar">
+                  <div class="bar-fill night" :style="{ height: '45%', backgroundColor: getSeasonColor() }"></div>
+                </div>
+                <div class="time-label">
+                  <span class="time-name">Night</span>
+                  <span class="time-range">12AM - 6AM</span>
+                  <span class="observation-count">892 observations</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="star-animals-section">
+            <h3 class="section-title">{{ selectedSeason }} Star Animals</h3>
+            <div class="star-animals-grid">
+              <div class="star-animal-card" v-for="animal in getTopAnimals()" :key="animal.name">
+                <div class="animal-rank">#{{ animal.rank }}</div>
+                <div class="animal-image-container">
+                  <img :src="animal.image" :alt="animal.name" class="animal-image">
+                  <div class="observation-badge">{{ animal.observations }} sightings</div>
+                </div>
+                <div class="animal-details">
                   <h4 class="animal-name">{{ animal.name }}</h4>
-                  <p class="animal-activity">{{ animal.activity }}</p>
+                  <p class="animal-scientific">{{ animal.scientific }}</p>
+                  <div class="animal-stats">
+                    <span class="stat-item">
+                      <span class="stat-icon">📍</span>
+                      <span class="stat-text">{{ animal.locations }} locations</span>
+                    </span>
+                    <span class="stat-item">
+                      <span class="stat-icon">📸</span>
+                      <span class="stat-text">{{ animal.photos }} photos</span>
+                    </span>
+                  </div>
+                  <div class="recent-observation">
+                    <span class="obs-label">Latest:</span>
+                    <span class="obs-location">{{ animal.lastSeen }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="trend-comparison-section">
+            <h3 class="section-title">Seasonal Trends & Comparison</h3>
+            <div class="trend-container">
+              <div class="monthly-trend">
+                <h4 class="trend-title">Monthly Species Activity</h4>
+                <div class="trend-chart">
+                  <div class="trend-line-chart">
+                    <svg viewBox="0 0 400 200" class="chart-svg">
+                      <polyline
+                        points="50,150 100,120 150,100 200,80 250,90 300,110 350,130"
+                        :stroke="getSeasonColor()"
+                        stroke-width="3"
+                        fill="none"
+                      />
+                      <circle cx="50" cy="150" r="4" :fill="getSeasonColor()"/>
+                      <circle cx="100" cy="120" r="4" :fill="getSeasonColor()"/>
+                      <circle cx="150" cy="100" r="4" :fill="getSeasonColor()"/>
+                      <circle cx="200" cy="80" r="4" :fill="getSeasonColor()"/>
+                      <circle cx="250" cy="90" r="4" :fill="getSeasonColor()"/>
+                      <circle cx="300" cy="110" r="4" :fill="getSeasonColor()"/>
+                      <circle cx="350" cy="130" r="4" :fill="getSeasonColor()"/>
+                    </svg>
+                    <div class="chart-labels">
+                      <span>Sep</span>
+                      <span>Oct</span>
+                      <span>Nov</span>
+                      <span>Dec</span>
+                      <span>Jan</span>
+                      <span>Feb</span>
+                      <span>Mar</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="season-comparison">
+                <h4 class="trend-title">Season vs Season</h4>
+                <div class="comparison-bars">
+                  <div class="comparison-item">
+                    <span class="season-name">Spring</span>
+                    <div class="comparison-bar">
+                      <div class="comparison-fill spring-fill" style="width: 85%"></div>
+                    </div>
+                    <span class="season-value">245 species</span>
+                  </div>
+                  <div class="comparison-item">
+                    <span class="season-name">Summer</span>
+                    <div class="comparison-bar">
+                      <div class="comparison-fill summer-fill" style="width: 70%"></div>
+                    </div>
+                    <span class="season-value">198 species</span>
+                  </div>
+                  <div class="comparison-item">
+                    <span class="season-name">Autumn</span>
+                    <div class="comparison-bar">
+                      <div class="comparison-fill autumn-fill" style="width: 95%"></div>
+                    </div>
+                    <span class="season-value">287 species</span>
+                  </div>
+                  <div class="comparison-item">
+                    <span class="season-name">Winter</span>
+                    <div class="comparison-bar">
+                      <div class="comparison-fill winter-fill" style="width: 55%"></div>
+                    </div>
+                    <span class="season-value">156 species</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -108,30 +212,26 @@ export default {
   data() {
     return {
       selectedSeason: 'Spring',
-      animalData: {
+      mockData: {
         Spring: [
-          { name: 'Kangaroo', activity: 'Active breeding season', image: '/images/kangaroo.png' },
-          { name: 'Koala', activity: 'Feeding on new eucalyptus leaves', image: '/images/koala.png' },
-          { name: 'Echidna', activity: 'Foraging for insects', image: '/images/kangaroo.png' },
-          { name: 'Wombat', activity: 'Building new burrows', image: '/images/koala.png' }
+          { rank: 1, name: 'Kangaroo', scientific: 'Osphranter rufus', observations: 1256, locations: 45, photos: 234, lastSeen: 'Blue Mountains', image: '/images/kangaroo.png' },
+          { rank: 2, name: 'Koala', scientific: 'Phascolarctos cinereus', observations: 892, locations: 32, photos: 156, lastSeen: 'Grampians NP', image: '/images/koala.png' },
+          { rank: 3, name: 'Echidna', scientific: 'Tachyglossus aculeatus', observations: 567, locations: 28, photos: 89, lastSeen: 'Royal NP', image: '/images/kangaroo.png' }
         ],
         Summer: [
-          { name: 'Platypus', activity: 'Swimming in cool waters', image: '/images/kangaroo.png' },
-          { name: 'Kookaburra', activity: 'Hunting in early morning', image: '/images/koala.png' },
-          { name: 'Dingo', activity: 'Seeking shade during day', image: '/images/kangaroo.png' },
-          { name: 'Bilby', activity: 'Nocturnal foraging', image: '/images/koala.png' }
+          { rank: 1, name: 'Platypus', scientific: 'Ornithorhynchus anatinus', observations: 1456, locations: 22, photos: 178, lastSeen: 'Yarra River', image: '/images/koala.png' },
+          { rank: 2, name: 'Kookaburra', scientific: 'Dacelo novaeguineae', observations: 1123, locations: 67, photos: 289, lastSeen: 'Kakadu NP', image: '/images/kangaroo.png' },
+          { rank: 3, name: 'Dingo', scientific: 'Canis dingo', observations: 678, locations: 34, photos: 123, lastSeen: 'Fraser Island', image: '/images/koala.png' }
         ],
         Autumn: [
-          { name: 'Possum', activity: 'Storing food for winter', image: '/images/kangaroo.png' },
-          { name: 'Wallaby', activity: 'Preparing winter coat', image: '/images/koala.png' },
-          { name: 'Bandicoot', activity: 'Building winter shelter', image: '/images/kangaroo.png' },
-          { name: 'Quoll', activity: 'Hunting before winter', image: '/images/koala.png' }
+          { rank: 1, name: 'Possum', scientific: 'Trichosurus vulpecula', observations: 1567, locations: 89, photos: 345, lastSeen: 'Sydney Harbour', image: '/images/kangaroo.png' },
+          { rank: 2, name: 'Wallaby', scientific: 'Macropus rufogriseus', observations: 1234, locations: 56, photos: 234, lastSeen: 'Kangaroo Island', image: '/images/koala.png' },
+          { rank: 3, name: 'Bandicoot', scientific: 'Perameles nasuta', observations: 890, locations: 43, photos: 167, lastSeen: 'Daintree', image: '/images/kangaroo.png' }
         ],
         Winter: [
-          { name: 'Tasmanian Devil', activity: 'Conserving energy', image: '/images/kangaroo.png' },
-          { name: 'Sugar Glider', activity: 'Huddling for warmth', image: '/images/koala.png' },
-          { name: 'Numbat', activity: 'Limited daytime activity', image: '/images/kangaroo.png' },
-          { name: 'Quokka', activity: 'Reduced movement', image: '/images/koala.png' }
+          { rank: 1, name: 'Tasmanian Devil', scientific: 'Sarcophilus harrisii', observations: 678, locations: 12, photos: 89, lastSeen: 'Tasmania', image: '/images/koala.png' },
+          { rank: 2, name: 'Sugar Glider', scientific: 'Petaurus breviceps', observations: 567, locations: 34, photos: 123, lastSeen: 'Lamington NP', image: '/images/kangaroo.png' },
+          { rank: 3, name: 'Numbat', scientific: 'Myrmecobius fasciatus', observations: 234, locations: 8, photos: 45, lastSeen: 'WA Wheatbelt', image: '/images/koala.png' }
         ]
       }
     }
@@ -190,6 +290,9 @@ export default {
     },
     getSeasonAnimals() {
       return this.animalData[this.selectedSeason] || []
+    },
+    getTopAnimals() {
+      return this.mockData[this.selectedSeason] || []
     }
   }
 }
@@ -198,7 +301,7 @@ export default {
 <style scoped>
 .seasonal-page {
   width: 100%;
-  min-height: 200vh;
+  min-height: 300vh;
   position: relative;
 }
 
@@ -262,7 +365,7 @@ export default {
 
 .wildlife-analysis-section {
   position: relative;
-  min-height: 100vh;
+  min-height: 200vh;
   background: #f8fafc;
   overflow: hidden;
 }
@@ -302,7 +405,7 @@ export default {
 
 .analysis-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
 }
 
 .analysis-title {
@@ -317,45 +420,52 @@ export default {
   color: #64748b;
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
+.season-kpi-section {
+  margin-bottom: 4rem;
 }
 
-.stat-card {
+.kpi-card {
   background: white;
   padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.kpi-icon {
+  font-size: 3rem;
+  padding: 1rem;
+  background: #f1f5f9;
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  transition: transform 0.3s ease;
 }
 
-.stat-card:hover {
-  transform: translateY(-5px);
-}
-
-.stat-number {
-  font-size: 2.5rem;
+.kpi-number {
+  font-size: 3rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
 }
 
-.stat-label {
-  color: #64748b;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.kpi-label {
+  font-size: 1.2rem;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
 }
 
-.activity-chart {
+.kpi-detail {
+  color: #22c55e;
+  font-size: 0.9rem;
+}
+
+.activity-time-chart {
   background: white;
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 3rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  margin-bottom: 4rem;
 }
 
 .chart-title {
@@ -366,87 +476,246 @@ export default {
   color: #1e293b;
 }
 
-.chart-bars {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  height: 200px;
-  gap: 1rem;
+.time-chart-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
 }
 
-.chart-bar {
-  flex: 1;
+.time-period {
+  text-align: center;
+}
+
+.time-bar {
+  height: 200px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  position: relative;
+  margin-bottom: 1rem;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
+  align-items: end;
 }
 
 .bar-fill {
   width: 100%;
-  background: #22c55e;
-  border-radius: 4px 4px 0 0;
+  border-radius: 8px;
   transition: all 0.3s ease;
-  margin-bottom: 0.5rem;
 }
 
-.bar-label {
-  font-size: 0.9rem;
+.time-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.time-name {
+  font-weight: bold;
+  color: #1e293b;
+}
+
+.time-range {
+  font-size: 0.8rem;
   color: #64748b;
-  text-align: center;
 }
 
-.featured-animals {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.observation-count {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #059669;
 }
 
-.animals-title {
-  font-size: 1.5rem;
+.star-animals-section {
+  margin-bottom: 4rem;
+}
+
+.section-title {
+  font-size: 1.8rem;
   font-weight: bold;
   margin-bottom: 2rem;
   text-align: center;
   color: #1e293b;
 }
 
-.animals-grid {
+.star-animals-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
 }
 
-.animal-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  border-radius: 8px;
-  background: #f8fafc;
+.star-animal-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  position: relative;
   transition: transform 0.3s ease;
 }
 
-.animal-card:hover {
-  transform: scale(1.02);
+.star-animal-card:hover {
+  transform: translateY(-5px);
+}
+
+.animal-rank {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #fbbf24;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.animal-image-container {
+  position: relative;
+  margin-bottom: 1rem;
 }
 
 .animal-image {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
+  margin-bottom: 0.5rem;
+}
+
+.observation-badge {
+  background: #059669;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  display: inline-block;
 }
 
 .animal-name {
+  font-size: 1.3rem;
   font-weight: bold;
   margin-bottom: 0.25rem;
   color: #1e293b;
 }
 
-.animal-activity {
-  font-size: 0.9rem;
+.animal-scientific {
+  font-style: italic;
   color: #64748b;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.animal-stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.recent-observation {
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.obs-label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.obs-location {
+  color: #059669;
+}
+
+.trend-comparison-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.trend-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
+
+.trend-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #1e293b;
+}
+
+.trend-chart {
+  padding: 1rem;
+}
+
+.trend-line-chart {
+  position: relative;
+}
+
+.chart-svg {
+  width: 100%;
+  height: 200px;
+}
+
+.chart-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.comparison-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.comparison-item {
+  display: grid;
+  grid-template-columns: 80px 1fr 80px;
+  align-items: center;
+  gap: 1rem;
+}
+
+.season-name {
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.comparison-bar {
+  height: 24px;
+  background: #f1f5f9;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.comparison-fill {
+  height: 100%;
+  border-radius: 12px;
+  transition: width 0.3s ease;
+}
+
+.spring-fill { background: #22c55e; }
+.summer-fill { background: #eab308; }
+.autumn-fill { background: #f97316; }
+.winter-fill { background: #3b82f6; }
+
+.season-value {
+  font-size: 0.85rem;
+  color: #64748b;
+  text-align: right;
 }
 
 .scroll-arrow {
@@ -509,13 +778,22 @@ export default {
     font-size: 2rem;
   }
 
-  .stats-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+  .time-chart-container {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .animals-grid {
+  .star-animals-grid {
     grid-template-columns: 1fr;
+  }
+
+  .trend-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .kpi-card {
+    flex-direction: column;
+    text-align: center;
   }
 
   .scroll-arrow {

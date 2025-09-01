@@ -1,0 +1,41 @@
+season,taxon_id,common_name,scientific_name,image_url,total_count,rank
+Autumn,8575,Australian Magpie,Gymnorhina tibicen,https://static.inaturalist.org/photos/50123912/medium.jpg,11880,1
+Autumn,2413,Laughing Kookaburra,Dacelo novaeguineae,https://inaturalist-open-data.s3.amazonaws.com/photos/26389611/medium.jpeg,8028,2
+Autumn,980095,Rainbow Lorikeet,Trichoglossus moluccanus,https://static.inaturalist.org/photos/276466804/medium.jpg,7805,3
+Autumn,42983,Koala,Phascolarctos cinereus,https://inaturalist-open-data.s3.amazonaws.com/photos/446727684/medium.jpeg,7477,4
+Autumn,12065,Superb Fairywren,Malurus cyaneus,https://static.inaturalist.org/photos/99161435/medium.jpg,6728,5
+Autumn,3740,Australian Ibis,Threskiornis molucca,https://inaturalist-open-data.s3.amazonaws.com/photos/101675446/medium.jpeg,6640,6
+Autumn,12231,Noisy Miner,Manorina melanocephala,https://inaturalist-open-data.s3.amazonaws.com/photos/68867/medium.jpg,6273,7
+Autumn,4936,White-faced Heron,Egretta novaehollandiae,https://inaturalist-open-data.s3.amazonaws.com/photos/463499188/medium.jpg,6198,8
+Autumn,370351,Little Pied Cormorant,Microcarbo melanoleucos,https://inaturalist-open-data.s3.amazonaws.com/photos/48348837/medium.jpg,6101,9
+Autumn,8583,Magpie-lark,Grallina cyanoleuca,https://inaturalist-open-data.s3.amazonaws.com/photos/50128870/medium.jpg,5945,10
+Spring,8575,Australian Magpie,Gymnorhina tibicen,https://static.inaturalist.org/photos/50123912/medium.jpg,12161,1
+Spring,42983,Koala,Phascolarctos cinereus,https://inaturalist-open-data.s3.amazonaws.com/photos/446727684/medium.jpeg,9822,2
+Spring,2413,Laughing Kookaburra,Dacelo novaeguineae,https://inaturalist-open-data.s3.amazonaws.com/photos/26389611/medium.jpeg,9550,3
+Spring,83357,Waxlip Orchid,Glossodia major,https://inaturalist-open-data.s3.amazonaws.com/photos/318845738/medium.jpg,8951,4
+Spring,12065,Superb Fairywren,Malurus cyaneus,https://static.inaturalist.org/photos/99161435/medium.jpg,8656,5
+Spring,7176,Australian Wood Duck,Chenonetta jubata,https://inaturalist-open-data.s3.amazonaws.com/photos/50130632/medium.jpg,8277,6
+Spring,980095,Rainbow Lorikeet,Trichoglossus moluccanus,https://static.inaturalist.org/photos/276466804/medium.jpg,7837,7
+Spring,47219,Western Honey Bee,Apis mellifera,https://static.inaturalist.org/photos/2369526/medium.jpg,7623,8
+Spring,146186,Australian Water Dragon,Intellagama lesueurii,https://inaturalist-open-data.s3.amazonaws.com/photos/1888249/medium.jpg,7306,9
+Spring,197077,Australian Painted Lady,Vanessa kershawi,https://inaturalist-open-data.s3.amazonaws.com/photos/256905288/medium.jpg,6925,10
+Summer,149448,Common Brown,Heteronympha merope,https://inaturalist-open-data.s3.amazonaws.com/photos/252874892/medium.jpeg,11463,1
+Summer,8575,Australian Magpie,Gymnorhina tibicen,https://static.inaturalist.org/photos/50123912/medium.jpg,9411,2
+Summer,146186,Australian Water Dragon,Intellagama lesueurii,https://inaturalist-open-data.s3.amazonaws.com/photos/1888249/medium.jpg,7879,3
+Summer,42983,Koala,Phascolarctos cinereus,https://inaturalist-open-data.s3.amazonaws.com/photos/446727684/medium.jpeg,7785,4
+Summer,12065,Superb Fairywren,Malurus cyaneus,https://static.inaturalist.org/photos/99161435/medium.jpg,7619,5
+Summer,2413,Laughing Kookaburra,Dacelo novaeguineae,https://inaturalist-open-data.s3.amazonaws.com/photos/26389611/medium.jpeg,7358,6
+Summer,980095,Rainbow Lorikeet,Trichoglossus moluccanus,https://static.inaturalist.org/photos/276466804/medium.jpg,6151,7
+Summer,155504,Blue Skimmer,Orthetrum caledonicum,https://inaturalist-open-data.s3.amazonaws.com/photos/276950894/medium.jpg,6060,8
+Summer,155224,Rosy Hyacinth Orchid,Dipodium roseum,https://inaturalist-open-data.s3.amazonaws.com/photos/189221/medium.jpg,5680,9
+Summer,3740,Australian Ibis,Threskiornis molucca,https://inaturalist-open-data.s3.amazonaws.com/photos/101675446/medium.jpeg,5520,10
+Winter,8575,Australian Magpie,Gymnorhina tibicen,https://static.inaturalist.org/photos/50123912/medium.jpg,10790,1
+Winter,2413,Laughing Kookaburra,Dacelo novaeguineae,https://inaturalist-open-data.s3.amazonaws.com/photos/26389611/medium.jpeg,8922,2
+Winter,980095,Rainbow Lorikeet,Trichoglossus moluccanus,https://static.inaturalist.org/photos/276466804/medium.jpg,7775,3
+Winter,12065,Superb Fairywren,Malurus cyaneus,https://static.inaturalist.org/photos/99161435/medium.jpg,7637,4
+Winter,42983,Koala,Phascolarctos cinereus,https://inaturalist-open-data.s3.amazonaws.com/photos/446727684/medium.jpeg,7286,5
+Winter,7176,Australian Wood Duck,Chenonetta jubata,https://inaturalist-open-data.s3.amazonaws.com/photos/50130632/medium.jpg,7052,6
+Winter,42888,Eastern Grey Kangaroo,Macropus giganteus,https://inaturalist-open-data.s3.amazonaws.com/photos/53221252/medium.jpg,6792,7
+Winter,144560,Galah,Eolophus roseicapilla,https://inaturalist-open-data.s3.amazonaws.com/photos/147415773/medium.jpg,6288,8
+Winter,12231,Noisy Miner,Manorina melanocephala,https://inaturalist-open-data.s3.amazonaws.com/photos/68867/medium.jpg,5688,9
+Winter,370351,Little Pied Cormorant,Microcarbo melanoleucos,https://inaturalist-open-data.s3.amazonaws.com/photos/48348837/medium.jpg,5567,10

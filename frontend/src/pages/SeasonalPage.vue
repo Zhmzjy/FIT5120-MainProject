@@ -36,9 +36,9 @@
             <div class="kpi-card main-kpi">
               <div class="kpi-icon">🐨</div>
               <div class="kpi-content">
-                <div class="kpi-number" :style="titleStyle">245</div>
+                <div class="kpi-number" :style="titleStyle">{{ getCurrentSeasonKPI().active_species || 'Loading...' }}</div>
                 <div class="kpi-label">Active Species This Season</div>
-                <div class="kpi-detail">+12% from last season</div>
+                <div class="kpi-detail">{{ getCurrentSeasonKPI().total_observations || 0 }} total observations</div>
               </div>
             </div>
           </div>
@@ -53,7 +53,7 @@
                 <div class="time-label">
                   <span class="time-name">Morning</span>
                   <span class="time-range">6AM - 12PM</span>
-                  <span class="observation-count">1,234 observations</span>
+                  <span class="observation-count">{{ getCurrentSeasonActivity().find(a => a.time_bin === 'Morning')?.count || 0 }} observations</span>
                 </div>
               </div>
               <div class="time-period">
@@ -63,7 +63,7 @@
                 <div class="time-label">
                   <span class="time-name">Afternoon</span>
                   <span class="time-range">12PM - 6PM</span>
-                  <span class="observation-count">1,678 observations</span>
+                  <span class="observation-count">{{ getCurrentSeasonActivity().find(a => a.time_bin === 'Afternoon')?.count || 0 }} observations</span>
                 </div>
               </div>
               <div class="time-period">
@@ -73,7 +73,7 @@
                 <div class="time-label">
                   <span class="time-name">Evening</span>
                   <span class="time-range">6PM - 12AM</span>
-                  <span class="observation-count">1,456 observations</span>
+                  <span class="observation-count">{{ getCurrentSeasonActivity().find(a => a.time_bin === 'Evening')?.count || 0 }} observations</span>
                 </div>
               </div>
               <div class="time-period">
@@ -83,7 +83,7 @@
                 <div class="time-label">
                   <span class="time-name">Night</span>
                   <span class="time-range">12AM - 6AM</span>
-                  <span class="observation-count">892 observations</span>
+                  <span class="observation-count">{{ getCurrentSeasonActivity().find(a => a.time_bin === 'Night')?.count || 0 }} observations</span>
                 </div>
               </div>
             </div>
@@ -92,15 +92,15 @@
           <div class="star-animals-section">
             <h3 class="section-title">{{ selectedSeason }} Star Animals</h3>
             <div class="star-animals-grid">
-              <div class="star-animal-card" v-for="animal in getTopAnimals()" :key="animal.name">
-                <div class="animal-rank">#{{ animal.rank }}</div>
-                <div class="animal-image-container">
-                  <img :src="animal.image" :alt="animal.name" class="animal-image">
-                  <div class="observation-badge">{{ animal.observations }} sightings</div>
-                </div>
+                              <div class="star-animal-card" v-for="animal in getTopAnimals()" :key="animal.common_name">
+                  <div class="animal-rank">#{{ animal.rank }}</div>
+                  <div class="animal-image-container">
+                    <img :src="animal.image_url" :alt="animal.common_name" class="animal-image">
+                    <div class="observation-badge">{{ animal.total_count }} sightings</div>
+                  </div>
                 <div class="animal-details">
-                  <h4 class="animal-name">{{ animal.name }}</h4>
-                  <p class="animal-scientific">{{ animal.scientific }}</p>
+                  <h4 class="animal-name">{{ animal.common_name }}</h4>
+                  <p class="animal-scientific">{{ animal.scientific_name }}</p>
                   <div class="animal-stats">
                     <span class="stat-item">
                       <span class="stat-icon">📍</span>
@@ -157,33 +157,12 @@
               <div class="season-comparison">
                 <h4 class="trend-title">Season vs Season</h4>
                 <div class="comparison-bars">
-                  <div class="comparison-item">
-                    <span class="season-name">Spring</span>
+                  <div class="comparison-item" v-for="kpi in seasonKPI" :key="kpi.season">
+                    <span class="season-name">{{ kpi.season }}</span>
                     <div class="comparison-bar">
-                      <div class="comparison-fill spring-fill" style="width: 85%"></div>
+                      <div class="comparison-fill" :class="`${kpi.season.toLowerCase()}-fill`" :style="{ width: getSeasonPercentage(kpi.active_species) + '%' }"></div>
                     </div>
-                    <span class="season-value">245 species</span>
-                  </div>
-                  <div class="comparison-item">
-                    <span class="season-name">Summer</span>
-                    <div class="comparison-bar">
-                      <div class="comparison-fill summer-fill" style="width: 70%"></div>
-                    </div>
-                    <span class="season-value">198 species</span>
-                  </div>
-                  <div class="comparison-item">
-                    <span class="season-name">Autumn</span>
-                    <div class="comparison-bar">
-                      <div class="comparison-fill autumn-fill" style="width: 95%"></div>
-                    </div>
-                    <span class="season-value">287 species</span>
-                  </div>
-                  <div class="comparison-item">
-                    <span class="season-name">Winter</span>
-                    <div class="comparison-bar">
-                      <div class="comparison-fill winter-fill" style="width: 55%"></div>
-                    </div>
-                    <span class="season-value">156 species</span>
+                    <span class="season-value">{{ kpi.active_species }} species</span>
                   </div>
                 </div>
               </div>
@@ -203,6 +182,7 @@
 
 <script>
 import SeasonButtonGroup from '../components/seasonal/SeasonButtonGroup.vue'
+import apiService from '../services/api.js'
 
 export default {
   name: 'SeasonalPage',
@@ -210,32 +190,15 @@ export default {
     SeasonButtonGroup
   },
   data() {
-    return {
-      selectedSeason: 'Spring',
-      mockData: {
-        Spring: [
-          { rank: 1, name: 'Kangaroo', scientific: 'Osphranter rufus', observations: 1256, locations: 45, photos: 234, lastSeen: 'Blue Mountains', image: '/images/kangaroo.png' },
-          { rank: 2, name: 'Koala', scientific: 'Phascolarctos cinereus', observations: 892, locations: 32, photos: 156, lastSeen: 'Grampians NP', image: '/images/koala.png' },
-          { rank: 3, name: 'Echidna', scientific: 'Tachyglossus aculeatus', observations: 567, locations: 28, photos: 89, lastSeen: 'Royal NP', image: '/images/kangaroo.png' }
-        ],
-        Summer: [
-          { rank: 1, name: 'Platypus', scientific: 'Ornithorhynchus anatinus', observations: 1456, locations: 22, photos: 178, lastSeen: 'Yarra River', image: '/images/koala.png' },
-          { rank: 2, name: 'Kookaburra', scientific: 'Dacelo novaeguineae', observations: 1123, locations: 67, photos: 289, lastSeen: 'Kakadu NP', image: '/images/kangaroo.png' },
-          { rank: 3, name: 'Dingo', scientific: 'Canis dingo', observations: 678, locations: 34, photos: 123, lastSeen: 'Fraser Island', image: '/images/koala.png' }
-        ],
-        Autumn: [
-          { rank: 1, name: 'Possum', scientific: 'Trichosurus vulpecula', observations: 1567, locations: 89, photos: 345, lastSeen: 'Sydney Harbour', image: '/images/kangaroo.png' },
-          { rank: 2, name: 'Wallaby', scientific: 'Macropus rufogriseus', observations: 1234, locations: 56, photos: 234, lastSeen: 'Kangaroo Island', image: '/images/koala.png' },
-          { rank: 3, name: 'Bandicoot', scientific: 'Perameles nasuta', observations: 890, locations: 43, photos: 167, lastSeen: 'Daintree', image: '/images/kangaroo.png' }
-        ],
-        Winter: [
-          { rank: 1, name: 'Tasmanian Devil', scientific: 'Sarcophilus harrisii', observations: 678, locations: 12, photos: 89, lastSeen: 'Tasmania', image: '/images/koala.png' },
-          { rank: 2, name: 'Sugar Glider', scientific: 'Petaurus breviceps', observations: 567, locations: 34, photos: 123, lastSeen: 'Lamington NP', image: '/images/kangaroo.png' },
-          { rank: 3, name: 'Numbat', scientific: 'Myrmecobius fasciatus', observations: 234, locations: 8, photos: 45, lastSeen: 'WA Wheatbelt', image: '/images/koala.png' }
-        ]
-      }
-    }
-  },
+  return {
+    selectedSeason: 'Spring',
+    seasonKPI: [],
+    seasonActivity: [],
+    topSpecies: {},
+    loading: false,
+    error: null
+  }
+},
   computed: {
     currentBackgroundImage() {
       const images = {
@@ -269,16 +232,50 @@ export default {
       }
     }
   },
+  mounted() {
+    this.loadSeasonData()
+  },
   methods: {
-    selectSeason(season) {
-      this.selectedSeason = season
+    async loadSeasonData() {
+      this.loading = true
+      try {
+        const [kpiData, activityData, topSpeciesData] = await Promise.all([
+          apiService.getSeasonKPI(),
+          apiService.getSeasonActivity(),
+          apiService.getTopSpecies(this.selectedSeason)
+        ])
+        
+        this.seasonKPI = kpiData
+        this.seasonActivity = activityData
+        this.topSpecies = topSpeciesData
+      } catch (error) {
+        this.error = error.message
+        console.error('Failed to load season data:', error)
+      } finally {
+        this.loading = false
+      }
     },
+    
+    async selectSeason(season) {
+      this.selectedSeason = season
+      await this.loadTopSpecies(season)
+    },
+    
+    async loadTopSpecies(season) {
+      try {
+        this.topSpecies = await apiService.getTopSpecies(season)
+      } catch (error) {
+        console.error('Failed to load top species:', error)
+      }
+    },
+    
     scrollDown() {
       window.scrollBy({
         top: window.innerHeight,
         behavior: 'smooth'
       })
     },
+    
     getSeasonColor() {
       const colors = {
         Spring: '#22c55e',
@@ -288,11 +285,27 @@ export default {
       }
       return colors[this.selectedSeason]
     },
+    
     getSeasonAnimals() {
       return this.animalData[this.selectedSeason] || []
     },
+    
     getTopAnimals() {
-      return this.mockData[this.selectedSeason] || []
+      return this.topSpecies || []
+    },
+    
+    getCurrentSeasonKPI() {
+      return this.seasonKPI.find(kpi => kpi.season === this.selectedSeason) || {}
+    },
+    
+    getCurrentSeasonActivity() {
+      return this.seasonActivity.filter(activity => activity.season === this.selectedSeason) || []
+    },
+    
+    getSeasonPercentage(activeSpecies) {
+      if (!this.seasonKPI.length) return 0
+      const maxSpecies = Math.max(...this.seasonKPI.map(kpi => kpi.active_species))
+      return Math.round((activeSpecies / maxSpecies) * 100)
     }
   }
 }

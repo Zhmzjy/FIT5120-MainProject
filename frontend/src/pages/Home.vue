@@ -23,14 +23,6 @@
             </Button>
 
             <Button
-              type="secondary"
-              size="large"
-              @click="navigateToFindZoo"
-            >
-              Find Zoo
-            </Button>
-
-            <Button
               type="primary"
               size="large"
               @click="navigateToSeasonal"
@@ -57,9 +49,6 @@ export default {
   methods: {
     navigateToLearnWildlife() {
       this.$router.push('/learn-wildlife')
-    },
-    navigateToFindZoo() {
-      this.$router.push('/find-zoo')
     },
     navigateToSeasonal() {
       this.$router.push('/seasonal')

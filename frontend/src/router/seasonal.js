@@ -1,8 +1,7 @@
 export default [
   {
     path: '/seasonal',
-    name: 'Seasonal',
+    name: 'seasonal',
     component: () => import('../pages/SeasonalPage.vue')
   }
 ]
-

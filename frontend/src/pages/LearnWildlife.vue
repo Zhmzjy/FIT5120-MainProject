@@ -1,54 +1,202 @@
 <template>
-  <Layout>
-    <div class="learn-wildlife-page">
-      <div class="container">
-        <h1>Learn Wildlife</h1>
-        <p>This page will feature the 3D Australia map and wildlife learning content.</p>
-        <Button @click="goHome">Back to Home</Button>
+  <div class="wildlife-app">
+    <header class="top-nav">
+      <div class="nav-content">
+        <div class="logo">
+          <h2>Wildlife Academy</h2>
+        </div>
+        <nav class="nav-links">
+          <button @click="goHome" class="nav-link">Home</button>
+          <button @click="goToFindZoo" class="nav-link">Find Zoo</button>
+        </nav>
+        <button @click="toggleMobileSidebar" class="mobile-toggle">☰</button>
       </div>
+    </header>
+
+    <div class="main-layout">
+      <aside class="left-sidebar" :class="{ 'mobile-open': mobileMenuOpen }">
+        <LeftFilters />
+      </aside>
+
+      <main class="center-content">
+        <MapView />
+      </main>
+
+      <RightDrawer />
     </div>
-  </Layout>
+
+    <footer class="bottom-bar">
+      <LegendBar />
+    </footer>
+
+    <div v-if="mobileMenuOpen" class="mobile-overlay" @click="closeMobileSidebar"></div>
+  </div>
 </template>
 
 <script>
-import Layout from '../components/common/Layout.vue'
-import Button from '../components/common/Button.vue'
+import LeftFilters from '../components/wildlife/LeftFilters.vue'
+import MapView from '../components/wildlife/MapView.vue'
+import RightDrawer from '../components/wildlife/RightDrawer.vue'
+import LegendBar from '../components/wildlife/LegendBar.vue'
 
 export default {
   name: 'LearnWildlife',
   components: {
-    Layout,
-    Button
+    LeftFilters,
+    MapView,
+    RightDrawer,
+    LegendBar
+  },
+  data() {
+    return {
+      mobileMenuOpen: false
+    }
   },
   methods: {
     goHome() {
       this.$router.push('/')
+    },
+    goToFindZoo() {
+      this.$router.push('/find-zoo')
+    },
+    toggleMobileSidebar() {
+      this.mobileMenuOpen = !this.mobileMenuOpen
+    },
+    closeMobileSidebar() {
+      this.mobileMenuOpen = false
     }
   }
 }
 </script>
 
 <style scoped>
-.learn-wildlife-page {
-  padding: var(--spacing-2xl) 0;
-  min-height: 100vh;
+.wildlife-app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 var(--spacing-md);
-  text-align: center;
+.top-nav {
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0 20px;
+  flex-shrink: 0;
+  z-index: 100;
 }
 
-h1 {
-  color: var(--primary-green);
-  margin-bottom: var(--spacing-lg);
+.nav-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  max-width: 100%;
 }
 
-p {
-  font-size: var(--font-size-lg);
-  margin-bottom: var(--spacing-xl);
-  color: var(--text-gray);
+.logo h2 {
+  margin: 0;
+  color: #2d5a27;
+  font-size: 20px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-link {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.nav-link:hover {
+  background: #f5f5f5;
+}
+
+.mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.main-layout {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.left-sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  background: white;
+  overflow-y: auto;
+}
+
+.center-content {
+  flex: 1;
+  background: #f5f5f5;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.bottom-bar {
+  flex-shrink: 0;
+  background: white;
+}
+
+.mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 150;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+
+  .mobile-toggle {
+    display: block;
+  }
+
+  .left-sidebar {
+    position: fixed;
+    top: 60px;
+    left: -320px;
+    height: calc(100vh - 60px);
+    z-index: 200;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .left-sidebar.mobile-open {
+    left: 0;
+  }
+
+  .center-content {
+    width: 100%;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .center-content {
+    padding: 5px;
+  }
+
+  .nav-content {
+    padding: 0 10px;
+  }
 }
 </style>

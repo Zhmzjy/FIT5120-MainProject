@@ -1,27 +1,56 @@
 <template>
   <div class="right-drawer" :class="{ 'drawer-open': isOpen }">
     <div class="drawer-header">
-      <h3>🐾 Animal Details</h3>
+      <h3>🌏 Region Explorer</h3>
       <button @click="toggleDrawer" class="close-btn">✕</button>
     </div>
     <div class="drawer-content">
-      <div class="animal-info">
-        <div class="animal-placeholder">
-          <div class="placeholder-icon">🔍</div>
-          <p>Click on an animal to learn more!</p>
-          <div class="fun-facts">
-            <h4>🌟 Did you know?</h4>
-            <ul>
-              <li>🦘 Kangaroos can't walk backwards!</li>
-              <li>🐨 Koalas sleep 20 hours a day!</li>
-              <li>🦎 Some lizards can regrow their tails!</li>
-            </ul>
+      <div v-if="selectedRegion" class="region-info">
+        <div class="region-header">
+          <h4>{{ selectedRegion.name }}</h4>
+          <p class="region-type">{{ selectedRegion.state }}</p>
+        </div>
+        <div class="region-stats">
+          <div class="stat-item">
+            <span class="stat-number">{{ selectedRegion.totalSpecies }}</span>
+            <span class="stat-label">Total Species</span>
           </div>
+          <div class="stat-item">
+            <span class="stat-number">{{ selectedRegion.totalObservations }}</span>
+            <span class="stat-label">Observations</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">{{ selectedRegion.endangeredSpecies }}</span>
+            <span class="stat-label">Endangered</span>
+          </div>
+        </div>
+        <div class="top-species">
+          <h5>Top Species in Region</h5>
+          <div v-for="species in selectedRegion.topSpecies" :key="species.id" class="species-item">
+            <div class="species-info">
+              <strong>{{ species.common_name }}</strong>
+              <em>{{ species.scientific_name }}</em>
+              <span class="observation-count">{{ species.count }} observations</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-else class="placeholder-content">
+        <div class="placeholder-icon">🗺️</div>
+        <p>Click on a region to explore wildlife data!</p>
+        <div class="region-tips">
+          <h4>🌏 Explore Australia's Wildlife</h4>
+          <ul>
+            <li>� Browse by state and territory</li>
+            <li>🦎 Filter by animal types</li>
+            <li>🛡️ Check conservation status</li>
+            <li>🌲 Discover bioregions</li>
+          </ul>
         </div>
       </div>
     </div>
     <button v-if="!isOpen" @click="toggleDrawer" class="drawer-toggle">
-      📚 Info
+      �️ Regions
     </button>
   </div>
   <div v-if="isOpen" class="drawer-overlay" @click="closeDrawer"></div>
@@ -30,9 +59,22 @@
 <script>
 export default {
   name: 'RightDrawer',
+  props: {
+    selectedRegion: {
+      type: Object,
+      default: null
+    }
+  },
   data() {
     return {
       isOpen: false
+    }
+  },
+  watch: {
+    selectedRegion(newRegion) {
+      if (newRegion) {
+        this.isOpen = true
+      }
     }
   },
   methods: {
@@ -41,6 +83,7 @@ export default {
     },
     closeDrawer() {
       this.isOpen = false
+      this.$emit('closeDrawer')
     }
   }
 }
@@ -205,6 +248,112 @@ export default {
 .fun-facts li:hover {
   transform: translateX(5px);
   box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+.region-info {
+  padding: var(--spacing-lg);
+}
+
+.region-header h4 {
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-sm);
+  font-size: 1.4rem;
+}
+
+.region-type {
+  color: var(--color-text-secondary);
+  font-style: italic;
+  margin-bottom: var(--spacing-lg);
+}
+
+.region-stats {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  backdrop-filter: blur(10px);
+  flex: 1;
+  min-width: 80px;
+}
+
+.stat-number {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--primary-green);
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  text-align: center;
+}
+
+.top-species h5 {
+  color: var(--primary-green);
+  margin-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--primary-green);
+  padding-bottom: var(--spacing-sm);
+}
+
+.species-item {
+  background: rgba(255, 255, 255, 0.1);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  border-radius: var(--border-radius);
+  backdrop-filter: blur(10px);
+}
+
+.species-info strong {
+  display: block;
+  color: var(--primary-green);
+  margin-bottom: var(--spacing-xs);
+}
+
+.species-info em {
+  display: block;
+  color: var(--text-dark);
+  margin-bottom: var(--spacing-xs);
+  font-size: 0.9rem;
+}
+
+.observation-count {
+  font-size: 0.8rem;
+  color: var(--accent-yellow);
+  font-weight: bold;
+}
+
+.placeholder-content {
+  padding: var(--spacing-lg);
+  text-align: center;
+}
+
+.region-tips {
+  margin-top: var(--spacing-xl);
+  text-align: left;
+}
+
+.region-tips h4 {
+  color: var(--primary-green);
+  margin-bottom: var(--spacing-md);
+}
+
+.region-tips ul {
+  list-style: none;
+  padding: 0;
+}
+
+.region-tips li {
+  padding: var(--spacing-sm) 0;
+  color: var(--text-dark);
 }
 
 .drawer-overlay {

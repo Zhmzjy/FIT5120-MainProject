@@ -16,14 +16,28 @@
 
     <div class="main-layout">
       <aside class="left-sidebar" :class="{ 'mobile-open': mobileMenuOpen }">
-        <LeftFilters />
+        <LeftFilters 
+          @search="handleSearch"
+          @stateFilter="handleStateFilter"
+          @animalTypeFilter="handleAnimalTypeFilter"
+          @conservationFilter="handleConservationFilter"
+          @regionFilter="handleRegionFilter"
+          @resetFilters="handleResetFilters"
+          @applyFilters="handleApplyFilters"
+        />
       </aside>
 
       <main class="center-content">
-        <MapView />
+        <MapView 
+          :filters="activeFilters"
+          @regionSelected="handleRegionSelection"
+        />
       </main>
 
-      <RightDrawer />
+      <RightDrawer 
+        :selectedRegion="selectedRegion"
+        @closeDrawer="handleCloseDrawer"
+      />
     </div>
 
     <div v-if="mobileMenuOpen" class="mobile-overlay" @click="closeMobileSidebar"></div>
@@ -44,7 +58,15 @@ export default {
   },
   data() {
     return {
-      mobileMenuOpen: false
+      mobileMenuOpen: false,
+      activeFilters: {
+        search: '',
+        state: '',
+        animalType: '',
+        conservation: '',
+        region: ''
+      },
+      selectedRegion: null
     }
   },
   methods: {
@@ -59,6 +81,40 @@ export default {
     },
     closeMobileSidebar() {
       this.mobileMenuOpen = false
+    },
+    handleSearch(query) {
+      this.activeFilters.search = query
+    },
+    handleStateFilter(state) {
+      this.activeFilters.state = state
+    },
+    handleAnimalTypeFilter(animalType) {
+      this.activeFilters.animalType = animalType
+    },
+    handleConservationFilter(conservation) {
+      this.activeFilters.conservation = conservation
+    },
+    handleRegionFilter(region) {
+      this.activeFilters.region = region
+    },
+    handleResetFilters() {
+      this.activeFilters = {
+        search: '',
+        state: '',
+        animalType: '',
+        conservation: '',
+        region: ''
+      }
+      this.selectedRegion = null
+    },
+    handleApplyFilters(filters) {
+      this.activeFilters = { ...filters }
+    },
+    handleRegionSelection(region) {
+      this.selectedRegion = region
+    },
+    handleCloseDrawer() {
+      this.selectedRegion = null
     }
   }
 }

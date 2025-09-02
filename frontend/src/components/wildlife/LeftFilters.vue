@@ -13,40 +13,56 @@
     </div>
     <div class="filters-content">
       <div class="filter-group">
-        <label>Animal Type</label>
-        <select class="cartoon-select">
-          <option>All Animals</option>
-          <option>Mammals</option>
-          <option>Birds</option>
-          <option>Reptiles</option>
-          <option>Amphibians</option>
-          <option>Insects</option>
+        <label>State/Territory</label>
+        <select v-model="selectedState" class="cartoon-select" @change="onStateChange">
+          <option value="">All States</option>
+          <option value="NSW">New South Wales</option>
+          <option value="VIC">Victoria</option>
+          <option value="QLD">Queensland</option>
+          <option value="SA">South Australia</option>
+          <option value="WA">Western Australia</option>
+          <option value="TAS">Tasmania</option>
+          <option value="NT">Northern Territory</option>
+          <option value="ACT">Australian Capital Territory</option>
         </select>
       </div>
       <div class="filter-group">
-        <label>Habitat</label>
-        <select class="cartoon-select">
-          <option>All Habitats</option>
-          <option>Forest</option>
-          <option>Desert</option>
-          <option>Ocean</option>
-          <option>Mountains</option>
-          <option>Grassland</option>
+        <label>Animal Type</label>
+        <select v-model="selectedAnimalType" class="cartoon-select" @change="onAnimalTypeChange">
+          <option value="">All Animals</option>
+          <option value="Aves">Birds</option>
+          <option value="Mammalia">Mammals</option>
+          <option value="Insecta">Insects</option>
+          <option value="Reptilia">Reptiles</option>
+          <option value="Amphibia">Amphibians</option>
+          <option value="Plantae">Plants</option>
+          <option value="Fungi">Fungi</option>
         </select>
       </div>
       <div class="filter-group">
         <label>Conservation Status</label>
-        <select class="cartoon-select">
-          <option>All Status</option>
-          <option>Critically Endangered</option>
-          <option>Endangered</option>
-          <option>Vulnerable</option>
-          <option>Least Concern</option>
+        <select v-model="selectedConservationStatus" class="cartoon-select" @change="onConservationChange">
+          <option value="">All Status</option>
+          <option value="Critically Endangered">Critically Endangered</option>
+          <option value="Endangered">Endangered</option>
+          <option value="Vulnerable">Vulnerable</option>
+          <option value="Present">Present</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>IBRA Region</label>
+        <select v-model="selectedRegion" class="cartoon-select" @change="onRegionChange">
+          <option value="">All Regions</option>
+          <option value="Australian Alps">Australian Alps</option>
+          <option value="Sydney Basin">Sydney Basin</option>
+          <option value="South Eastern Highlands">South Eastern Highlands</option>
+          <option value="NSW North Coast">NSW North Coast</option>
+          <option value="Murray Darling Depression">Murray Darling Depression</option>
         </select>
       </div>
       <div class="filter-actions">
-        <button class="reset-btn">Reset All</button>
-        <button class="apply-btn">Apply Filters</button>
+        <button class="reset-btn" @click="resetFilters">Reset All</button>
+        <button class="apply-btn" @click="applyFilters">Apply Filters</button>
       </div>
     </div>
   </div>
@@ -57,15 +73,45 @@ export default {
   name: 'LeftFilters',
   data() {
     return {
-      searchQuery: ''
+      searchQuery: '',
+      selectedState: '',
+      selectedAnimalType: '',
+      selectedConservationStatus: '',
+      selectedRegion: ''
     }
   },
   methods: {
     onSearchInput() {
-      // 搜索功能逻辑
-      console.log('Searching for:', this.searchQuery)
-      // 这里可以添加搜索动物的逻辑，比如发送事件给父组件
       this.$emit('search', this.searchQuery)
+    },
+    onStateChange() {
+      this.$emit('stateFilter', this.selectedState)
+    },
+    onAnimalTypeChange() {
+      this.$emit('animalTypeFilter', this.selectedAnimalType)
+    },
+    onConservationChange() {
+      this.$emit('conservationFilter', this.selectedConservationStatus)
+    },
+    onRegionChange() {
+      this.$emit('regionFilter', this.selectedRegion)
+    },
+    resetFilters() {
+      this.searchQuery = ''
+      this.selectedState = ''
+      this.selectedAnimalType = ''
+      this.selectedConservationStatus = ''
+      this.selectedRegion = ''
+      this.$emit('resetFilters')
+    },
+    applyFilters() {
+      this.$emit('applyFilters', {
+        search: this.searchQuery,
+        state: this.selectedState,
+        animalType: this.selectedAnimalType,
+        conservation: this.selectedConservationStatus,
+        region: this.selectedRegion
+      })
     }
   }
 }

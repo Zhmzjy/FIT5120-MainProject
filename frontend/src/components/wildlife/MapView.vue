@@ -80,14 +80,42 @@ export default {
   width: 100%;
   height: 100%;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .map-container {
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
+  width: 90%;
+  height: 90%;
+  max-width: 1200px;
+  max-height: 800px;
+  border-radius: var(--border-radius-xl);
   overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  position: relative;
+  margin: auto;
 }
+
+/* Removed glowing border for seamless appearance
+.map-container::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--accent-pink), var(--accent-yellow), var(--accent-blue), var(--primary-green));
+  border-radius: var(--border-radius-xl);
+  z-index: -1;
+  animation: borderGlow 3s ease infinite;
+}
+
+@keyframes borderGlow {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+*/
 
 .error-container {
   width: 100%;

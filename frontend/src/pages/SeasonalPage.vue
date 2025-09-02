@@ -6,6 +6,19 @@
         <div class="overlay"></div>
       </div>
 
+      <div class="top-nav-bar">
+        <div class="nav-content">
+          <div class="nav-left">
+            <h3 class="nav-title">Wildlife Academy</h3>
+          </div>
+          <div class="nav-right">
+            <button class="nav-btn" @click="navigateToHome">Home</button>
+            <button class="nav-btn" @click="navigateToMap">Find Zoo</button>
+            <button class="nav-btn" @click="navigateToWildlife">Learn Wildlife</button>
+          </div>
+        </div>
+      </div>
+
       <div class="hero-content">
         <h1 class="main-title" :style="titleStyle">Seasonal Wildlife Activities</h1>
         <p class="subtitle" :style="subtitleStyle">Discover what animals do in different seasons!</p>
@@ -306,6 +319,18 @@ export default {
       if (!this.seasonKPI.length) return 0
       const maxSpecies = Math.max(...this.seasonKPI.map(kpi => kpi.active_species))
       return Math.round((activeSpecies / maxSpecies) * 100)
+    },
+
+    navigateToHome() {
+      this.$router.push('/')
+    },
+    
+    navigateToMap() {
+      this.$router.push('/find-zoo')
+    },
+    
+    navigateToWildlife() {
+      this.$router.push('/learn-wildlife')
     }
   }
 }
@@ -316,6 +341,7 @@ export default {
   width: 100%;
   min-height: 300vh;
   position: relative;
+  font-family: var(--font-cartoon);
 }
 
 .hero-section {
@@ -354,11 +380,68 @@ export default {
   z-index: 2;
 }
 
+.top-nav-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  background: transparent;
+  padding: 1rem 0;
+}
+
+.nav-content {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+.nav-title {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-cartoon);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.nav-left {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--font-cartoon);
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 .hero-content {
   position: relative;
   z-index: 3;
   text-align: center;
-  padding: 2rem;
+  padding: 6rem 2rem 2rem 2rem;
 }
 
 .main-title {
@@ -367,6 +450,7 @@ export default {
   margin-bottom: 1rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   transition: color 0.3s ease;
+  font-family: var(--font-cartoon);
 }
 
 .subtitle {
@@ -374,6 +458,7 @@ export default {
   margin-bottom: 2rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   transition: color 0.3s ease;
+  font-family: var(--font-cartoon);
 }
 
 .wildlife-analysis-section {
@@ -426,11 +511,13 @@ export default {
   font-weight: bold;
   margin-bottom: 1rem;
   transition: color 0.3s ease;
+  font-family: var(--font-cartoon);
 }
 
 .analysis-subtitle {
   font-size: 1.1rem;
   color: #64748b;
+  font-family: var(--font-cartoon);
 }
 
 .season-kpi-section {

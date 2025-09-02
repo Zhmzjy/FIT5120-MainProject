@@ -8,15 +8,6 @@
       </div>
     </div>
     <div v-else class="map-wrapper">
-      <div class="style-toggle">
-        <button
-          @click="toggleMapStyle"
-          class="toggle-btn"
-          :class="{ active: currentStyle === 'satellite' }"
-        >
-          {{ currentStyle === 'streets' ? 'Satellite' : 'Streets' }}
-        </button>
-      </div>
       <div id="mapbox-container" ref="mapContainer" class="map-container"></div>
     </div>
   </div>
@@ -31,12 +22,7 @@ export default {
   data() {
     return {
       map: null,
-      errorMessage: null,
-      currentStyle: 'streets',
-      mapStyles: {
-        streets: 'mapbox://styles/mapbox/streets-v12',
-        satellite: 'mapbox://styles/mapbox/satellite-streets-v12'
-      }
+      errorMessage: null
     }
   },
   mounted() {
@@ -61,8 +47,8 @@ export default {
 
         this.map = new mapboxgl.Map({
           container: this.$refs.mapContainer,
-          style: this.mapStyles.streets,
-          projection: 'mercator',
+          style: 'mapbox://styles/jzhu0117/cmf1y5jkk005i01r498d1dzpe',
+          projection: 'globe',
           center: [134.5, -25],
           zoom: 3.5
         })
@@ -78,12 +64,6 @@ export default {
         console.error('Map initialization error:', error)
         this.errorMessage = 'Failed to initialize the map. Please check your Mapbox configuration.'
       }
-    },
-    toggleMapStyle() {
-      if (!this.map) return
-
-      this.currentStyle = this.currentStyle === 'streets' ? 'satellite' : 'streets'
-      this.map.setStyle(this.mapStyles[this.currentStyle])
     }
   }
 }
@@ -100,44 +80,42 @@ export default {
   width: 100%;
   height: 100%;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .map-container {
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
+  width: 90%;
+  height: 90%;
+  max-width: 1200px;
+  max-height: 800px;
+  border-radius: var(--border-radius-xl);
   overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  position: relative;
+  margin: auto;
 }
 
-.style-toggle {
+/* Removed glowing border for seamless appearance
+.map-container::before {
+  content: '';
   position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 1000;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--accent-pink), var(--accent-yellow), var(--accent-blue), var(--primary-green));
+  border-radius: var(--border-radius-xl);
+  z-index: -1;
+  animation: borderGlow 3s ease infinite;
 }
 
-.toggle-btn {
-  background: white;
-  border: 1px solid #ccc;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
+@keyframes borderGlow {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
 }
-
-.toggle-btn:hover {
-  background: #f8f9fa;
-  border-color: #999;
-}
-
-.toggle-btn.active {
-  background: #007cbf;
-  color: white;
-  border-color: #007cbf;
-}
+*/
 
 .error-container {
   width: 100%;

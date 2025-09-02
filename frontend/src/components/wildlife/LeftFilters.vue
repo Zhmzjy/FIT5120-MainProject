@@ -1,35 +1,52 @@
 <template>
   <div class="left-filters">
     <div class="filters-header">
-      <h3>Filters</h3>
+      <div class="search-container">
+        <input 
+          type="text" 
+          v-model="searchQuery" 
+          @input="onSearchInput"
+          placeholder="🔍 Search animals..."
+          class="search-bar"
+        />
+      </div>
     </div>
     <div class="filters-content">
       <div class="filter-group">
         <label>Animal Type</label>
-        <select>
+        <select class="cartoon-select">
           <option>All Animals</option>
           <option>Mammals</option>
           <option>Birds</option>
           <option>Reptiles</option>
+          <option>Amphibians</option>
+          <option>Insects</option>
         </select>
       </div>
       <div class="filter-group">
         <label>Habitat</label>
-        <select>
+        <select class="cartoon-select">
           <option>All Habitats</option>
           <option>Forest</option>
           <option>Desert</option>
           <option>Ocean</option>
+          <option>Mountains</option>
+          <option>Grassland</option>
         </select>
       </div>
       <div class="filter-group">
         <label>Conservation Status</label>
-        <select>
+        <select class="cartoon-select">
           <option>All Status</option>
+          <option>Critically Endangered</option>
           <option>Endangered</option>
           <option>Vulnerable</option>
           <option>Least Concern</option>
         </select>
+      </div>
+      <div class="filter-actions">
+        <button class="reset-btn">Reset All</button>
+        <button class="apply-btn">Apply Filters</button>
       </div>
     </div>
   </div>
@@ -37,7 +54,20 @@
 
 <script>
 export default {
-  name: 'LeftFilters'
+  name: 'LeftFilters',
+  data() {
+    return {
+      searchQuery: ''
+    }
+  },
+  methods: {
+    onSearchInput() {
+      // 搜索功能逻辑
+      console.log('Searching for:', this.searchQuery)
+      // 这里可以添加搜索动物的逻辑，比如发送事件给父组件
+      this.$emit('search', this.searchQuery)
+    }
+  }
 }
 </script>
 
@@ -45,40 +75,181 @@ export default {
 .left-filters {
   width: 100%;
   height: 100%;
-  background: white;
-  border-right: 1px solid #e0e0e0;
-  padding: 20px;
+  background: url('/images/backformap.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  filter: brightness(0.8) contrast(1.1);
+  padding: var(--spacing-xl);
+  font-family: var(--font-family-primary);
+  position: relative;
+  overflow-y: auto;
 }
 
-.filters-header h3 {
-  margin: 0 0 20px 0;
-  color: #333;
-  font-size: 18px;
+.filters-header {
+  margin-bottom: 3rem;
+}
+
+.search-container {
+  position: relative;
+}
+
+.search-bar {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--border-radius-pill);
+  font-size: var(--font-size-md);
+  font-family: var(--font-family-primary);
+  background: rgba(255, 255, 255, 0.3);
+  color: var(--text-dark);
+  cursor: text;
+  transition: all var(--transition-bounce);
+  outline: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  backdrop-filter: blur(5px);
+}
+
+.search-bar::placeholder {
+  color: rgba(100, 100, 100, 0.8);
+  font-weight: normal;
+}
+
+.search-bar:focus {
+  border-color: var(--accent-blue);
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.02);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.search-bar:hover {
+  border-color: var(--accent-pink);
+  background: rgba(255, 255, 255, 0.35);
 }
 
 .filter-group {
-  margin-bottom: 20px;
+  margin-bottom: 2.5rem;
+  background: rgba(255, 255, 255, 0.25);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all var(--transition-bounce);
+  backdrop-filter: blur(10px);
+}
+
+.filter-group:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px var(--shadow-colorful);
+  border-color: var(--accent-pink);
 }
 
 .filter-group label {
   display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: #555;
+  margin-bottom: var(--spacing-sm);
+  font-weight: bold;
+  color: var(--text-white);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.7);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
 }
 
-.filter-group select {
+.cartoon-select {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--border-radius-pill);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family-primary);
+  background: rgba(255, 255, 255, 0.3);
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: all var(--transition-bounce);
+  outline: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+}
+
+.cartoon-select:hover {
+  border-color: var(--accent-pink);
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.cartoon-select:focus {
+  border-color: var(--accent-yellow);
+  box-shadow: 0 0 0 3px rgba(255, 211, 61, 0.3);
+}
+
+.filter-actions {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding-top: var(--spacing-xl);
+}
+
+.reset-btn, .apply-btn {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--border-radius-pill);
+  font-family: var(--font-family-primary);
+  font-weight: bold;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-bounce);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reset-btn {
+  background: rgba(255, 144, 101, 0.3);
+  color: var(--text-white);
+  border: 2px solid rgba(255, 144, 101, 0.6);
+  box-shadow: 0 4px 12px rgba(255, 144, 101, 0.3);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+}
+
+.reset-btn:hover {
+  background: rgba(255, 144, 101, 0.5);
+  border-color: rgba(255, 144, 101, 0.8);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(255, 144, 101, 0.4);
+}
+
+.apply-btn {
+  background: rgba(78, 205, 196, 0.3);
+  color: var(--text-white);
+  border: 2px solid rgba(78, 205, 196, 0.6);
+  box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+}
+
+.apply-btn:hover {
+  background: rgba(78, 205, 196, 0.5);
+  border-color: rgba(78, 205, 196, 0.8);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(78, 205, 196, 0.4);
 }
 
 @media (max-width: 768px) {
   .left-filters {
-    border-right: none;
-    border-bottom: 1px solid #e0e0e0;
+    padding: var(--spacing-md);
+  }
+  
+  .filter-actions {
+    flex-direction: row;
+  }
+  
+  .reset-btn, .apply-btn {
+    flex: 1;
   }
 }
 </style>

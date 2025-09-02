@@ -1,0 +1,201 @@
+taxon_id,scientific_name,common_name,rank,iconic_taxon_name,observations_count,wikipedia_url,is_active,extinct
+6930,Anas platyrhynchos,Mallard,species,Aves,746488,http://en.wikipedia.org/wiki/Mallard,TRUE,FALSE
+47219,Apis mellifera,Western Honey Bee,species,Insecta,576958,http://en.wikipedia.org/wiki/Western_honey_bee,TRUE,FALSE
+13858,Passer domesticus,House Sparrow,species,Aves,444292,http://en.wikipedia.org/wiki/House_sparrow,TRUE,FALSE
+48484,Harmonia axyridis,Asian Lady Beetle,species,Insecta,439116,http://en.wikipedia.org/wiki/Harmonia_axyridis,TRUE,FALSE
+48662,Danaus plexippus,Monarch,species,Insecta,416479,http://en.wikipedia.org/wiki/Monarch_butterfly,TRUE,FALSE
+7089,Branta canadensis,Canada Goose,species,Aves,381737,http://en.wikipedia.org/wiki/Canada_goose,TRUE,FALSE
+12727,Turdus migratorius,American Robin,species,Aves,378374,http://en.wikipedia.org/wiki/American_robin,TRUE,FALSE
+4956,Ardea herodias,Great Blue Heron,species,Aves,365936,http://en.wikipedia.org/wiki/Great_blue_heron,TRUE,FALSE
+3017,Columba livia,Rock Pigeon,species,Aves,345328,http://en.wikipedia.org/wiki/Rock_dove,TRUE,FALSE
+42223,Odocoileus virginianus,White-tailed Deer,species,Mammalia,333039,http://en.wikipedia.org/wiki/White-tailed_deer,TRUE,FALSE
+144455,Ardea alba,Great Egret,species,Aves,328549,http://en.wikipedia.org/wiki/Great_egret,TRUE,FALSE
+46017,Sciurus carolinensis,Eastern Gray Squirrel,species,Mammalia,314823,http://en.wikipedia.org/wiki/Eastern_gray_squirrel,TRUE,FALSE
+9083,Cardinalis cardinalis,Northern Cardinal,species,Aves,308652,http://en.wikipedia.org/wiki/Northern_cardinal,TRUE,FALSE
+5212,Buteo jamaicensis,Red-tailed Hawk,species,Aves,293370,https://en.wikipedia.org/wiki/Red-tailed_hawk,TRUE,FALSE
+52821,Achillea millefolium,common yarrow,species,Plantae,277091,http://en.wikipedia.org/wiki/Achillea_millefolium,TRUE,FALSE
+199840,Haemorhous mexicanus,House Finch,species,Aves,275514,http://en.wikipedia.org/wiki/House_finch,TRUE,FALSE
+14850,Sturnus vulgaris,European Starling,species,Aves,271466,http://en.wikipedia.org/wiki/Common_starling,TRUE,FALSE
+9744,Agelaius phoeniceus,Red-winged Blackbird,species,Aves,254534,http://en.wikipedia.org/wiki/Red-winged_blackbird,TRUE,FALSE
+3454,Zenaida macroura,Mourning Dove,species,Aves,247033,http://en.wikipedia.org/wiki/Mourning_dove,TRUE,FALSE
+118970,Bombus impatiens,Common Eastern Bumble Bee,species,Insecta,239720,http://en.wikipedia.org/wiki/Bombus_impatiens,TRUE,FALSE
+49133,Vanessa atalanta,Red Admiral,species,Insecta,237913,http://en.wikipedia.org/wiki/Vanessa_atalanta,TRUE,FALSE
+47602,Taraxacum officinale,common dandelion,species,Plantae,234870,http://en.wikipedia.org/wiki/Taraxacum_officinale,TRUE,FALSE
+51702,Coccinella septempunctata,Seven-spotted Lady Beetle,species,Insecta,231401,http://en.wikipedia.org/wiki/Coccinella_septempunctata,TRUE,FALSE
+9100,Melospiza melodia,Song Sparrow,species,Aves,220451,http://en.wikipedia.org/wiki/Song_sparrow,TRUE,FALSE
+4756,Cathartes aura,Turkey Vulture,species,Aves,215615,https://en.wikipedia.org/wiki/Turkey_vulture,TRUE,FALSE
+55745,Trifolium repens,white clover,species,Plantae,208417,http://en.wikipedia.org/wiki/Trifolium_repens,TRUE,FALSE
+55626,Pieris rapae,Small White,species,Insecta,207042,http://en.wikipedia.org/wiki/Pieris_rapae,TRUE,FALSE
+39782,Trachemys scripta,Pond Slider,species,Reptilia,204098,http://en.wikipedia.org/wiki/Pond_slider,TRUE,FALSE
+12716,Turdus merula,Eurasian Blackbird,species,Aves,201908,http://en.wikipedia.org/wiki/Common_blackbird,TRUE,FALSE
+10094,Junco hyemalis,Dark-eyed Junco,species,Aves,196491,http://en.wikipedia.org/wiki/Dark-eyed_junco,TRUE,FALSE
+145245,Setophaga coronata,Yellow-rumped Warbler,species,Aves,195964,http://en.wikipedia.org/wiki/Yellow-rumped_warbler,TRUE,FALSE
+14886,Mimus polyglottos,Northern Mockingbird,species,Aves,195383,http://en.wikipedia.org/wiki/Northern_mockingbird,TRUE,FALSE
+4954,Ardea cinerea,Grey Heron,species,Aves,194085,http://en.wikipedia.org/wiki/Grey_heron,TRUE,FALSE
+51875,Trifolium pratense,Red Clover,species,Plantae,192461,http://en.wikipedia.org/wiki/Trifolium_pratense,TRUE,FALSE
+203153,Parus major,Great Tit,species,Aves,188827,http://en.wikipedia.org/wiki/Great_tit,TRUE,FALSE
+11901,Hirundo rustica,Barn Swallow,species,Aves,186919,http://en.wikipedia.org/wiki/Barn_swallow,TRUE,FALSE
+5305,Haliaeetus leucocephalus,Bald Eagle,species,Aves,185869,http://en.wikipedia.org/wiki/Bald_eagle,TRUE,FALSE
+64968,Anaxyrus americanus,American Toad,species,Amphibia,184378,https://en.wikipedia.org/wiki/American_toad,TRUE,FALSE
+56061,Alliaria petiolata,garlic mustard,species,Plantae,182729,http://en.wikipedia.org/wiki/Alliaria_petiolata,TRUE,FALSE
+8021,Corvus brachyrhynchos,American Crow,species,Aves,178279,http://en.wikipedia.org/wiki/American_crow,TRUE,FALSE
+792988,Dryobates pubescens,Downy Woodpecker,species,Aves,173075,http://en.wikipedia.org/wiki/Downy_woodpecker,TRUE,FALSE
+116999,Pandion haliaetus,Osprey,species,Aves,172625,http://en.wikipedia.org/wiki/Osprey,TRUE,FALSE
+76610,Daucus carota,wild carrot,species,Plantae,171936,http://en.wikipedia.org/wiki/Daucus_carota,TRUE,FALSE
+28362,Thamnophis sirtalis,Common Garter Snake,species,Reptilia,170499,https://en.wikipedia.org/wiki/Common_garter_snake,TRUE,FALSE
+36204,Sceloporus occidentalis,Western Fence Lizard,species,Reptilia,169163,http://en.wikipedia.org/wiki/Western_fence_lizard,TRUE,FALSE
+55830,Glechoma hederacea,ground-ivy,species,Plantae,168299,http://en.wikipedia.org/wiki/Glechoma_hederacea,TRUE,FALSE
+52764,Prunella vulgaris,common selfheal,species,Plantae,167238,http://en.wikipedia.org/wiki/Prunella_vulgaris,TRUE,FALSE
+8229,Cyanocitta cristata,Blue Jay,species,Aves,166568,http://en.wikipedia.org/wiki/Blue_jay,TRUE,FALSE
+1454382,Nannopterum auritum,Double-crested Cormorant,species,Aves,165747,https://en.wikipedia.org/wiki/Double-crested_cormorant,TRUE,FALSE
+43111,Sylvilagus floridanus,Eastern Cottontail,species,Mammalia,162205,http://en.wikipedia.org/wiki/Eastern_cottontail,TRUE,FALSE
+10070,Fringilla coelebs,Common Chaffinch,species,Aves,161570,http://en.wikipedia.org/wiki/Common_chaffinch,TRUE,FALSE
+145310,Spinus tristis,American Goldfinch,species,Aves,161378,http://en.wikipedia.org/wiki/American_goldfinch,TRUE,FALSE
+42220,Odocoileus hemionus,Mule Deer,species,Mammalia,161161,http://en.wikipedia.org/wiki/Mule_deer,TRUE,FALSE
+41663,Procyon lotor,Common Raccoon,species,Mammalia,159059,http://en.wikipedia.org/wiki/Raccoon,TRUE,FALSE
+906,Meleagris gallopavo,Wild Turkey,species,Aves,155958,http://en.wikipedia.org/wiki/Wild_turkey,TRUE,FALSE
+47911,Asclepias syriaca,common milkweed,species,Plantae,154814,http://en.wikipedia.org/wiki/Asclepias_syriaca,TRUE,FALSE
+53178,Plantago lanceolata,ribwort plantain,species,Plantae,153982,http://en.wikipedia.org/wiki/Plantago_lanceolata,TRUE,FALSE
+47726,Acer negundo,box elder,species,Plantae,153163,http://en.wikipedia.org/wiki/Acer_negundo,TRUE,FALSE
+13695,Motacilla alba,White Wagtail,species,Aves,153066,http://en.wikipedia.org/wiki/White_wagtail,TRUE,FALSE
+54134,Trametes versicolor,turkey-tail,species,Fungi,152217,https://en.wikipedia.org/wiki/Trametes_versicolor,TRUE,FALSE
+52913,Cichorium intybus,chicory,species,Plantae,150207,https://en.wikipedia.org/wiki/Chicory,TRUE,FALSE
+59029,Verbascum thapsus,great mullein,species,Plantae,150203,http://en.wikipedia.org/wiki/Verbascum_thapsus,TRUE,FALSE
+118552,Felis catus,Domestic Cat,species,Mammalia,148988,https://en.wikipedia.org/wiki/Cat,TRUE,FALSE
+39771,Chrysemys picta,Painted Turtle,species,Reptilia,148558,http://en.wikipedia.org/wiki/Painted_turtle,TRUE,FALSE
+8010,Corvus corax,Common Raven,species,Aves,147921,http://en.wikipedia.org/wiki/Common_raven,TRUE,FALSE
+49150,Dione vanillae,Gulf Fritillary,species,Insecta,147723,http://en.wikipedia.org/wiki/Gulf_fritillary,TRUE,FALSE
+48599,Phytolacca americana,American pokeweed,species,Plantae,146411,http://en.wikipedia.org/wiki/Phytolacca_americana,TRUE,FALSE
+52989,Cirsium vulgare,Bull Thistle,species,Plantae,145715,http://en.wikipedia.org/wiki/Cirsium_vulgare,TRUE,FALSE
+48548,Vanessa cardui,Painted Lady,species,Insecta,145073,http://en.wikipedia.org/wiki/Vanessa_cardui,TRUE,FALSE
+204321,Ficaria verna,lesser celandine,species,Plantae,144933,http://en.wikipedia.org/wiki/Ficaria_verna,TRUE,FALSE
+55882,Hedera helix,common ivy,species,Plantae,144582,http://en.wikipedia.org/wiki/Hedera_helix,TRUE,FALSE
+13094,Erithacus rubecula,European Robin,species,Aves,144173,http://en.wikipedia.org/wiki/European_robin,TRUE,FALSE
+4940,Egretta thula,Snowy Egret,species,Aves,144073,http://en.wikipedia.org/wiki/Snowy_egret,TRUE,FALSE
+43584,Homo sapiens,Human,species,Mammalia,143836,http://en.wikipedia.org/wiki/Homo_sapiens,TRUE,FALSE
+60132,Cirsium arvense,creeping thistle,species,Plantae,143670,http://en.wikipedia.org/wiki/Cirsium_arvense,TRUE,FALSE
+6921,Cygnus olor,Mute Swan,species,Aves,141928,http://en.wikipedia.org/wiki/Mute_swan,TRUE,FALSE
+4981,Nycticorax nycticorax,Black-crowned Night Heron,species,Aves,139134,http://en.wikipedia.org/wiki/Black-crowned_night_heron,TRUE,FALSE
+58732,Toxicodendron radicans,eastern poison ivy,species,Plantae,138836,http://en.wikipedia.org/wiki/Toxicodendron_radicans,TRUE,FALSE
+564969,Chamaenerion angustifolium,fireweed,species,Plantae,137722,https://en.wikipedia.org/wiki/Chamaenerion_angustifolium,TRUE,FALSE
+4364,Larus delawarensis,Ring-billed Gull,species,Aves,137056,http://en.wikipedia.org/wiki/Ring-billed_gull,TRUE,FALSE
+2969,Streptopelia decaocto,Eurasian Collared-Dove,species,Aves,136977,http://en.wikipedia.org/wiki/Eurasian_collared_dove,TRUE,FALSE
+3048,Columba palumbus,Common Wood-Pigeon,species,Aves,136755,http://en.wikipedia.org/wiki/Common_wood_pigeon,TRUE,FALSE
+891696,Pica pica,Eurasian Magpie,species,Aves,136478,https://en.wikipedia.org/wiki/Eurasian_magpie,TRUE,FALSE
+482,Fulica atra,Eurasian Coot,species,Aves,136368,http://en.wikipedia.org/wiki/Eurasian_coot,TRUE,FALSE
+59774,Pachydiplax longipennis,Blue Dasher,species,Insecta,136257,https://en.wikipedia.org/wiki/Blue_dasher,TRUE,FALSE
+60551,Papilio glaucus,Eastern Tiger Swallowtail,species,Insecta,136206,http://en.wikipedia.org/wiki/Papilio_glaucus,TRUE,FALSE
+55851,Lamium purpureum,red deadnettle,species,Plantae,136182,http://en.wikipedia.org/wiki/Lamium_purpureum,TRUE,FALSE
+5206,Buteo lineatus,Red-shouldered Hawk,species,Aves,136078,http://en.wikipedia.org/wiki/Red-shouldered_hawk,TRUE,FALSE
+144510,Chroicocephalus ridibundus,Black-headed Gull,species,Aves,135903,http://en.wikipedia.org/wiki/Black-headed_gull,TRUE,FALSE
+144815,Poecile atricapillus,Black-capped Chickadee,species,Aves,135429,http://en.wikipedia.org/wiki/Black-capped_chickadee,TRUE,FALSE
+65982,Lithobates clamitans,Green Frog,species,Amphibia,135088,http://en.wikipedia.org/wiki/Lithobates_clamitans,TRUE,FALSE
+46020,Sciurus niger,Eastern Fox Squirrel,species,Mammalia,134798,http://en.wikipedia.org/wiki/Fox_squirrel,TRUE,FALSE
+18236,Colaptes auratus,Northern Flicker,species,Aves,134506,http://en.wikipedia.org/wiki/Northern_flicker,TRUE,FALSE
+9607,Quiscalus mexicanus,Great-tailed Grackle,species,Aves,133751,http://en.wikipedia.org/wiki/Great-tailed_grackle,TRUE,FALSE
+50278,Parthenocissus quinquefolia,Virginia creeper,species,Plantae,132471,http://en.wikipedia.org/wiki/Parthenocissus_quinquefolia,TRUE,FALSE
+48098,Acer rubrum,red maple,species,Plantae,131469,http://en.wikipedia.org/wiki/Acer_rubrum,TRUE,FALSE
+47435,Lotus corniculatus,bird's-foot trefoil,species,Plantae,131110,http://en.wikipedia.org/wiki/Lotus_corniculatus,TRUE,FALSE
+52681,Pteridium aquilinum,common bracken,species,Plantae,129425,http://en.wikipedia.org/wiki/Pteridium_aquilinum,TRUE,FALSE
+473,Fulica americana,American Coot,species,Aves,129074,http://en.wikipedia.org/wiki/American_coot,TRUE,FALSE
+42051,Canis latrans,Coyote,species,Mammalia,128463,http://en.wikipedia.org/wiki/Coyote,TRUE,FALSE
+4270,Phalacrocorax carbo,Great Cormorant,species,Aves,128228,http://en.wikipedia.org/wiki/Great_cormorant,TRUE,FALSE
+52628,Araneus diadematus,Cross Orbweaver,species,Arachnida,128095,http://en.wikipedia.org/wiki/Araneus_diadematus,TRUE,FALSE
+9176,Zonotrichia leucophrys,White-crowned Sparrow,species,Aves,127725,http://en.wikipedia.org/wiki/White-crowned_sparrow,TRUE,FALSE
+47144,Canis familiaris,Domestic Dog,species,Mammalia,126973,http://en.wikipedia.org/wiki/Dog,TRUE,FALSE
+116461,Anolis sagrei,Brown Anole,species,Reptilia,125292,http://en.wikipedia.org/wiki/Brown_anole,TRUE,FALSE
+204472,Buteo buteo,Common Buzzard,species,Aves,125207,http://en.wikipedia.org/wiki/Common_buzzard,TRUE,FALSE
+144849,Cyanistes caeruleus,Eurasian Blue Tit,species,Aves,124859,http://en.wikipedia.org/wiki/Eurasian_blue_tit,TRUE,FALSE
+12942,Sialia sialis,Eastern Bluebird,species,Aves,124153,http://en.wikipedia.org/wiki/Eastern_bluebird,TRUE,FALSE
+1579017,Astur cooperii,Cooper's Hawk,species,Aves,123808,https://en.wikipedia.org/wiki/Cooper's_hawk,TRUE,FALSE
+48715,Amanita muscaria,Fly Agaric,species,Fungi,123773,http://en.wikipedia.org/wiki/Amanita_muscaria,TRUE,FALSE
+4793,Charadrius vociferus,Killdeer,species,Aves,123722,https://en.wikipedia.org/wiki/Killdeer,TRUE,FALSE
+56057,Leucanthemum vulgare,oxeye daisy,species,Plantae,123352,https://en.wikipedia.org/wiki/Leucanthemum_vulgare,TRUE,FALSE
+55925,Geranium robertianum,Herb Robert,species,Plantae,122741,https://en.wikipedia.org/wiki/Geranium_robertianum,TRUE,FALSE
+52856,Artemisia vulgaris,common mugwort,species,Plantae,122255,http://en.wikipedia.org/wiki/Artemisia_vulgaris,TRUE,FALSE
+42069,Vulpes vulpes,Red Fox,species,Mammalia,122056,http://en.wikipedia.org/wiki/Red_fox,TRUE,FALSE
+56083,Armadillidium vulgare,Common Pill Woodlouse,species,Animalia,121805,http://en.wikipedia.org/wiki/Armadillidium_vulgare,TRUE,FALSE
+65979,Lithobates catesbeianus,American Bullfrog,species,Amphibia,120978,http://en.wikipedia.org/wiki/American_bullfrog,TRUE,FALSE
+55563,Bellis perennis,Lawn daisy,species,Plantae,120449,http://en.wikipedia.org/wiki/Bellis_perennis,TRUE,FALSE
+36514,Anolis carolinensis,Green Anole,species,Reptilia,119876,http://en.wikipedia.org/wiki/Carolina_anole,TRUE,FALSE
+61495,Erythemis simplicicollis,Eastern Pondhawk,species,Insecta,119848,http://en.wikipedia.org/wiki/Erythemis_simplicicollis,TRUE,FALSE
+51884,Urtica dioica,great stinging nettle,species,Plantae,119389,http://en.wikipedia.org/wiki/Urtica_dioica,TRUE,FALSE
+58523,Papilio polyxenes,Black Swallowtail,species,Insecta,118640,http://en.wikipedia.org/wiki/Papilio_polyxenes,TRUE,FALSE
+13851,Passer montanus,Eurasian Tree Sparrow,species,Aves,117527,http://en.wikipedia.org/wiki/Eurasian_tree_sparrow,TRUE,FALSE
+52391,Pinus strobus,eastern white pine,species,Plantae,117452,http://en.wikipedia.org/wiki/Pinus_strobus,TRUE,FALSE
+61321,Lythrum salicaria,purple loosestrife,species,Plantae,117064,http://en.wikipedia.org/wiki/Lythrum_salicaria,TRUE,FALSE
+480298,Cornu aspersum,Garden Snail,species,Mollusca,115697,http://en.wikipedia.org/wiki/Cornu_aspersum,TRUE,FALSE
+17871,Dendrocopos major,Great Spotted Woodpecker,species,Aves,115202,http://en.wikipedia.org/wiki/Great_spotted_woodpecker,TRUE,FALSE
+4328,Pelecanus occidentalis,Brown Pelican,species,Aves,114765,http://en.wikipedia.org/wiki/Brown_pelican,TRUE,FALSE
+18205,Melanerpes carolinus,Red-bellied Woodpecker,species,Aves,114611,https://en.wikipedia.org/wiki/Red-bellied_woodpecker,TRUE,FALSE
+54763,Acer platanoides,Norway maple,species,Plantae,113321,http://en.wikipedia.org/wiki/Acer_platanoides,TRUE,FALSE
+47888,Impatiens capensis,common jewelweed,species,Plantae,112878,http://en.wikipedia.org/wiki/Impatiens_capensis,TRUE,FALSE
+52592,Pararge aegeria,Speckled Wood,species,Insecta,112722,http://en.wikipedia.org/wiki/Speckled_wood_(butterfly),TRUE,FALSE
+558438,Spatula clypeata,Northern Shoveler,species,Aves,112267,http://en.wikipedia.org/wiki/Northern_shoveler,TRUE,FALSE
+56222,Tussilago farfara,colt's-foot,species,Plantae,112263,http://en.wikipedia.org/wiki/Tussilago,TRUE,FALSE
+64237,Phragmites australis,common reed,species,Plantae,110116,http://en.wikipedia.org/wiki/Phragmites,TRUE,FALSE
+53059,Galium aparine,catchweed bedstraw,species,Plantae,109728,http://en.wikipedia.org/wiki/Galium_aparine,TRUE,FALSE
+53021,Convolvulus arvensis,field bindweed,species,Plantae,109164,http://en.wikipedia.org/wiki/Convolvulus_arvensis,TRUE,FALSE
+144757,Corvus cornix,Hooded Crow,species,Aves,108895,http://en.wikipedia.org/wiki/Hooded_crow,TRUE,FALSE
+56077,Hypericum perforatum,Common St. John's Wort,species,Plantae,108207,http://en.wikipedia.org/wiki/Hypericum_perforatum,TRUE,FALSE
+5020,Butorides virescens,Green Heron,species,Aves,108136,https://en.wikipedia.org/wiki/Green_heron,TRUE,FALSE
+84549,Plathemis lydia,Common Whitetail,species,Insecta,108001,http://en.wikipedia.org/wiki/Common_whitetail,TRUE,FALSE
+207977,Aglais io,European Peacock Butterfly,species,Insecta,107530,http://en.wikipedia.org/wiki/Aglais_io,TRUE,FALSE
+55757,Chelidonium majus,Greater celandine,species,Plantae,107346,http://en.wikipedia.org/wiki/Chelidonium,TRUE,FALSE
+472766,Falco tinnunculus,Eurasian Kestrel,species,Aves,107333,http://en.wikipedia.org/wiki/Common_kestrel,TRUE,FALSE
+78882,Rosa multiflora,multiflora rose,species,Plantae,107238,http://en.wikipedia.org/wiki/Rosa_multiflora,TRUE,FALSE
+55620,Solanum dulcamara,bittersweet nightshade,species,Plantae,106736,http://en.wikipedia.org/wiki/Solanum_dulcamara,TRUE,FALSE
+51110,Xylocopa virginica,Eastern Carpenter Bee,species,Insecta,106660,http://en.wikipedia.org/wiki/Eastern_carpenter_bee,TRUE,FALSE
+56088,Robinia pseudoacacia,black locust,species,Plantae,106604,http://en.wikipedia.org/wiki/Robinia_pseudoacacia,TRUE,FALSE
+54834,Prunus serotina,black cherry,species,Plantae,105504,https://en.wikipedia.org/wiki/Prunus_serotina,TRUE,FALSE
+4765,Coragyps atratus,Black Vulture,species,Aves,105464,http://en.wikipedia.org/wiki/Black_vulture,TRUE,FALSE
+58961,Plantago major,greater plantain,species,Plantae,105372,http://en.wikipedia.org/wiki/Plantago_major,TRUE,FALSE
+6317,Calypte anna,Anna's Hummingbird,species,Aves,104740,http://en.wikipedia.org/wiki/Anna's_hummingbird,TRUE,FALSE
+120215,Bombus griseocollis,Brown-belted Bumble Bee,species,Insecta,104631,http://en.wikipedia.org/wiki/Bombus_griseocollis,TRUE,FALSE
+9135,Spizella passerina,Chipping Sparrow,species,Aves,104476,http://en.wikipedia.org/wiki/Chipping_sparrow,TRUE,FALSE
+4665,Falco sparverius,American Kestrel,species,Aves,104211,https://en.wikipedia.org/wiki/American_kestrel,TRUE,FALSE
+76907,Erigeron canadensis,horseweed,species,Plantae,102584,http://en.wikipedia.org/wiki/Erigeron_canadensis,TRUE,FALSE
+49202,Fagus grandifolia,American beech,species,Plantae,102305,http://en.wikipedia.org/wiki/Fagus_grandifolia,TRUE,FALSE
+39682,Chelydra serpentina,Common Snapping Turtle,species,Reptilia,101205,http://en.wikipedia.org/wiki/Common_snapping_turtle,TRUE,FALSE
+6937,Anas crecca,Green-winged Teal,species,Aves,100594,https://en.wikipedia.org/wiki/Eurasian_teal,TRUE,FALSE
+7428,Bombycilla cedrorum,Cedar Waxwing,species,Aves,100064,http://en.wikipedia.org/wiki/Cedar_waxwing,TRUE,FALSE
+55641,Polyommatus icarus,Common Blue,species,Insecta,99949,http://en.wikipedia.org/wiki/Common_blue,TRUE,FALSE
+49288,Podophyllum peltatum,mayapple,species,Plantae,99843,https://en.wikipedia.org/wiki/Podophyllum,TRUE,FALSE
+7004,Mergus merganser,Common Merganser,species,Aves,99372,http://en.wikipedia.org/wiki/Common_merganser,TRUE,FALSE
+47687,Erodium cicutarium,Redstem Stork's-bill,species,Plantae,99162,http://en.wikipedia.org/wiki/Erodium_cicutarium,TRUE,FALSE
+60607,Limenitis arthemis,Red-spotted Admiral,species,Insecta,98977,http://en.wikipedia.org/wiki/Limenitis_arthemis,TRUE,FALSE
+9184,Zonotrichia albicollis,White-throated Sparrow,species,Aves,98948,https://en.wikipedia.org/wiki/White-throated_sparrow,TRUE,FALSE
+49005,Quercus rubra,northern red oak,species,Plantae,98892,http://en.wikipedia.org/wiki/Quercus_rubra,TRUE,FALSE
+7107,Aix sponsa,Wood Duck,species,Aves,98850,https://en.wikipedia.org/wiki/Wood_duck,TRUE,FALSE
+79109,Silene latifolia,white campion,species,Plantae,98755,https://en.wikipedia.org/wiki/Silene_latifolia,TRUE,FALSE
+9398,Carduelis carduelis,European Goldfinch,species,Aves,98723,http://en.wikipedia.org/wiki/European_goldfinch,TRUE,FALSE
+55971,Tanacetum vulgare,tansy,species,Plantae,98571,http://en.wikipedia.org/wiki/Tansy,TRUE,FALSE
+57278,Ailanthus altissima,tree-of-heaven,species,Plantae,98456,http://en.wikipedia.org/wiki/Ailanthus_altissima,TRUE,FALSE
+4943,Egretta garzetta,Little Egret,species,Aves,97849,http://en.wikipedia.org/wiki/Little_egret,TRUE,FALSE
+49399,Juniperus virginiana,eastern redcedar,species,Plantae,97778,http://en.wikipedia.org/wiki/Juniperus_virginiana,TRUE,FALSE
+17008,Sayornis phoebe,Eastern Phoebe,species,Aves,97410,http://en.wikipedia.org/wiki/Eastern_phoebe,TRUE,FALSE
+55666,Veronica persica,bird's-eye speedwell,species,Plantae,97243,http://en.wikipedia.org/wiki/Veronica_persica,TRUE,FALSE
+49477,Monotropa uniflora,Ghost Pipe,species,Plantae,97213,http://en.wikipedia.org/wiki/Monotropa_uniflora,TRUE,FALSE
+201282,Gallinula chloropus,Common Moorhen,species,Aves,96434,http://en.wikipedia.org/wiki/Common_moorhen,TRUE,FALSE
+58722,Pinus sylvestris,Scots pine,species,Plantae,95847,http://en.wikipedia.org/wiki/Scots_pine,TRUE,FALSE
+9602,Quiscalus quiscula,Common Grackle,species,Aves,95597,https://en.wikipedia.org/wiki/Common_grackle,TRUE,FALSE
+49658,Liquidambar styraciflua,American sweetgum,species,Plantae,95553,http://en.wikipedia.org/wiki/Liquidambar_styraciflua,TRUE,FALSE
+81923,Halyomorpha halys,Brown Marmorated Stink Bug,species,Insecta,95488,https://en.wikipedia.org/wiki/Brown_marmorated_stink_bug,TRUE,FALSE
+82816,Viola sororia,common blue violet,species,Plantae,95138,http://en.wikipedia.org/wiki/Viola_sororia,TRUE,FALSE
+14801,Sitta carolinensis,White-breasted Nuthatch,species,Aves,94800,http://en.wikipedia.org/wiki/White-breasted_nuthatch,TRUE,FALSE
+5268,Milvus migrans,Black Kite,species,Aves,94693,http://en.wikipedia.org/wiki/Black_kite,TRUE,FALSE
+52925,Phyciodes tharos,Pearl Crescent,species,Insecta,94592,http://en.wikipedia.org/wiki/Pearl_crescent,TRUE,FALSE
+558439,Mareca strepera,Gadwall,species,Aves,94567,https://en.wikipedia.org/wiki/Gadwall,TRUE,FALSE
+48229,Ranunculus repens,Creeping buttercup,species,Plantae,93570,http://en.wikipedia.org/wiki/Ranunculus_repens,TRUE,FALSE
+68205,Larrea tridentata,Creosote Bush,species,Plantae,93453,http://en.wikipedia.org/wiki/Larrea_tridentata,TRUE,FALSE
+145308,Spinus psaltria,Lesser Goldfinch,species,Aves,93378,http://en.wikipedia.org/wiki/Lesser_goldfinch,TRUE,FALSE
+204496,Corvus corone,Carrion Crow,species,Aves,93099,http://en.wikipedia.org/wiki/Carrion_crow,TRUE,FALSE
+51062,Maianthemum racemosum,Solomon's plume,species,Plantae,93012,http://en.wikipedia.org/wiki/Maianthemum_racemosum,TRUE,FALSE
+50340,Hylephila phyleus,Fiery Skipper,species,Insecta,92950,http://en.wikipedia.org/wiki/Fiery_skipper,TRUE,FALSE
+57824,Sambucus racemosa,red-berried elder,species,Plantae,92448,http://en.wikipedia.org/wiki/Sambucus_racemosa,TRUE,FALSE
+50310,Arisaema triphyllum,Jack-in-the-Pulpit,species,Plantae,91700,http://en.wikipedia.org/wiki/Arisaema_triphyllum,TRUE,FALSE
+55653,Maniola jurtina,Meadow Brown,species,Insecta,91623,http://en.wikipedia.org/wiki/Meadow_brown,TRUE,FALSE
+82576,Onoclea sensibilis,sensitive fern,species,Plantae,91541,http://en.wikipedia.org/wiki/Onoclea_sensibilis,TRUE,FALSE
+56174,Echium vulgare,viper's-bugloss,species,Plantae,91422,http://en.wikipedia.org/wiki/Echium_vulgare,TRUE,FALSE
+119048,Ageratina altissima,white snakeroot,species,Plantae,91344,http://en.wikipedia.org/wiki/Ageratina_altissima,TRUE,FALSE
+48502,Cercis canadensis,eastern redbud,species,Plantae,91331,http://en.wikipedia.org/wiki/Cercis_canadensis,TRUE,FALSE

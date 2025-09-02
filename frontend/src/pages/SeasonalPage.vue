@@ -38,12 +38,13 @@
       </div>
 
       <div class="analysis-container">
-        <div class="analysis-header">
-          <h2 class="analysis-title" :style="titleStyle">{{ selectedSeason }} Wildlife Analysis</h2>
-          <p class="analysis-subtitle">Explore animal behaviors and patterns in {{ selectedSeason.toLowerCase() }}</p>
-        </div>
+        <div class="data-analysis-wrapper">
+          <div class="analysis-header">
+            <h2 class="analysis-title" :style="titleStyle">{{ selectedSeason }} Wildlife Analysis</h2>
+            <p class="analysis-subtitle">Explore animal behaviors and patterns in {{ selectedSeason.toLowerCase() }}</p>
+          </div>
 
-        <div class="analysis-content">
+          <div class="analysis-content">
           <div class="season-kpi-section">
             <div class="kpi-card main-kpi">
               <div class="kpi-icon">🐨</div>
@@ -181,6 +182,7 @@
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
 
@@ -510,6 +512,31 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding: 4rem 2rem;
+}
+
+.data-analysis-wrapper {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  padding: 3rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 2rem 0;
+}
+
+@media (max-width: 768px) {
+  .data-analysis-wrapper {
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+    margin: 1rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .data-analysis-wrapper {
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+  }
 }
 
 .analysis-header {

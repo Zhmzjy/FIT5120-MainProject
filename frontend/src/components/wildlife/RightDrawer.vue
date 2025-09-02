@@ -1,79 +1,119 @@
 <template>
   <div class="right-drawer" :class="{ 'drawer-open': isOpen }">
-    <div class="drawer-header">
+    <div v-if="!showAnimalDetail" class="drawer-header">
       <h3>Wildlife Explorer</h3>
       <button @click="toggleDrawer" class="close-btn">✕</button>
     </div>
     <div class="drawer-content">
-      <div v-if="selectedAnimal" class="animal-info">
-        <div class="animal-header">
-          <div class="animal-image-container">
+      <!-- Region View -->
+      <div v-if="regionData && !showAnimalDetail" class="region-wildlife-info">
+        <div class="region-header">
+          <h4>{{ regionData.location.region || 'Wildlife Area' }}</h4>
+          <p class="location-details">{{ regionData.location.state }} ({{ regionData.location.lat.toFixed(4) }}, {{ regionData.location.lon.toFixed(4) }})</p>
+          <div class="area-stats">
+            <div class="stat-badge">
+              <span class="stat-number">{{ regionData.uniqueSpecies }}</span>
+              <span class="stat-label">Unique Species</span>
+            </div>
+            <div class="stat-badge">
+              <span class="stat-number">{{ regionData.totalSpecies }}</span>
+              <span class="stat-label">Total Records</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="animals-list">
+          <h5>Species in this Area</h5>
+          <div class="animal-grid">
+            <div 
+              v-for="(animal, index) in regionData.animals" 
+              :key="index"
+              class="animal-card"
+              :class="getStatusClass(animal.conservation_status)"
+              @click="selectAnimal(animal)"
+            >
+              <div class="animal-card-image" v-if="animal.image_url">
+                <img :src="animal.image_url" :alt="animal.common_name" />
+              </div>
+              <div class="animal-card-image no-image-card" v-else>
+                <div class="no-image-text">No Image Data</div>
+              </div>
+              <div class="animal-card-content">
+                <h6>{{ animal.common_name }}</h6>
+                <p class="scientific">{{ animal.scientific_name }}</p>
+                <div class="animal-badges">
+                  <span class="type-badge">{{ animal.animal_type }}</span>
+                  <span class="status-badge" :class="getStatusClass(animal.conservation_status)">
+                    {{ animal.conservation_status }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Individual Animal Detail View -->
+      <div v-else-if="selectedAnimal && showAnimalDetail" class="animal-detail-view">
+        <div class="detail-header">
+          <button @click="backToRegionView" class="back-btn">Back to Region</button>
+          <button @click="toggleDrawer" class="close-btn">✕</button>
+        </div>
+
+        <div class="animal-detail-content">
+          <div class="animal-detail-image-container">
             <img 
               v-if="selectedAnimal.image_url" 
               :src="selectedAnimal.image_url" 
               :alt="selectedAnimal.common_name"
-              class="animal-image"
+              class="animal-detail-image"
               @error="handleImageError"
             />
-            <div 
-              v-else 
-              class="no-image-placeholder"
-            >
-              <span class="animal-emoji">🐾</span>
-              <p>No Image Available</p>
-            </div>
-            <div 
-              class="image-error-placeholder"
-              style="display: none;"
-            >
-              <span class="animal-emoji">📷</span>
-              <p>Image Failed to Load</p>
+            <div class="detail-no-image-placeholder" v-else>
+              <p>No Image Data Available</p>
             </div>
           </div>
-          <h4>{{ selectedAnimal.common_name }}</h4>
-          <p class="scientific-name">{{ selectedAnimal.scientific_name }}</p>
-          <div class="conservation-status" :class="getStatusClass(selectedAnimal.conservation_status)">
-            {{ selectedAnimal.conservation_status || 'Unknown' }}
-          </div>
-        </div>
-        <div class="animal-details">
-          <div class="detail-item">
-            <span class="detail-label">Location:</span>
-            <span class="detail-value">{{ selectedAnimal.region || selectedAnimal.ibra_region || 'Not specified' }}, {{ selectedAnimal.state || selectedAnimal.state_territory }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Animal Type:</span>
-            <span class="detail-value">{{ selectedAnimal.animal_type || 'Unknown' }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Locations Found:</span>
-            <span class="detail-value">{{ selectedAnimal.location_count || 'Not recorded' }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Total Observations:</span>
-            <span class="detail-value">{{ selectedAnimal.total_observations || 'Not recorded' }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">IBRA Region:</span>
-            <span class="detail-value">{{ selectedAnimal.region || selectedAnimal.ibra_region || 'Not specified' }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">State/Territory:</span>
-            <span class="detail-value">{{ selectedAnimal.state || selectedAnimal.state_territory || 'Unknown' }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Coordinates:</span>
-            <span class="detail-value">
-              {{ selectedAnimal.coordinates ? 
-                selectedAnimal.coordinates[1].toFixed(4) + ', ' + selectedAnimal.coordinates[0].toFixed(4) : 
-                (selectedAnimal.lat && selectedAnimal.lon ? 
-                  parseFloat(selectedAnimal.lat).toFixed(4) + ', ' + parseFloat(selectedAnimal.lon).toFixed(4) : 
-                  'Not available')
-              }}
-            </span>
+          
+          <div class="animal-detail-info">
+            <h2 class="animal-detail-name">{{ selectedAnimal.common_name }}</h2>
+            <p class="scientific-name">{{ selectedAnimal.scientific_name }}</p>
+            
+            <div class="detail-badges">
+              <span 
+                v-if="selectedAnimal.conservation_status" 
+                :class="['conservation-status', getStatusClass(selectedAnimal.conservation_status)]"
+              >
+                {{ selectedAnimal.conservation_status }}
+              </span>
+            </div>
+
+            <div class="animal-details">
+              <div class="detail-item">
+                <span class="detail-label">Scientific Name:</span>
+                <span class="detail-value">{{ selectedAnimal.scientific_name }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Animal Type:</span>
+                <span class="detail-value">{{ selectedAnimal.animal_type }}</span>
+              </div>
+              <div class="detail-item" v-if="selectedAnimal.conservation_status">
+                <span class="detail-label">Conservation Status:</span>
+                <span class="detail-value">{{ selectedAnimal.conservation_status }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Location:</span>
+                <span class="detail-value">{{ formatLocation(selectedAnimal) }}</span>
+              </div>
+              <div class="detail-item" v-if="selectedAnimal.count">
+                <span class="detail-label">Observations:</span>
+                <span class="detail-value">{{ selectedAnimal.count }} recorded</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- Default placeholder -->
       <div v-else class="animal-placeholder">
         <div class="placeholder-icon">🐾</div>
         <p>Click on a wildlife ping to explore animal data!</p>
@@ -99,20 +139,24 @@
 export default {
   name: 'RightDrawer',
   props: {
-    selectedAnimal: {
+    regionData: {
       type: Object,
       default: null
     }
   },
   data() {
     return {
-      isOpen: false
+      isOpen: false,
+      selectedAnimal: null,
+      showAnimalDetail: false
     }
   },
   watch: {
-    selectedAnimal(newAnimal) {
-      if (newAnimal) {
+    regionData(newRegionData) {
+      if (newRegionData) {
         this.isOpen = true
+        this.showAnimalDetail = false
+        this.selectedAnimal = null
       }
     }
   },
@@ -140,6 +184,21 @@ export default {
       if (placeholder) {
         placeholder.style.display = 'flex'
       }
+    },
+    selectAnimal(animal) {
+      this.selectedAnimal = animal
+      this.showAnimalDetail = true
+    },
+    backToRegionView() {
+      this.showAnimalDetail = false
+      this.selectedAnimal = null
+    },
+    formatLocation(animal) {
+      if (!animal) return 'Unknown'
+      const lat = parseFloat(animal.latitude)
+      const lon = parseFloat(animal.longitude)
+      if (isNaN(lat) || isNaN(lon)) return 'Location not available'
+      return `${lat.toFixed(4)}, ${lon.toFixed(4)}`
     }
   }
 }
@@ -171,8 +230,8 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(3px);
   z-index: -1;
 }
 
@@ -254,6 +313,162 @@ export default {
   color: white;
   transform: rotate(90deg) scale(1.1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.region-wildlife-info {
+  padding: 20px;
+}
+
+.region-header h4 {
+  color: #27ae60;
+  margin-bottom: 8px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.location-details {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.area-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-badge {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  flex: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stat-number {
+  display: block;
+  font-size: 24px;
+  font-weight: bold;
+  color: #27ae60;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #7f8c8d;
+  text-transform: uppercase;
+}
+
+.primary-animal-image {
+  width: 100%;
+  height: 120px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.main-animal-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.animals-list h5 {
+  color: #2c3e50;
+  margin-bottom: 16px;
+  font-size: 18px;
+  border-bottom: 2px solid #27ae60;
+  padding-bottom: 8px;
+}
+
+.animal-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.animal-card {
+  display: flex;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.animal-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.animal-card-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.animal-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.no-image-card {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border: 2px dashed #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.no-image-text {
+  font-size: 10px;
+  color: #6c757d;
+  text-align: center;
+  font-weight: bold;
+}
+
+.animal-card-content {
+  flex-grow: 1;
+}
+
+.animal-card h6 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.scientific {
+  font-style: italic;
+  font-size: 12px;
+  color: #7f8c8d;
+  margin: 0 0 8px 0;
+}
+
+.animal-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.type-badge, .status-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.type-badge {
+  background: #ecf0f1;
+  color: #2c3e50;
 }
 
 .animal-info {
@@ -462,6 +677,103 @@ export default {
 .fun-facts li:hover {
   transform: translateX(5px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Animal Detail View Styles */
+.animal-detail-view {
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: transparent;
+  border-radius: 12px;
+}
+
+.back-btn {
+  background: white;
+  border: 2px solid #27ae60;
+  color: #27ae60;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #27ae60;
+  color: white;
+  transform: translateX(-2px);
+}
+
+.animal-detail-content {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.animal-detail-image-container {
+  width: 100%;
+  height: 250px;
+  margin-bottom: 24px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.animal-detail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-no-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border: 2px dashed #dee2e6;
+}
+
+.detail-no-image-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.detail-no-image-placeholder p {
+  color: #6c757d;
+  font-size: 16px;
+  margin: 0;
+  font-weight: bold;
+}
+
+.animal-detail-info {
+  text-align: center;
+}
+
+.animal-detail-name {
+  font-size: 28px;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+  font-weight: bold;
+}
+
+.detail-badges {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
 }
 
 .drawer-overlay {

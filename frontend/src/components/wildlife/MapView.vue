@@ -121,7 +121,7 @@ export default {
       const speciesMap = new Map()
       
       observations.forEach(obs => {
-        const speciesKey = obs.scientific_name
+        const speciesKey = `${obs.scientific_name}|${obs.animal_type}|${obs.conservation_status}`
         
         if (speciesMap.has(speciesKey)) {
           const existing = speciesMap.get(speciesKey)
@@ -129,15 +129,16 @@ export default {
           existing.total_observations += obs.occurrence_count || 1
           
           if (!existing.locations.some(loc => 
-            Math.abs(parseFloat(loc.lat) - parseFloat(obs.lat)) < 0.01 && 
-            Math.abs(parseFloat(loc.lon) - parseFloat(obs.lon)) < 0.01
+            Math.abs(parseFloat(loc.lat) - parseFloat(obs.lat)) < 0.005 && 
+            Math.abs(parseFloat(loc.lon) - parseFloat(obs.lon)) < 0.005
           )) {
             existing.locations.push({
               lat: obs.lat,
               lon: obs.lon,
               state_territory: obs.state_territory,
               ibra_region: obs.ibra_region,
-              conservation_status: obs.conservation_status
+              conservation_status: obs.conservation_status,
+              animal_type: obs.animal_type
             })
           }
         } else {
@@ -154,7 +155,8 @@ export default {
               lon: obs.lon,
               state_territory: obs.state_territory,
               ibra_region: obs.ibra_region,
-              conservation_status: obs.conservation_status
+              conservation_status: obs.conservation_status,
+              animal_type: obs.animal_type
             }]
           })
         }
@@ -164,7 +166,7 @@ export default {
         species.locations.map(location => ({
           scientific_name: species.scientific_name,
           common_name: species.common_name,
-          animal_type: species.animal_type,
+          animal_type: location.animal_type,
           conservation_status: location.conservation_status,
           image_url: species.image_url,
           lat: location.lat,
@@ -197,28 +199,40 @@ export default {
 
         const geojson = {
           type: 'FeatureCollection',
-          features: this.observations.map(obs => ({
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [parseFloat(obs.lon), parseFloat(obs.lat)]
-            },
-            properties: {
-              common_name: obs.common_name,
-              scientific_name: obs.scientific_name,
-              conservation_status: obs.conservation_status,
-              state: obs.state_territory,
-              state_territory: obs.state_territory,
-              region: obs.ibra_region,
-              ibra_region: obs.ibra_region,
-              location_count: obs.location_count,
-              total_observations: obs.total_observations,
-              animal_type: obs.animal_type,
-              image_url: obs.image_url,
-              lat: obs.lat,
-              lon: obs.lon
+          features: this.observations.map((obs, index) => {
+            const baseCoords = [parseFloat(obs.lon), parseFloat(obs.lat)]
+            const offset = 0.002
+            const randomOffset = [
+              (Math.random() - 0.5) * offset,
+              (Math.random() - 0.5) * offset
+            ]
+            
+            return {
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [
+                  baseCoords[0] + randomOffset[0],
+                  baseCoords[1] + randomOffset[1]
+                ]
+              },
+              properties: {
+                common_name: obs.common_name,
+                scientific_name: obs.scientific_name,
+                conservation_status: obs.conservation_status,
+                state: obs.state_territory,
+                state_territory: obs.state_territory,
+                region: obs.ibra_region,
+                ibra_region: obs.ibra_region,
+                location_count: obs.location_count,
+                total_observations: obs.total_observations,
+                animal_type: obs.animal_type,
+                image_url: obs.image_url,
+                lat: obs.lat,
+                lon: obs.lon
+              }
             }
-          }))
+          })
         }
 
         this.map.addSource('observations', {
@@ -286,27 +300,48 @@ export default {
       this.map.off('mouseleave', 'animal-points')
       
       this.map.on('click', 'animal-points', (e) => {
-        const properties = e.features[0].properties
-        const coordinates = e.features[0].geometry.coordinates
+        const clickedProperties = e.features[0].properties
+        const clickedCoordinates = e.features[0].geometry.coordinates
+        const searchRadius = 0.01
         
-        const animalInfo = {
-          common_name: properties.common_name,
-          scientific_name: properties.scientific_name,
-          conservation_status: properties.conservation_status,
-          state: properties.state,
-          state_territory: properties.state,
-          region: properties.region,
-          ibra_region: properties.region,
-          location_count: properties.location_count,
-          total_observations: properties.total_observations,
-          animal_type: properties.animal_type,
-          image_url: properties.image_url,
-          coordinates: coordinates,
-          lat: coordinates[1],
-          lon: coordinates[0]
+        const nearbyAnimals = this.observations.filter(obs => {
+          const distance = Math.sqrt(
+            Math.pow(parseFloat(obs.lat) - clickedCoordinates[1], 2) + 
+            Math.pow(parseFloat(obs.lon) - clickedCoordinates[0], 2)
+          )
+          return distance <= searchRadius
+        })
+        
+        const regionInfo = {
+          clickedAnimal: {
+            common_name: clickedProperties.common_name,
+            scientific_name: clickedProperties.scientific_name,
+            conservation_status: clickedProperties.conservation_status,
+            animal_type: clickedProperties.animal_type,
+            image_url: clickedProperties.image_url
+          },
+          location: {
+            lat: clickedCoordinates[1],
+            lon: clickedCoordinates[0],
+            region: clickedProperties.region,
+            state: clickedProperties.state
+          },
+          animals: nearbyAnimals.map(animal => ({
+            common_name: animal.common_name,
+            scientific_name: animal.scientific_name,
+            conservation_status: animal.conservation_status,
+            animal_type: animal.animal_type,
+            image_url: animal.image_url,
+            total_observations: animal.total_observations,
+            latitude: animal.lat,
+            longitude: animal.lon,
+            count: animal.total_observations
+          })),
+          totalSpecies: nearbyAnimals.length,
+          uniqueSpecies: new Set(nearbyAnimals.map(a => a.scientific_name)).size
         }
         
-        this.$emit('animalSelected', animalInfo)
+        this.$emit('regionSelected', regionInfo)
       })
 
       this.map.on('mouseenter', 'animal-points', () => {

@@ -12,11 +12,6 @@ const routes = [
     name: 'LearnWildlife',
     component: () => import('../pages/LearnWildlife.vue')
   },
-  {
-    path: '/find-zoo',
-    name: 'FindZoo',
-    component: () => import('../pages/FindZoo.vue')
-  },
   ...seasonalRoutes
 ]
 

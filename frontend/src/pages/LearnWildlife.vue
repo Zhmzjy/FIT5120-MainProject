@@ -52,7 +52,7 @@ export default {
       this.$router.push('/')
     },
     showSeasonalWildlife() {
-      console.log('Showing seasonal wildlife')
+      this.$router.push('/seasonal')
     },
     toggleMobileSidebar() {
       this.mobileMenuOpen = !this.mobileMenuOpen

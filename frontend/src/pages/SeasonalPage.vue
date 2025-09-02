@@ -13,7 +13,6 @@
           </div>
           <div class="nav-right">
             <button class="nav-btn" @click="navigateToHome">Home</button>
-            <button class="nav-btn" @click="navigateToMap">Find Zoo</button>
             <button class="nav-btn" @click="navigateToWildlife">Learn Wildlife</button>
           </div>
         </div>
@@ -325,10 +324,6 @@ export default {
       this.$router.push('/')
     },
     
-    navigateToMap() {
-      this.$router.push('/find-zoo')
-    },
-    
     navigateToWildlife() {
       this.$router.push('/learn-wildlife')
     }
@@ -399,12 +394,28 @@ export default {
 }
 
 .nav-title {
-  color: white;
-  font-size: 1.5rem;
-  font-weight: bold;
   margin: 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  font-family: var(--font-cartoon);
+  color: var(--text-white);
+  font-size: var(--font-size-xl);
+  font-family: var(--font-family-heading);
+  font-weight: bold;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8), 1px 1px 2px rgba(0, 0, 0, 0.9);
+  animation: logoFloat 2s ease-in-out infinite;
+  background: transparent;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-lg);
+  transition: all var(--transition-normal);
+}
+
+.nav-title:hover {
+  background: transparent;
+  transform: scale(1.02);
+  text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.9), 2px 2px 4px rgba(0, 0, 0, 1);
+}
+
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
 }
 
 .nav-right {

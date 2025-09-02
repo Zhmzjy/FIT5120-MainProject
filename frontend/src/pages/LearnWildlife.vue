@@ -30,12 +30,12 @@
       <main class="center-content">
         <MapView 
           :filters="activeFilters"
-          @regionSelected="handleRegionSelection"
+          @animalSelected="handleAnimalSelection"
         />
       </main>
 
       <RightDrawer 
-        :selectedRegion="selectedRegion"
+        :selectedAnimal="selectedAnimal"
         @closeDrawer="handleCloseDrawer"
       />
     </div>
@@ -66,7 +66,7 @@ export default {
         conservation: '',
         region: ''
       },
-      selectedRegion: null
+      selectedAnimal: null
     }
   },
   methods: {
@@ -105,16 +105,16 @@ export default {
         conservation: '',
         region: ''
       }
-      this.selectedRegion = null
+      this.selectedAnimal = null
     },
     handleApplyFilters(filters) {
       this.activeFilters = { ...filters }
     },
-    handleRegionSelection(region) {
-      this.selectedRegion = region
+    handleAnimalSelection(animal) {
+      this.selectedAnimal = animal
     },
     handleCloseDrawer() {
-      this.selectedRegion = null
+      this.selectedAnimal = null
     }
   }
 }

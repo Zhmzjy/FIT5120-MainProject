@@ -19,10 +19,26 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 
 export default {
   name: 'MapView',
+  props: {
+    filters: {
+      type: Object,
+      default: () => ({})
+    }
+  },
+  emits: ['animalSelected'],
   data() {
     return {
       map: null,
-      errorMessage: null
+      errorMessage: null,
+      observations: []
+    }
+  },
+  watch: {
+    filters: {
+      handler() {
+        this.loadMapData()
+      },
+      deep: true
     }
   },
   mounted() {
@@ -34,7 +50,7 @@ export default {
     }
   },
   methods: {
-    initializeMap() {
+    async initializeMap() {
       const token = import.meta.env.VITE_MAPBOX_TOKEN
 
       if (!token || token === 'your_mapbox_access_token_here') {
@@ -55,6 +71,10 @@ export default {
 
         this.map.addControl(new mapboxgl.NavigationControl(), 'top-right')
 
+        this.map.on('load', () => {
+          this.loadMapData()
+        })
+
         this.map.on('error', (error) => {
           console.error('Mapbox error:', error)
           this.errorMessage = 'Failed to load the map. Please check your internet connection and Mapbox token.'
@@ -64,6 +84,238 @@ export default {
         console.error('Map initialization error:', error)
         this.errorMessage = 'Failed to initialize the map. Please check your Mapbox configuration.'
       }
+    },
+
+    async loadMapData() {
+      if (!this.map || !this.map.isStyleLoaded()) return
+
+      try {
+        await this.loadObservations()
+      } catch (error) {
+        console.error('Failed to load map data:', error)
+      }
+    },
+
+    async loadObservations() {
+      try {
+        const params = new URLSearchParams()
+        if (this.filters.state) params.append('state', this.filters.state)
+        if (this.filters.animalType) params.append('animal_type', this.filters.animalType)
+        if (this.filters.conservation) params.append('conservation_status', this.filters.conservation)
+        if (this.filters.region) params.append('region', this.filters.region)
+        if (this.filters.search) params.append('search', this.filters.search)
+        params.append('limit', '200000')
+
+        const response = await fetch(`http://localhost:8000/api/map/observations?${params}`)
+        const data = await response.json()
+        
+        const speciesData = this.aggregateBySpecies(data)
+        this.observations = speciesData
+        this.addObservationMarkers()
+      } catch (error) {
+        console.error('Failed to load observations:', error)
+      }
+    },
+
+    aggregateBySpecies(observations) {
+      const speciesMap = new Map()
+      
+      observations.forEach(obs => {
+        const speciesKey = obs.scientific_name
+        
+        if (speciesMap.has(speciesKey)) {
+          const existing = speciesMap.get(speciesKey)
+          existing.location_count += 1
+          existing.total_observations += obs.occurrence_count || 1
+          
+          if (!existing.locations.some(loc => 
+            Math.abs(parseFloat(loc.lat) - parseFloat(obs.lat)) < 0.01 && 
+            Math.abs(parseFloat(loc.lon) - parseFloat(obs.lon)) < 0.01
+          )) {
+            existing.locations.push({
+              lat: obs.lat,
+              lon: obs.lon,
+              state_territory: obs.state_territory,
+              ibra_region: obs.ibra_region,
+              conservation_status: obs.conservation_status
+            })
+          }
+        } else {
+          speciesMap.set(speciesKey, {
+            scientific_name: obs.scientific_name,
+            common_name: obs.common_name,
+            animal_type: obs.animal_type,
+            conservation_status: obs.conservation_status,
+            image_url: obs.image_url,
+            location_count: 1,
+            total_observations: obs.occurrence_count || 1,
+            locations: [{
+              lat: obs.lat,
+              lon: obs.lon,
+              state_territory: obs.state_territory,
+              ibra_region: obs.ibra_region,
+              conservation_status: obs.conservation_status
+            }]
+          })
+        }
+      })
+      
+      return Array.from(speciesMap.values()).flatMap(species => 
+        species.locations.map(location => ({
+          scientific_name: species.scientific_name,
+          common_name: species.common_name,
+          animal_type: species.animal_type,
+          conservation_status: location.conservation_status,
+          image_url: species.image_url,
+          lat: location.lat,
+          lon: location.lon,
+          state_territory: location.state_territory,
+          ibra_region: location.ibra_region,
+          location_count: species.location_count,
+          total_observations: species.total_observations
+        }))
+      )
+    },
+
+    addObservationMarkers() {
+      try {
+        const layersToRemove = ['animal-points', 'animal-labels']
+        
+        layersToRemove.forEach(layerId => {
+          if (this.map.getLayer(layerId)) {
+            this.map.removeLayer(layerId)
+          }
+        })
+        
+        if (this.map.getSource('observations')) {
+          this.map.removeSource('observations')
+        }
+
+        if (!this.observations || this.observations.length === 0) {
+          return
+        }
+
+        const geojson = {
+          type: 'FeatureCollection',
+          features: this.observations.map(obs => ({
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [parseFloat(obs.lon), parseFloat(obs.lat)]
+            },
+            properties: {
+              common_name: obs.common_name,
+              scientific_name: obs.scientific_name,
+              conservation_status: obs.conservation_status,
+              state: obs.state_territory,
+              state_territory: obs.state_territory,
+              region: obs.ibra_region,
+              ibra_region: obs.ibra_region,
+              location_count: obs.location_count,
+              total_observations: obs.total_observations,
+              animal_type: obs.animal_type,
+              image_url: obs.image_url,
+              lat: obs.lat,
+              lon: obs.lon
+            }
+          }))
+        }
+
+        this.map.addSource('observations', {
+          type: 'geojson',
+          data: geojson
+        })
+
+        this.map.addLayer({
+          id: 'animal-points',
+          type: 'circle',
+          source: 'observations',
+          paint: {
+            'circle-radius': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              5, 4,
+              10, 8,
+              15, 12
+            ],
+            'circle-color': [
+              'case',
+              ['==', ['get', 'conservation_status'], 'Critically Endangered'], '#ff4444',
+              ['==', ['get', 'conservation_status'], 'Endangered'], '#ff8800',
+              ['==', ['get', 'conservation_status'], 'Vulnerable'], '#ffcc00',
+              '#44aa44'
+            ],
+            'circle-stroke-width': 3,
+            'circle-stroke-color': '#ffffff',
+            'circle-opacity': 0.9
+          }
+        })
+
+        this.map.addLayer({
+          id: 'animal-labels',
+          type: 'symbol',
+          source: 'observations',
+          layout: {
+            'text-field': '🐾',
+            'text-size': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              5, 10,
+              10, 14,
+              15, 18
+            ],
+            'text-allow-overlap': true,
+            'text-ignore-placement': true
+          },
+          paint: {
+            'text-opacity': 0.8
+          }
+        })
+
+        this.setupClickHandlers()
+      } catch (error) {
+        console.error('Error adding observation markers:', error)
+      }
+    },
+
+    setupClickHandlers() {
+      this.map.off('click', 'animal-points')
+      this.map.off('mouseenter', 'animal-points')
+      this.map.off('mouseleave', 'animal-points')
+      
+      this.map.on('click', 'animal-points', (e) => {
+        const properties = e.features[0].properties
+        const coordinates = e.features[0].geometry.coordinates
+        
+        const animalInfo = {
+          common_name: properties.common_name,
+          scientific_name: properties.scientific_name,
+          conservation_status: properties.conservation_status,
+          state: properties.state,
+          state_territory: properties.state,
+          region: properties.region,
+          ibra_region: properties.region,
+          location_count: properties.location_count,
+          total_observations: properties.total_observations,
+          animal_type: properties.animal_type,
+          image_url: properties.image_url,
+          coordinates: coordinates,
+          lat: coordinates[1],
+          lon: coordinates[0]
+        }
+        
+        this.$emit('animalSelected', animalInfo)
+      })
+
+      this.map.on('mouseenter', 'animal-points', () => {
+        this.map.getCanvas().style.cursor = 'pointer'
+      })
+
+      this.map.on('mouseleave', 'animal-points', () => {
+        this.map.getCanvas().style.cursor = ''
+      })
     }
   }
 }
@@ -97,58 +349,34 @@ export default {
   margin: auto;
 }
 
-/* Removed glowing border for seamless appearance
-.map-container::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, var(--accent-pink), var(--accent-yellow), var(--accent-blue), var(--primary-green));
-  border-radius: var(--border-radius-xl);
-  z-index: -1;
-  animation: borderGlow 3s ease infinite;
-}
-
-@keyframes borderGlow {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; }
-}
-*/
-
 .error-container {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border: 2px dashed #dee2e6;
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .error-content {
   text-align: center;
-  padding: 40px 20px;
-  max-width: 400px;
+  padding: var(--spacing-xl);
+  background: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .error-content h3 {
-  margin: 0 0 12px 0;
-  color: #6c757d;
-  font-size: 18px;
+  margin: 0 0 var(--spacing-md) 0;
+  color: var(--color-error);
 }
 
 .error-content p {
-  margin: 0 0 8px 0;
-  color: #6c757d;
-  font-size: 14px;
-  line-height: 1.5;
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--color-text-secondary);
 }
 
 .error-content small {
-  color: #adb5bd;
-  font-size: 12px;
+  color: var(--color-text-muted);
 }
 </style>

@@ -32,11 +32,7 @@
           <option value="">All Animals</option>
           <option value="Aves">Birds</option>
           <option value="Mammalia">Mammals</option>
-          <option value="Insecta">Insects</option>
-          <option value="Reptilia">Reptiles</option>
-          <option value="Amphibia">Amphibians</option>
-          <option value="Plantae">Plants</option>
-          <option value="Fungi">Fungi</option>
+          <option value="Animalia">Other Animals</option>
         </select>
       </div>
       <div class="filter-group">
@@ -83,18 +79,32 @@ export default {
   methods: {
     onSearchInput() {
       this.$emit('search', this.searchQuery)
+      this.emitCurrentFilters()
     },
     onStateChange() {
       this.$emit('stateFilter', this.selectedState)
+      this.emitCurrentFilters()
     },
     onAnimalTypeChange() {
       this.$emit('animalTypeFilter', this.selectedAnimalType)
+      this.emitCurrentFilters()
     },
     onConservationChange() {
       this.$emit('conservationFilter', this.selectedConservationStatus)
+      this.emitCurrentFilters()
     },
     onRegionChange() {
       this.$emit('regionFilter', this.selectedRegion)
+      this.emitCurrentFilters()
+    },
+    emitCurrentFilters() {
+      this.$emit('applyFilters', {
+        search: this.searchQuery,
+        state: this.selectedState,
+        animalType: this.selectedAnimalType,
+        conservation: this.selectedConservationStatus,
+        region: this.selectedRegion
+      })
     },
     resetFilters() {
       this.searchQuery = ''
@@ -103,6 +113,7 @@ export default {
       this.selectedConservationStatus = ''
       this.selectedRegion = ''
       this.$emit('resetFilters')
+      this.emitCurrentFilters()
     },
     applyFilters() {
       this.$emit('applyFilters', {

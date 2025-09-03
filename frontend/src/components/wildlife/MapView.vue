@@ -110,9 +110,11 @@ export default {
         if (this.filters.search) params.search = this.filters.search
 
         const response = await ApiService.getObservations(params)
+        console.log("backend back:", response.total, response.observations.length)  
         const observations = response.observations || []
 
         const speciesData = this.aggregateBySpecies(observations)
+        console.log("before:", observations.length, "after:", speciesData.length)
         this.observations = speciesData
         this.addObservationMarkers()
         console.log("✅ Loaded observations:", this.observations.length)

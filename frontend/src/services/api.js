@@ -23,6 +23,7 @@ class ApiService {
     }
   }
 
+
   async getSeasonKPI() {
     return this.request('/season/kpi')
   }
@@ -32,16 +33,17 @@ class ApiService {
   }
 
   async getTopSpecies(season) {
-    return this.request(`/top/top?season=${season}`)
+    return this.request(`/season/top?season=${season}`)
   }
 
   async getSpeciesTrend(taxonId) {
-    return this.request(`/trends?taxon_id=${taxonId}`)
+    return this.request(`/season/trends?taxon_id=${taxonId}`)
   }
 
   async getSeasonalTrend(season) {
-    return this.request(`/trends?season=${season}`)
+    return this.request(`/season/trends?season=${season}`)
   }
+
 
   async getMapStats() {
     return this.request('/map/stats')
@@ -54,6 +56,10 @@ class ApiService {
 
   async getRegions() {
     return this.request('/map/regions')
+  }
+
+  async getRegionDetails(regionName) {
+    return this.request(`/map/regions/${encodeURIComponent(regionName)}`)
   }
 
   async getStates() {

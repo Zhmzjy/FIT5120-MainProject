@@ -32,7 +32,7 @@ class ApiService {
   }
 
   async getTopSpecies(season) {
-    return this.request(`/season/top?season=${season}`)
+    return this.request(`/top/top?season=${season}`)
   }
 
   async getSpeciesTrend(taxonId) {

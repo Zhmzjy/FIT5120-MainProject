@@ -19,7 +19,7 @@ def health():
     return jsonify({'status': 'healthy'})
 
 app.register_blueprint(season_bp, url_prefix='/api/season')
-app.register_blueprint(top_bp, url_prefix='/api/season')
+app.register_blueprint(top_bp, url_prefix='/api/top')
 app.register_blueprint(trends_bp, url_prefix='/api/trends')
 app.register_blueprint(species_bp, url_prefix='/api/species')
 app.register_blueprint(map_bp, url_prefix='/api/map')

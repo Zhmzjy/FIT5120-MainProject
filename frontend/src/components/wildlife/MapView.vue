@@ -109,7 +109,8 @@ export default {
         if (this.filters.region) params.region = this.filters.region
         if (this.filters.search) params.search = this.filters.search
 
-        const data = await ApiService.getObservations(params)
+        const response = await ApiService.getObservations(params)
+        const observations = response.observations || []
 
         const speciesData = this.aggregateBySpecies(data)
         this.observations = speciesData

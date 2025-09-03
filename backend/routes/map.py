@@ -25,7 +25,8 @@ def get_stats():
 
 @map_bp.route('/observations', methods=['GET'])
 def get_observations():
-    limit = request.args.get('limit', 100, type=int)
+    limit = request.args.get('limit', 500, type=int)
+    limit = min(limit, 2000)
     state = request.args.get('state')
     region = request.args.get('region')
     conservation_status = request.args.get('conservation_status')
@@ -48,30 +49,23 @@ def get_observations():
         params['conservation_status'] = conservation_status
     
     if animal_type:
-        where_conditions.append("COALESCE(st.iconic_taxon_name, wo.kingdom) = :animal_type")
+        where_conditions.append("wo.kingdom = :animal_type")
         params['animal_type'] = animal_type
     
     if search:
-        where_conditions.append("(LOWER(wo.common_name) LIKE LOWER(:search) OR LOWER(wo.scientific_name) LIKE LOWER(:search))")
+        where_conditions.append("(wo.common_name ILIKE :search OR wo.scientific_name ILIKE :search)")
         params['search'] = f'%{search}%'
     
     where_clause = " AND ".join(where_conditions)
     
     query = f"""
-    SELECT DISTINCT ON (wo.scientific_name, ROUND(CAST(wo.lat AS DECIMAL), 3), ROUND(CAST(wo.lon AS DECIMAL), 3))
-           wo.scientific_name, wo.common_name,
-           CAST(wo.lat AS DECIMAL(10,8)) as lat,
-           CAST(wo.lon AS DECIMAL(11,8)) as lon,
+    SELECT wo.scientific_name, wo.common_name, 
+           wo.lat, wo.lon, 
            wo.state_territory, wo.ibra_region, wo.conservation_status,
-           wo.occurrence_count,
-           COALESCE(st.iconic_taxon_name, wo.kingdom) as animal_type,
-           COALESCE(sm.medium_url, s.image_url) as image_url
+           wo.occurrence_count, wo.kingdom as animal_type
     FROM wildlife_observations wo
-    LEFT JOIN species_taxonomy st ON wo.scientific_name = st.scientific_name
-    LEFT JOIN species s ON wo.scientific_name = s.scientific_name
-    LEFT JOIN species_media sm ON st.taxon_id = sm.taxon_id
     WHERE {where_clause}
-    ORDER BY wo.scientific_name, ROUND(CAST(wo.lat AS DECIMAL), 3), ROUND(CAST(wo.lon AS DECIMAL), 3), wo.occurrence_count DESC
+    ORDER BY wo.occurrence_count DESC
     LIMIT :limit
     """
     

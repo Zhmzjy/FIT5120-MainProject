@@ -1,6 +1,8 @@
 import os
+import time
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.pool import QueuePool
 
 class DatabaseHelper:
     def __init__(self):
@@ -10,22 +12,41 @@ class DatabaseHelper:
     def connect(self):
         try:
             database_url = os.getenv('DATABASE_URL', 'postgresql://main_db_jm1x_user:JOVdTFv3CKeqJ6C4EKiL31QW9bhCoBhb@dpg-d2rhjmbe5dus73db2uag-a.oregon-postgres.render.com/main_db_jm1x')
-            self.engine = create_engine(database_url)
+
+            self.engine = create_engine(
+                database_url,
+                poolclass=QueuePool,
+                pool_size=5,
+                max_overflow=10,
+                pool_pre_ping=True,
+                pool_recycle=300,
+                connect_args={
+                    "sslmode": "require",
+                    "connect_timeout": 10,
+                    "application_name": "wildlife_academy"
+                }
+            )
         except Exception:
             self.engine = None
     
-    def execute_query(self, query, params=None):
+    def execute_query(self, query, params=None, retries=3):
         if not self.engine:
             return None
         
-        try:
-            with self.engine.connect() as connection:
-                result = connection.execute(text(query), params or {})
-                return [dict(row._mapping) for row in result]
-        except SQLAlchemyError as e:
-            raise e
-        except Exception as e:
-            raise e
+        for attempt in range(retries):
+            try:
+                with self.engine.connect() as connection:
+                    result = connection.execute(text(query), params or {})
+                    return [dict(row._mapping) for row in result]
+            except SQLAlchemyError as e:
+                if attempt == retries - 1:
+                    raise e
+                time.sleep(0.5 * (attempt + 1))
+                self.connect()
+            except Exception as e:
+                if attempt == retries - 1:
+                    raise e
+                time.sleep(0.5 * (attempt + 1))
 
     def test_connection(self):
         if not self.engine:

@@ -32,7 +32,7 @@ def get_stats():
 @map_bp.route('/observations', methods=['GET'])
 def get_observations():
     limit = request.args.get('limit', 500, type=int)
-    limit = min(limit, 2000)
+    limit = min(limit, 50000)
     state = request.args.get('state')
     region = request.args.get('region')
     conservation_status = request.args.get('conservation_status')
@@ -78,10 +78,15 @@ def get_observations():
     try:
         data = db.execute_query(query, params)
         if data is None:
-            return jsonify({'error': 'Database query failed'}), 500
-        return jsonify(data)
+            return jsonify({'error': 'Database connection failed'}), 500
+
+        return jsonify({
+            'observations': data,
+            'total': len(data),
+            'limit': limit
+        })
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': f'Query failed: {str(e)}'}), 500
 
 @map_bp.route('/regions', methods=['GET'])
 def get_regions():

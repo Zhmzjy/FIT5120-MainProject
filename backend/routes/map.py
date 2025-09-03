@@ -32,7 +32,7 @@ def get_stats():
 @map_bp.route('/observations', methods=['GET'])
 def get_observations():
     limit = request.args.get('limit', 500, type=int)
-    limit = min(limit, 1500)
+    limit = min(limit, 5000)
     state = request.args.get('state')
     region = request.args.get('region')
     conservation_status = request.args.get('conservation_status')

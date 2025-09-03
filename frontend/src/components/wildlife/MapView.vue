@@ -113,11 +113,8 @@ export default {
         console.log("backend back:", response.total, response.observations.length)  
         const observations = response.observations || []
 
-        const speciesData = this.aggregateBySpecies(observations)
-        console.log("before:", observations.length, "after:", speciesData.length)
-        this.observations = speciesData
+        this.observations = observations
         this.addObservationMarkers()
-        console.log("✅ Loaded observations:", this.observations.length)
       } catch (error) {
         console.error('Failed to load observations:', error)
       }

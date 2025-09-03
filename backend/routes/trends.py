@@ -1,10 +1,8 @@
 from flask import Blueprint, jsonify, request
 from lib.db import DatabaseHelper
-from lib.csv_fallback import CSVFallback
 
 trends_bp = Blueprint('trends', __name__)
 db = DatabaseHelper()
-csv_fallback = CSVFallback()
 
 @trends_bp.route('/', methods=['GET'])
 def get_trends():
@@ -24,12 +22,10 @@ def get_trends():
             return jsonify({'error': 'taxon_id must be a valid integer'}), 400
         
         data = db.get_species_trend(taxon_id_int)
+
         if not data:
-            data = csv_fallback.get_species_trend(taxon_id)
-        
-        if not data:
-            return jsonify([]), 404
-        
+            return jsonify([])
+
         return jsonify(data)
     
     if season:
@@ -38,10 +34,8 @@ def get_trends():
             return jsonify({'error': 'invalid season parameter'}), 400
         
         data = db.get_seasonal_trend(season)
+
         if not data:
-            data = csv_fallback.get_seasonal_trend(season)
-        
-        if not data:
-            return jsonify([]), 404
-        
+            return jsonify([])
+
         return jsonify(data)

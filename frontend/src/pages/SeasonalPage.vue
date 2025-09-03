@@ -1,10 +1,7 @@
 <template>
-  <div class="seasonal-page">
+  <div class="seasonal-page" :style="pageBgStyle">
     <div class="hero-section">
-      <div class="background-image">
-        <img :src="currentBackgroundImage" :alt="`${selectedSeason} background`" />
-        <div class="overlay"></div>
-      </div>
+      <div class="hero-overlay"></div>
 
       <div class="top-nav-bar">
         <div class="nav-content">
@@ -30,17 +27,8 @@
     </div>
 
     <div class="wildlife-analysis-section">
-      <div class="side-background left-bg">
-        <img :src="currentBackgroundImage" :alt="`${selectedSeason} background`" />
-      </div>
-      <div class="side-background right-bg">
-        <img :src="currentBackgroundImage" :alt="`${selectedSeason} background`" />
-      </div>
 
       <div class="analysis-container">
-        <div class="background-image">
-          <img :src="currentBackgroundImage" :alt="`${selectedSeason} background`" />
-        </div>
         <div class="data-analysis-wrapper">
           <div class="analysis-header">
             <h2 class="analysis-title" :style="titleStyle">{{ selectedSeason }} Wildlife Analysis</h2>
@@ -139,35 +127,60 @@
           <div class="trend-comparison-section">
             <h3 class="section-title">Seasonal Trends & Comparison</h3>
             <div class="trend-container">
-              <div class="monthly-trend">
-                <h4 class="trend-title">Monthly Species Activity</h4>
-                <div class="trend-chart">
-                  <div class="trend-line-chart">
-                    <svg viewBox="0 0 400 200" class="chart-svg">
+              <div class="monthly-trends-chart">
+                <h4 class="trend-title">Monthly Species Activity Trends</h4>
+                <div v-if="getTopTrendAnimals().length > 0" class="species-trends-chart">
+                  <svg viewBox="0 0 900 400" class="trends-chart-svg">
+                    <g class="grid-lines">
+                      <line v-for="i in 5" :key="`grid-${i}`" x1="80" :x2="820" :y1="80 + (i - 1) * 60" :y2="80 + (i - 1) * 60" stroke="#e5e7eb" stroke-width="1"/>
+                      <line v-for="i in 12" :key="`month-${i}`" :x1="80 + (i - 1) * 62" :x2="80 + (i - 1) * 62" y1="80" y2="320" stroke="#e5e7eb" stroke-width="1"/>
+                    </g>
+
+                    <g v-for="(animal, animalIndex) in getTopTrendAnimals()" :key="animal.taxon_id">
                       <polyline
-                        points="50,150 100,120 150,100 200,80 250,90 300,110 350,130"
-                        :stroke="getSeasonColor()"
+                        :points="getMonthlyTrendPoints(animal.trends)"
+                        :stroke="getTrendColor(animalIndex)"
                         stroke-width="3"
                         fill="none"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
                       />
-                      <circle cx="50" cy="150" r="4" :fill="getSeasonColor()"/>
-                      <circle cx="100" cy="120" r="4" :fill="getSeasonColor()"/>
-                      <circle cx="150" cy="100" r="4" :fill="getSeasonColor()"/>
-                      <circle cx="200" cy="80" r="4" :fill="getSeasonColor()"/>
-                      <circle cx="250" cy="90" r="4" :fill="getSeasonColor()"/>
-                      <circle cx="300" cy="110" r="4" :fill="getSeasonColor()"/>
-                      <circle cx="350" cy="130" r="4" :fill="getSeasonColor()"/>
-                    </svg>
-                    <div class="chart-labels">
-                      <span>Sep</span>
-                      <span>Oct</span>
-                      <span>Nov</span>
-                      <span>Dec</span>
-                      <span>Jan</span>
-                      <span>Feb</span>
-                      <span>Mar</span>
+
+                      <g v-for="(point, pointIndex) in getMonthlyDataPoints(animal.trends)" :key="`${animal.taxon_id}-${pointIndex}`">
+                        <circle
+                          :cx="point.x"
+                          :cy="point.y"
+                          r="4"
+                          :fill="getTrendColor(animalIndex)"
+                          stroke="white"
+                          stroke-width="2"
+                        />
+                      </g>
+                    </g>
+
+                    <g class="axis-labels">
+                      <text v-for="(month, index) in monthLabels" :key="month" :x="80 + index * 62" y="350" text-anchor="middle" class="month-label" font-size="12" fill="#666">
+                        {{ month }}
+                      </text>
+                    </g>
+
+                    <g class="y-axis-labels">
+                      <text v-for="i in 5" :key="`y-${i}`" x="70" :y="85 + (4 - i) * 60" text-anchor="end" class="count-label" font-size="11" fill="#666">
+                        {{ getYAxisLabel(i - 1) }}
+                      </text>
+                    </g>
+                  </svg>
+
+                  <div class="trends-legend">
+                    <div v-for="(animal, index) in getTopTrendAnimals()" :key="animal.taxon_id" class="legend-item">
+                      <div class="legend-color" :style="{ backgroundColor: getTrendColor(index) }"></div>
+                      <img :src="animal.image_url" :alt="animal.common_name" class="legend-icon">
+                      <span class="legend-name">{{ animal.common_name }}</span>
                     </div>
                   </div>
+                </div>
+                <div v-else class="no-data-message">
+                  <p>Loading trend data...</p>
                 </div>
               </div>
               <div class="season-comparison">
@@ -212,6 +225,7 @@ export default {
     seasonKPI: [],
     seasonActivity: [],
     topSpecies: {},
+    monthlyTrends: [],
     loading: false,
     error: null
   }
@@ -247,6 +261,11 @@ export default {
       return {
         color: colors[this.selectedSeason]
       }
+    },
+    pageBgStyle() {
+      return {
+        backgroundImage: `url('${this.currentBackgroundImage}')`
+      }
     }
   },
   mounted() {
@@ -261,10 +280,11 @@ export default {
           apiService.getSeasonActivity(),
           apiService.getTopSpecies(this.selectedSeason)
         ])
-        
+
         this.seasonKPI = kpiData
         this.seasonActivity = activityData
         this.topSpecies = topSpeciesData
+        await this.loadMonthlyTrends()
       } catch (error) {
         this.error = error.message
         console.error('Failed to load season data:', error)
@@ -272,12 +292,70 @@ export default {
         this.loading = false
       }
     },
-    
+
+    async loadMonthlyTrends() {
+      try {
+        const topAnimals = this.getTopAnimals().slice(0, 5)
+        console.log('Top animals for trends:', topAnimals)
+
+        if (!topAnimals || topAnimals.length === 0) {
+          console.log('No top animals found')
+          this.monthlyTrends = []
+          return
+        }
+
+        const animalTaxonMapping = {
+          'Australian Magpie': 8575,
+          'Koala': 42983,
+          'Laughing Kookaburra': 2413,
+          'Waxlip Orchid': null,
+          'Superb Fairywren': 12065,
+          'Australian Wood Duck': null,
+          'Rainbow Lorikeet': 980095,
+          'Western Honey Bee': 47219,
+          'Australian Water Dragon': null,
+          'Australian Painted Lady': null
+        }
+
+        const animalsWithTaxonId = topAnimals.map(animal => ({
+          ...animal,
+          taxon_id: animalTaxonMapping[animal.common_name] || null
+        })).filter(animal => animal.taxon_id !== null)
+
+        console.log('Animals with taxon_id mapping:', animalsWithTaxonId)
+
+        if (animalsWithTaxonId.length === 0) {
+          console.log('No animals with valid taxon_id found')
+          this.monthlyTrends = []
+          return
+        }
+
+        const trendsPromises = animalsWithTaxonId.map(animal => {
+          console.log(`Loading trends for ${animal.common_name} (taxon_id: ${animal.taxon_id})`)
+          return apiService.getSpeciesTrend(animal.taxon_id)
+        })
+
+        const trendsResults = await Promise.all(trendsPromises)
+        console.log('Trends results:', trendsResults)
+
+        this.monthlyTrends = animalsWithTaxonId.map((animal, index) => ({
+          ...animal,
+          trends: trendsResults[index] || []
+        }))
+
+        console.log('Final monthly trends:', this.monthlyTrends)
+      } catch (error) {
+        console.error('Failed to load monthly trends:', error)
+        this.monthlyTrends = []
+      }
+    },
+
     async selectSeason(season) {
       this.selectedSeason = season
       await this.loadTopSpecies(season)
+      await this.loadMonthlyTrends()
     },
-    
+
     async loadTopSpecies(season) {
       try {
         this.topSpecies = await apiService.getTopSpecies(season)
@@ -285,14 +363,14 @@ export default {
         console.error('Failed to load top species:', error)
       }
     },
-    
+
     scrollDown() {
       window.scrollBy({
         top: window.innerHeight,
         behavior: 'smooth'
       })
     },
-    
+
     getSeasonColor() {
       const colors = {
         Spring: '#22c55e',
@@ -302,23 +380,23 @@ export default {
       }
       return colors[this.selectedSeason]
     },
-    
+
     getSeasonAnimals() {
       return this.animalData[this.selectedSeason] || []
     },
-    
+
     getTopAnimals() {
       return this.topSpecies || []
     },
-    
+
     getCurrentSeasonKPI() {
       return this.seasonKPI.find(kpi => kpi.season === this.selectedSeason) || {}
     },
-    
+
     getCurrentSeasonActivity() {
       return this.seasonActivity.filter(activity => activity.season === this.selectedSeason) || []
     },
-    
+
     getActivityHeight(timeBin) {
       const currentActivity = this.getCurrentSeasonActivity()
       if (!currentActivity.length) return '0%'
@@ -341,12 +419,127 @@ export default {
       return Math.round((activeSpecies / maxSpecies) * 100)
     },
 
+    getTopAnimalsChart() {
+      const animals = this.getTopAnimals()
+      return Array.isArray(animals) ? animals.slice(0, 10) : []
+    },
+
+    getSpeciesBarWidth(count) {
+      const animals = this.getTopAnimalsChart()
+      if (!animals.length) return 0
+      const maxCount = Math.max(...animals.map(a => a.total_count))
+      return maxCount > 0 ? Math.round((count / maxCount) * 100) : 0
+    },
+
+    getLineChartPoints() {
+      const data = this.getTopAnimalsChart()
+      const maxCount = Math.max(...data.map(animal => animal.total_count))
+      const scaleX = 700 / (data.length - 1 || 1)
+      const scaleY = 250 / maxCount
+
+      return data.map((animal, index) => {
+        const x = index * scaleX + 70
+        const y = 250 - animal.total_count * scaleY
+        return `${x},${y}`
+      }).join(' ')
+    },
+
+    getAreaChartPoints() {
+      const data = this.getTopAnimalsChart()
+      const maxCount = Math.max(...data.map(animal => animal.total_count))
+      const scaleX = 700 / (data.length - 1 || 1)
+      const scaleY = 250 / maxCount
+
+      const points = data.map((animal, index) => {
+        const x = index * scaleX + 70
+        const y = 250 - animal.total_count * scaleY
+        return `${x},${y}`
+      })
+
+      return `${points[0]} ${points.join(' ')} ${points[points.length - 1]}`
+    },
+
+    getChartDataPoints() {
+      const data = this.getTopAnimalsChart()
+      const maxCount = Math.max(...data.map(animal => animal.total_count))
+      const scaleX = 700 / (data.length - 1 || 1)
+      const scaleY = 250 / maxCount
+
+      return data.map((animal, index) => {
+        const x = index * scaleX + 70
+        const y = 250 - animal.total_count * scaleY
+        return { x, y, count: animal.total_count }
+      })
+    },
+
     navigateToHome() {
       this.$router.push('/')
     },
-    
+
     navigateToWildlife() {
       this.$router.push('/learn-wildlife')
+    },
+
+    getTopTrendAnimals() {
+      return this.monthlyTrends || []
+    },
+
+    getTrendColor(index) {
+      const colors = ['#22c55e', '#3b82f6', '#f97316', '#e11d48', '#8b5cf6']
+      return colors[index % colors.length]
+    },
+
+    getMonthlyTrendPoints(trends) {
+      if (!trends || !trends.length) return ''
+
+      const months = Array.from({length: 12}, (_, i) => i + 1)
+      const maxCount = this.getMaxTrendCount()
+
+      return months.map((month, index) => {
+        const trendData = trends.find(t => t.month === month)
+        const count = trendData ? trendData.total_count : 0
+        const x = 80 + index * 62
+        const y = 320 - (count / maxCount) * 240
+        return `${x},${y}`
+      }).join(' ')
+    },
+
+    getMonthlyDataPoints(trends, animalIndex) {
+      if (!trends || !trends.length) return []
+
+      const months = Array.from({length: 12}, (_, i) => i + 1)
+      const maxCount = this.getMaxTrendCount()
+
+      return months.map((month, index) => {
+        const trendData = trends.find(t => t.month === month)
+        const count = trendData ? trendData.total_count : 0
+        const x = 80 + index * 62
+        const y = 320 - (count / maxCount) * 240
+        return { x, y, count }
+      })
+    },
+
+    getMaxTrendCount() {
+      let maxCount = 0
+      this.monthlyTrends.forEach(animal => {
+        if (animal.trends) {
+          animal.trends.forEach(trend => {
+            if (trend.total_count > maxCount) {
+              maxCount = trend.total_count
+            }
+          })
+        }
+      })
+      return maxCount || 1
+    },
+
+    getYAxisLabel(index) {
+      const maxCount = this.getMaxTrendCount()
+      return Math.round((maxCount / 4) * index)
+    },
+
+    get monthLabels() {
+      return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     }
   }
 }
@@ -358,6 +551,10 @@ export default {
   min-height: 300vh;
   position: relative;
   font-family: var(--font-cartoon);
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 .hero-section {
@@ -370,31 +567,13 @@ export default {
   overflow: hidden;
 }
 
-.background-image {
+.hero-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
+  background: rgba(0,0,0,0.30);
   z-index: 1;
 }
 
-.background-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(0.7);
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 2;
-}
 
 .top-nav-bar {
   position: absolute;
@@ -496,34 +675,17 @@ export default {
 .wildlife-analysis-section {
   position: relative;
   min-height: 200vh;
-  background: #f8fafc;
   overflow: hidden;
 }
 
-.side-background {
+.wildlife-analysis-section::before {
+  content: "";
   position: absolute;
-  top: 0;
-  width: 200px;
-  height: 100%;
+  inset: 0;
+  background: rgba(0,0,0,0.30);
   z-index: 1;
 }
 
-.left-bg {
-  left: 0;
-  clip-path: polygon(0 0, 100% 0, 80% 100%, 0% 100%);
-}
-
-.right-bg {
-  right: 0;
-  clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
-}
-
-.side-background img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(0.6);
-}
 
 .analysis-container {
   position: relative;
@@ -533,21 +695,6 @@ export default {
   padding: 4rem 2rem;
 }
 
-.background-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-}
-
-.background-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(0.7);
-}
 
 .data-analysis-wrapper {
   background: rgba(255, 255, 255, 0.95);
@@ -889,6 +1036,176 @@ export default {
   font-size: 0.85rem;
   color: #64748b;
   text-align: right;
+}
+
+.top-species-chart {
+  padding: 1rem;
+}
+
+.species-chart-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.species-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.species-bar:hover {
+  background: #f1f5f9;
+  transform: translateX(5px);
+}
+
+.species-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 200px;
+  flex-shrink: 0;
+}
+
+.species-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e2e8f0;
+}
+
+.species-name {
+  font-weight: 500;
+  color: #1e293b;
+  font-size: 0.9rem;
+}
+
+.bar-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+
+.species-bar-fill {
+  height: 20px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  min-width: 20px;
+}
+
+.species-count {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.9rem;
+  min-width: 50px;
+  text-align: right;
+}
+
+.species-line-chart {
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  margin-top: 1rem;
+}
+
+.line-chart-svg {
+  width: 100%;
+  height: 300px;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chart-label {
+  font-family: var(--font-cartoon);
+}
+
+.axis-label {
+  font-family: var(--font-cartoon);
+}
+
+.monthly-trends-chart {
+  padding: 1rem;
+}
+
+.species-trends-chart {
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  margin-top: 1rem;
+}
+
+.trends-chart-svg {
+  width: 100%;
+  height: 400px;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.grid-lines line {
+  opacity: 0.3;
+}
+
+.month-label {
+  font-family: var(--font-cartoon);
+}
+
+.count-label {
+  font-family: var(--font-cartoon);
+}
+
+.trends-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #e5e7eb;
+}
+
+.legend-name {
+  color: #374151;
+  font-weight: 500;
+}
+
+.no-data-message {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  font-style: italic;
 }
 
 .scroll-arrow {

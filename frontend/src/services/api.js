@@ -37,11 +37,11 @@ class ApiService {
 }
 
   async getSpeciesTrend(taxonId) {
-    return this.request(`/season/trends?taxon_id=${taxonId}`)
+    return this.request(`/trends?taxon_id=${taxonId}`)
   }
 
   async getSeasonalTrend(season) {
-    return this.request(`/season/trends?season=${season}`)
+    return this.request(`/trends?season=${season}`)
   }
 
 

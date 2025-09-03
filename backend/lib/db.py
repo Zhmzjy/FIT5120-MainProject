@@ -117,7 +117,7 @@ class DatabaseHelper:
     
     def get_top_species(self, season):
         query = """
-        SELECT s.common_name, s.scientific_name, s.image_url, sts.total_count, sts.rank
+        SELECT sts.taxon_id, s.common_name, s.scientific_name, s.image_url, sts.total_count, sts.rank
         FROM season_top_species sts
         JOIN species s ON sts.taxon_id = s.taxon_id
         WHERE sts.season = :season

@@ -20,6 +20,7 @@
 
   --font-family-primary: 'Comic Sans MS', cursive, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-family-heading: 'Comic Sans MS', cursive, 'Georgia', serif;
+  --font-cartoon: 'Comic Sans MS', cursive, -apple-system, BlinkMacSystemFont, sans-serif;
 
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
@@ -50,4 +51,3 @@
   --transition-slow: 0.5s ease-in-out;
   --transition-bounce: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
-

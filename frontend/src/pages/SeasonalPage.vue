@@ -38,6 +38,9 @@
       </div>
 
       <div class="analysis-container">
+        <div class="background-image">
+          <img :src="currentBackgroundImage" :alt="`${selectedSeason} background`" />
+        </div>
         <div class="data-analysis-wrapper">
           <div class="analysis-header">
             <h2 class="analysis-title" :style="titleStyle">{{ selectedSeason }} Wildlife Analysis</h2>
@@ -61,7 +64,7 @@
             <div class="time-chart-container">
               <div class="time-period">
                 <div class="time-bar">
-                  <div class="bar-fill morning" :style="{ height: '65%', backgroundColor: getSeasonColor() }"></div>
+                  <div class="bar-fill morning" :style="{ height: getActivityHeight('Morning'), backgroundColor: getSeasonColor() }"></div>
                 </div>
                 <div class="time-label">
                   <span class="time-name">Morning</span>
@@ -71,7 +74,7 @@
               </div>
               <div class="time-period">
                 <div class="time-bar">
-                  <div class="bar-fill afternoon" :style="{ height: '85%', backgroundColor: getSeasonColor() }"></div>
+                  <div class="bar-fill afternoon" :style="{ height: getActivityHeight('Afternoon'), backgroundColor: getSeasonColor() }"></div>
                 </div>
                 <div class="time-label">
                   <span class="time-name">Afternoon</span>
@@ -81,7 +84,7 @@
               </div>
               <div class="time-period">
                 <div class="time-bar">
-                  <div class="bar-fill evening" :style="{ height: '70%', backgroundColor: getSeasonColor() }"></div>
+                  <div class="bar-fill evening" :style="{ height: getActivityHeight('Evening'), backgroundColor: getSeasonColor() }"></div>
                 </div>
                 <div class="time-label">
                   <span class="time-name">Evening</span>
@@ -91,7 +94,7 @@
               </div>
               <div class="time-period">
                 <div class="time-bar">
-                  <div class="bar-fill night" :style="{ height: '45%', backgroundColor: getSeasonColor() }"></div>
+                  <div class="bar-fill night" :style="{ height: getActivityHeight('Night'), backgroundColor: getSeasonColor() }"></div>
                 </div>
                 <div class="time-label">
                   <span class="time-name">Night</span>
@@ -316,6 +319,22 @@ export default {
       return this.seasonActivity.filter(activity => activity.season === this.selectedSeason) || []
     },
     
+    getActivityHeight(timeBin) {
+      const currentActivity = this.getCurrentSeasonActivity()
+      if (!currentActivity.length) return '0%'
+
+      const activity = currentActivity.find(a => a.time_bin === timeBin)
+      const count = activity ? activity.count : 0
+
+      if (count === 0) return '0%'
+
+      const maxCount = Math.max(...currentActivity.map(a => a.count))
+      if (maxCount === 0) return '0%'
+
+      const percentage = (count / maxCount) * 100
+      return percentage + '%'
+    },
+
     getSeasonPercentage(activeSpecies) {
       if (!this.seasonKPI.length) return 0
       const maxSpecies = Math.max(...this.seasonKPI.map(kpi => kpi.active_species))
@@ -364,7 +383,7 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: opacity 0.5s ease;
+  filter: brightness(0.7);
 }
 
 .overlay {
@@ -503,7 +522,7 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(0.7);
+  filter: brightness(0.6);
 }
 
 .analysis-container {
@@ -512,6 +531,22 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding: 4rem 2rem;
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.background-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7);
 }
 
 .data-analysis-wrapper {

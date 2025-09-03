@@ -16,6 +16,7 @@
 <script>
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
+import ApiService from '@/services/api.js'
 
 export default {
   name: 'MapView',
@@ -98,17 +99,18 @@ export default {
 
     async loadObservations() {
       try {
-        const params = new URLSearchParams()
-        if (this.filters.state) params.append('state', this.filters.state)
-        if (this.filters.animalType) params.append('animal_type', this.filters.animalType)
-        if (this.filters.conservation) params.append('conservation_status', this.filters.conservation)
-        if (this.filters.region) params.append('region', this.filters.region)
-        if (this.filters.search) params.append('search', this.filters.search)
-        params.append('limit', '200000')
+        const params = {
+          limit: 200000
+        }
 
-        const response = await fetch(`http://localhost:8000/api/map/observations?${params}`)
-        const data = await response.json()
-        
+        if (this.filters.state) params.state = this.filters.state
+        if (this.filters.animalType) params.animal_type = this.filters.animalType
+        if (this.filters.conservation) params.conservation_status = this.filters.conservation
+        if (this.filters.region) params.region = this.filters.region
+        if (this.filters.search) params.search = this.filters.search
+
+        const data = await ApiService.getObservations(params)
+
         const speciesData = this.aggregateBySpecies(data)
         this.observations = speciesData
         this.addObservationMarkers()

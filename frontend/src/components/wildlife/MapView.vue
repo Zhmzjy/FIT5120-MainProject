@@ -231,8 +231,8 @@ export default {
                 total_observations: obs.total_observations,
                 animal_type: obs.animal_type,
                 image_url: obs.image_url,
-                lat: obs.lat,
-                lon: obs.lon
+                lat: parseFloat(obs.lat),
+                lon: parseFloat(obs.lon)
               }
             }
           })

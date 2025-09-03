@@ -70,8 +70,8 @@ def get_observations():
            wo.state_territory, wo.ibra_region, wo.conservation_status,
            wo.occurrence_count, wo.kingdom as animal_type
     FROM wildlife_observations wo
-    LEFT JOIN species_taxonomy st ON wo.scientific_name = st.scientific_name
-    LEFT JOIN species_media sm ON st.taxon_id = sm.taxon_id
+    LEFT JOIN species s ON wo.scientific_name = s.scientific_name
+    LEFT JOIN species_media sm ON s.taxon_id = sm.taxon_id
     WHERE {where_clause}
     ORDER BY wo.occurrence_count DESC
     LIMIT :limit

@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8000/api'
+const API_BASE_URL = 'https://fit5120-backend.onrender.com/api'
 
 class ApiService {
   async request(endpoint, options = {}) {

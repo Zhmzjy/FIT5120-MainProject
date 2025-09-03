@@ -59,11 +59,11 @@ def get_observations():
     
     query = f"""
     SELECT DISTINCT ON (wo.scientific_name, ROUND(CAST(wo.lat AS DECIMAL), 3), ROUND(CAST(wo.lon AS DECIMAL), 3))
-           wo.scientific_name, wo.common_name, 
-           CAST(wo.lat AS DECIMAL(10,8)) as lat, 
-           CAST(wo.lon AS DECIMAL(11,8)) as lon, 
+           wo.scientific_name, wo.common_name,
+           CAST(wo.lat AS DECIMAL(10,8)) as lat,
+           CAST(wo.lon AS DECIMAL(11,8)) as lon,
            wo.state_territory, wo.ibra_region, wo.conservation_status,
-           wo.occurrence_count, 
+           wo.occurrence_count,
            COALESCE(st.iconic_taxon_name, wo.kingdom) as animal_type,
            COALESCE(sm.medium_url, s.image_url) as image_url
     FROM wildlife_observations wo

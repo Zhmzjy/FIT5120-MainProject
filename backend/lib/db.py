@@ -36,7 +36,26 @@ class DatabaseHelper:
         for attempt in range(retries):
             try:
                 with self.engine.connect() as connection:
-                    result = connection.execute(text(query), params or {})
+                    if params is None:
+                        result = connection.execute(text(query))
+                    elif isinstance(params, dict):
+                        result = connection.execute(text(query), params)
+                    elif isinstance(params, (list, tuple)):
+                        converted_params = {}
+                        param_count = 0
+                        converted_query = query
+                        while '%s' in converted_query:
+                            if param_count < len(params):
+                                param_name = f'param_{param_count}'
+                                converted_params[param_name] = params[param_count]
+                                converted_query = converted_query.replace('%s', f':{param_name}', 1)
+                                param_count += 1
+                            else:
+                                break
+                        result = connection.execute(text(converted_query), converted_params)
+                    else:
+                        result = connection.execute(text(query), params)
+
                     return [dict(row._mapping) for row in result]
             except SQLAlchemyError as e:
                 if attempt == retries - 1:

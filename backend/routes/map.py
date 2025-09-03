@@ -6,9 +6,12 @@ db = DatabaseHelper()
 
 @map_bp.route('/test', methods=['GET'])
 def test_connection():
-    query = "SELECT COUNT(*) as count FROM wildlife_observations"
-    data = db.execute_query(query)
-    return jsonify(data)
+    try:
+        query = "SELECT COUNT(*) as count FROM wildlife_observations"
+        data = db.execute_query(query)
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @map_bp.route('/stats', methods=['GET'])
 def get_stats():

@@ -122,7 +122,7 @@ def get_region_details(region_name):
         COUNT(*) as total_observations,
         COUNT(CASE WHEN wo.conservation_status IN ('Critically Endangered', 'Endangered', 'Vulnerable') THEN 1 END) as endangered_species
     FROM wildlife_observations wo
-    WHERE wo.ibra_region = %s
+    WHERE wo.ibra_region = :region_name
     GROUP BY wo.ibra_region, wo.state_territory
     """
     
@@ -136,14 +136,14 @@ def get_region_details(region_name):
     FROM wildlife_observations wo
     LEFT JOIN species_taxonomy st ON wo.scientific_name = st.scientific_name
     LEFT JOIN species_media sm ON st.taxon_id = sm.taxon_id
-    WHERE wo.ibra_region = %s
+    WHERE wo.ibra_region = :region_name
     GROUP BY wo.common_name, wo.scientific_name, st.iconic_taxon_name, sm.medium_url
     ORDER BY count DESC
     LIMIT 10
     """
     
-    stats = db.execute_query(stats_query, [region_name])
-    top_species = db.execute_query(top_species_query, [region_name])
+    stats = db.execute_query(stats_query, {"region_name": region_name})
+    top_species = db.execute_query(top_species_query, {"region_name": region_name})
     
     if not stats:
         return jsonify({'error': 'Region not found'}), 404
@@ -193,15 +193,15 @@ def search_species():
     FROM wildlife_observations wo
     LEFT JOIN species_taxonomy st ON wo.scientific_name = st.scientific_name
     LEFT JOIN species_media sm ON st.taxon_id = sm.taxon_id
-    WHERE LOWER(wo.common_name) LIKE LOWER(%s) 
-       OR LOWER(wo.scientific_name) LIKE LOWER(%s)
+    WHERE LOWER(wo.common_name) LIKE LOWER(:search_term) 
+       OR LOWER(wo.scientific_name) LIKE LOWER(:search_term)
     GROUP BY wo.common_name, wo.scientific_name, st.iconic_taxon_name, sm.medium_url
     ORDER BY observation_count DESC
-    LIMIT %s
+    LIMIT :limit
     """
     
     search_term = f"%{search}%"
-    data = db.execute_query(query, [search_term, search_term, limit])
+    data = db.execute_query(query, {"search_term": search_term, "limit": limit})
     
     if not data:
         return jsonify([])

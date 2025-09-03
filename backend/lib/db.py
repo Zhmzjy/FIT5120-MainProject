@@ -22,9 +22,11 @@ class DatabaseHelper:
             with self.engine.connect() as connection:
                 result = connection.execute(text(query), params or {})
                 return [dict(row._mapping) for row in result]
-        except SQLAlchemyError:
-            return None
-    
+        except SQLAlchemyError as e:
+            raise e
+        except Exception as e:
+            raise e
+
     def test_connection(self):
         if not self.engine:
             return False

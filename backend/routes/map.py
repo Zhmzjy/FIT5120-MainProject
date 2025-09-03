@@ -15,16 +15,19 @@ def test_connection():
 
 @map_bp.route('/stats', methods=['GET'])
 def get_stats():
-    total_observations_query = "SELECT COUNT(*) as total_observations FROM wildlife_observations"
-    unique_species_query = "SELECT COUNT(DISTINCT scientific_name) as unique_species FROM wildlife_observations"
-    
-    total_obs = db.execute_query(total_observations_query)
-    unique_species = db.execute_query(unique_species_query)
-    
-    return jsonify({
-        'total_observations': total_obs[0]['total_observations'] if total_obs else 0,
-        'unique_species': unique_species[0]['unique_species'] if unique_species else 0
-    })
+    try:
+        total_observations_query = "SELECT COUNT(*) as total_observations FROM wildlife_observations"
+        unique_species_query = "SELECT COUNT(DISTINCT scientific_name) as unique_species FROM wildlife_observations"
+
+        total_obs = db.execute_query(total_observations_query)
+        unique_species = db.execute_query(unique_species_query)
+
+        return jsonify({
+            'total_observations': total_obs[0]['total_observations'] if total_obs else 0,
+            'unique_species': unique_species[0]['unique_species'] if unique_species else 0
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @map_bp.route('/observations', methods=['GET'])
 def get_observations():

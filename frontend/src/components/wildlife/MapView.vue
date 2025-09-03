@@ -112,9 +112,10 @@ export default {
         const response = await ApiService.getObservations(params)
         const observations = response.observations || []
 
-        const speciesData = this.aggregateBySpecies(data)
+        const speciesData = this.aggregateBySpecies(observations)
         this.observations = speciesData
         this.addObservationMarkers()
+        console.log("✅ Loaded observations:", this.observations.length)
       } catch (error) {
         console.error('Failed to load observations:', error)
       }

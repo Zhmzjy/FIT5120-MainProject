@@ -42,6 +42,27 @@ class ApiService {
   async getSeasonalTrend(season) {
     return this.request(`/trends?season=${season}`)
   }
+
+  async getMapStats() {
+    return this.request('/map/stats')
+  }
+
+  async getObservations(params = {}) {
+    const queryString = new URLSearchParams(params).toString()
+    return this.request(`/map/observations?${queryString}`)
+  }
+
+  async getRegions() {
+    return this.request('/map/regions')
+  }
+
+  async getStates() {
+    return this.request('/map/states')
+  }
+
+  async searchSpecies(query, limit = 20) {
+    return this.request(`/map/search?q=${encodeURIComponent(query)}&limit=${limit}`)
+  }
 }
 
 export default new ApiService()

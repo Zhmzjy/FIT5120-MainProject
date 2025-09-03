@@ -156,3 +156,16 @@ class DatabaseHelper:
         ORDER BY month
         """
         return self.execute_query(query)
+
+    def get_season_monthly_trends(self, season):
+        query = """
+        SELECT 
+            t.month,
+            SUM(t.total_count) as total_count
+        FROM season_top_species sts
+        JOIN trends_per_species t ON sts.taxon_id = t.taxon_id
+        WHERE sts.season = :season AND sts.rank <= 10
+        GROUP BY t.month
+        ORDER BY t.month
+        """
+        return self.execute_query(query, {'season': season})

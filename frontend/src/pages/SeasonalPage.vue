@@ -125,74 +125,16 @@
           </div>
 
           <div class="trend-comparison-section">
-            <h3 class="section-title">Seasonal Trends & Comparison</h3>
-            <div class="trend-container">
-              <div class="monthly-trends-chart">
-                <h4 class="trend-title">Monthly Species Activity Trends</h4>
-                <div v-if="getTopTrendAnimals().length > 0" class="species-trends-chart">
-                  <svg viewBox="0 0 900 400" class="trends-chart-svg">
-                    <g class="grid-lines">
-                      <line v-for="i in 5" :key="`grid-${i}`" x1="80" :x2="820" :y1="80 + (i - 1) * 60" :y2="80 + (i - 1) * 60" stroke="#e5e7eb" stroke-width="1"/>
-                      <line v-for="i in 12" :key="`month-${i}`" :x1="80 + (i - 1) * 62" :x2="80 + (i - 1) * 62" y1="80" y2="320" stroke="#e5e7eb" stroke-width="1"/>
-                    </g>
-
-                    <g v-for="(animal, animalIndex) in getTopTrendAnimals()" :key="animal.taxon_id">
-                      <polyline
-                        :points="getMonthlyTrendPoints(animal.trends)"
-                        :stroke="getTrendColor(animalIndex)"
-                        stroke-width="3"
-                        fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-
-                      <g v-for="(point, pointIndex) in getMonthlyDataPoints(animal.trends)" :key="`${animal.taxon_id}-${pointIndex}`">
-                        <circle
-                          :cx="point.x"
-                          :cy="point.y"
-                          r="4"
-                          :fill="getTrendColor(animalIndex)"
-                          stroke="white"
-                          stroke-width="2"
-                        />
-                      </g>
-                    </g>
-
-                    <g class="axis-labels">
-                      <text v-for="(month, index) in monthLabels" :key="month" :x="80 + index * 62" y="350" text-anchor="middle" class="month-label" font-size="12" fill="#666">
-                        {{ month }}
-                      </text>
-                    </g>
-
-                    <g class="y-axis-labels">
-                      <text v-for="i in 5" :key="`y-${i}`" x="70" :y="85 + (4 - i) * 60" text-anchor="end" class="count-label" font-size="11" fill="#666">
-                        {{ getYAxisLabel(i - 1) }}
-                      </text>
-                    </g>
-                  </svg>
-
-                  <div class="trends-legend">
-                    <div v-for="(animal, index) in getTopTrendAnimals()" :key="animal.taxon_id" class="legend-item">
-                      <div class="legend-color" :style="{ backgroundColor: getTrendColor(index) }"></div>
-                      <img :src="animal.image_url" :alt="animal.common_name" class="legend-icon">
-                      <span class="legend-name">{{ animal.common_name }}</span>
-                    </div>
+            <h3 class="section-title">Season vs Season Comparison</h3>
+            <div class="season-comparison">
+              <h4 class="trend-title">Species Activity Across Seasons</h4>
+              <div class="comparison-bars">
+                <div class="comparison-item" v-for="kpi in seasonKPI" :key="kpi.season">
+                  <span class="season-name">{{ kpi.season }}</span>
+                  <div class="comparison-bar">
+                    <div class="comparison-fill" :class="`${kpi.season.toLowerCase()}-fill`" :style="{ width: getSeasonPercentage(kpi.active_species) + '%' }"></div>
                   </div>
-                </div>
-                <div v-else class="no-data-message">
-                  <p>Loading trend data...</p>
-                </div>
-              </div>
-              <div class="season-comparison">
-                <h4 class="trend-title">Season vs Season</h4>
-                <div class="comparison-bars">
-                  <div class="comparison-item" v-for="kpi in seasonKPI" :key="kpi.season">
-                    <span class="season-name">{{ kpi.season }}</span>
-                    <div class="comparison-bar">
-                      <div class="comparison-fill" :class="`${kpi.season.toLowerCase()}-fill`" :style="{ width: getSeasonPercentage(kpi.active_species) + '%' }"></div>
-                    </div>
-                    <span class="season-value">{{ kpi.active_species }} species</span>
-                  </div>
+                  <span class="season-value">{{ kpi.active_species }} species</span>
                 </div>
               </div>
             </div>
@@ -225,7 +167,6 @@ export default {
     seasonKPI: [],
     seasonActivity: [],
     topSpecies: {},
-    monthlyTrends: [],
     loading: false,
     error: null
   }
@@ -284,7 +225,6 @@ export default {
         this.seasonKPI = kpiData
         this.seasonActivity = activityData
         this.topSpecies = topSpeciesData
-        await this.loadMonthlyTrends()
       } catch (error) {
         this.error = error.message
         console.error('Failed to load season data:', error)
@@ -293,67 +233,9 @@ export default {
       }
     },
 
-    async loadMonthlyTrends() {
-      try {
-        const topAnimals = this.getTopAnimals().slice(0, 5)
-        console.log('Top animals for trends:', topAnimals)
-
-        if (!topAnimals || topAnimals.length === 0) {
-          console.log('No top animals found')
-          this.monthlyTrends = []
-          return
-        }
-
-        const animalTaxonMapping = {
-          'Australian Magpie': 8575,
-          'Koala': 42983,
-          'Laughing Kookaburra': 2413,
-          'Waxlip Orchid': null,
-          'Superb Fairywren': 12065,
-          'Australian Wood Duck': null,
-          'Rainbow Lorikeet': 980095,
-          'Western Honey Bee': 47219,
-          'Australian Water Dragon': null,
-          'Australian Painted Lady': null
-        }
-
-        const animalsWithTaxonId = topAnimals.map(animal => ({
-          ...animal,
-          taxon_id: animalTaxonMapping[animal.common_name] || null
-        })).filter(animal => animal.taxon_id !== null)
-
-        console.log('Animals with taxon_id mapping:', animalsWithTaxonId)
-
-        if (animalsWithTaxonId.length === 0) {
-          console.log('No animals with valid taxon_id found')
-          this.monthlyTrends = []
-          return
-        }
-
-        const trendsPromises = animalsWithTaxonId.map(animal => {
-          console.log(`Loading trends for ${animal.common_name} (taxon_id: ${animal.taxon_id})`)
-          return apiService.getSpeciesTrend(animal.taxon_id)
-        })
-
-        const trendsResults = await Promise.all(trendsPromises)
-        console.log('Trends results:', trendsResults)
-
-        this.monthlyTrends = animalsWithTaxonId.map((animal, index) => ({
-          ...animal,
-          trends: trendsResults[index] || []
-        }))
-
-        console.log('Final monthly trends:', this.monthlyTrends)
-      } catch (error) {
-        console.error('Failed to load monthly trends:', error)
-        this.monthlyTrends = []
-      }
-    },
-
     async selectSeason(season) {
       this.selectedSeason = season
       await this.loadTopSpecies(season)
-      await this.loadMonthlyTrends()
     },
 
     async loadTopSpecies(season) {
@@ -379,10 +261,6 @@ export default {
         Winter: '#3b82f6'
       }
       return colors[this.selectedSeason]
-    },
-
-    getSeasonAnimals() {
-      return this.animalData[this.selectedSeason] || []
     },
 
     getTopAnimals() {
@@ -419,127 +297,12 @@ export default {
       return Math.round((activeSpecies / maxSpecies) * 100)
     },
 
-    getTopAnimalsChart() {
-      const animals = this.getTopAnimals()
-      return Array.isArray(animals) ? animals.slice(0, 10) : []
-    },
-
-    getSpeciesBarWidth(count) {
-      const animals = this.getTopAnimalsChart()
-      if (!animals.length) return 0
-      const maxCount = Math.max(...animals.map(a => a.total_count))
-      return maxCount > 0 ? Math.round((count / maxCount) * 100) : 0
-    },
-
-    getLineChartPoints() {
-      const data = this.getTopAnimalsChart()
-      const maxCount = Math.max(...data.map(animal => animal.total_count))
-      const scaleX = 700 / (data.length - 1 || 1)
-      const scaleY = 250 / maxCount
-
-      return data.map((animal, index) => {
-        const x = index * scaleX + 70
-        const y = 250 - animal.total_count * scaleY
-        return `${x},${y}`
-      }).join(' ')
-    },
-
-    getAreaChartPoints() {
-      const data = this.getTopAnimalsChart()
-      const maxCount = Math.max(...data.map(animal => animal.total_count))
-      const scaleX = 700 / (data.length - 1 || 1)
-      const scaleY = 250 / maxCount
-
-      const points = data.map((animal, index) => {
-        const x = index * scaleX + 70
-        const y = 250 - animal.total_count * scaleY
-        return `${x},${y}`
-      })
-
-      return `${points[0]} ${points.join(' ')} ${points[points.length - 1]}`
-    },
-
-    getChartDataPoints() {
-      const data = this.getTopAnimalsChart()
-      const maxCount = Math.max(...data.map(animal => animal.total_count))
-      const scaleX = 700 / (data.length - 1 || 1)
-      const scaleY = 250 / maxCount
-
-      return data.map((animal, index) => {
-        const x = index * scaleX + 70
-        const y = 250 - animal.total_count * scaleY
-        return { x, y, count: animal.total_count }
-      })
-    },
-
     navigateToHome() {
       this.$router.push('/')
     },
 
     navigateToWildlife() {
       this.$router.push('/learn-wildlife')
-    },
-
-    getTopTrendAnimals() {
-      return this.monthlyTrends || []
-    },
-
-    getTrendColor(index) {
-      const colors = ['#22c55e', '#3b82f6', '#f97316', '#e11d48', '#8b5cf6']
-      return colors[index % colors.length]
-    },
-
-    getMonthlyTrendPoints(trends) {
-      if (!trends || !trends.length) return ''
-
-      const months = Array.from({length: 12}, (_, i) => i + 1)
-      const maxCount = this.getMaxTrendCount()
-
-      return months.map((month, index) => {
-        const trendData = trends.find(t => t.month === month)
-        const count = trendData ? trendData.total_count : 0
-        const x = 80 + index * 62
-        const y = 320 - (count / maxCount) * 240
-        return `${x},${y}`
-      }).join(' ')
-    },
-
-    getMonthlyDataPoints(trends, animalIndex) {
-      if (!trends || !trends.length) return []
-
-      const months = Array.from({length: 12}, (_, i) => i + 1)
-      const maxCount = this.getMaxTrendCount()
-
-      return months.map((month, index) => {
-        const trendData = trends.find(t => t.month === month)
-        const count = trendData ? trendData.total_count : 0
-        const x = 80 + index * 62
-        const y = 320 - (count / maxCount) * 240
-        return { x, y, count }
-      })
-    },
-
-    getMaxTrendCount() {
-      let maxCount = 0
-      this.monthlyTrends.forEach(animal => {
-        if (animal.trends) {
-          animal.trends.forEach(trend => {
-            if (trend.total_count > maxCount) {
-              maxCount = trend.total_count
-            }
-          })
-        }
-      })
-      return maxCount || 1
-    },
-
-    getYAxisLabel(index) {
-      const maxCount = this.getMaxTrendCount()
-      return Math.round((maxCount / 4) * index)
-    },
-
-    get monthLabels() {
-      return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     }
   }
 }
@@ -960,10 +723,10 @@ export default {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-.trend-container {
+.season-comparison {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+  grid-template-columns: 1fr;
+  gap: 2rem;
 }
 
 .trend-title {
@@ -971,27 +734,6 @@ export default {
   font-weight: bold;
   margin-bottom: 1.5rem;
   color: #1e293b;
-}
-
-.trend-chart {
-  padding: 1rem;
-}
-
-.trend-line-chart {
-  position: relative;
-}
-
-.chart-svg {
-  width: 100%;
-  height: 200px;
-}
-
-.chart-labels {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
-  font-size: 0.8rem;
-  color: #64748b;
 }
 
 .comparison-bars {

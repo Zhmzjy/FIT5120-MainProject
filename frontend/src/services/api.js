@@ -32,6 +32,10 @@ class ApiService {
     return this.request('/season/activity')
   }
 
+  async getSeasonMonthlyTrends(season) {
+    return this.request(`/season/monthly-trends?season=${season}`)
+  }
+
  async getTopSpecies(season) {
   return this.request(`/top/top?season=${season}`)
 }

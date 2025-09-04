@@ -27,15 +27,6 @@
         </select>
       </div>
       <div class="filter-group">
-        <label>Animal Type</label>
-        <select v-model="selectedAnimalType" class="cartoon-select" @change="onAnimalTypeChange">
-          <option value="">All Animals</option>
-          <option value="Aves">Birds</option>
-          <option value="Mammalia">Mammals</option>
-          <option value="Animalia">Other Animals</option>
-        </select>
-      </div>
-      <div class="filter-group">
         <label>Conservation Status</label>
         <select v-model="selectedConservationStatus" class="cartoon-select" @change="onConservationChange">
           <option value="">All Status</option>
@@ -71,37 +62,27 @@ export default {
     return {
       searchQuery: '',
       selectedState: '',
-      selectedAnimalType: '',
       selectedConservationStatus: '',
       selectedRegion: ''
     }
   },
   methods: {
     onSearchInput() {
-      this.$emit('search', this.searchQuery)
       this.emitCurrentFilters()
     },
     onStateChange() {
-      this.$emit('stateFilter', this.selectedState)
-      this.emitCurrentFilters()
-    },
-    onAnimalTypeChange() {
-      this.$emit('animalTypeFilter', this.selectedAnimalType)
       this.emitCurrentFilters()
     },
     onConservationChange() {
-      this.$emit('conservationFilter', this.selectedConservationStatus)
       this.emitCurrentFilters()
     },
     onRegionChange() {
-      this.$emit('regionFilter', this.selectedRegion)
       this.emitCurrentFilters()
     },
     emitCurrentFilters() {
       this.$emit('applyFilters', {
         search: this.searchQuery,
         state: this.selectedState,
-        animalType: this.selectedAnimalType,
         conservation: this.selectedConservationStatus,
         region: this.selectedRegion
       })
@@ -109,20 +90,12 @@ export default {
     resetFilters() {
       this.searchQuery = ''
       this.selectedState = ''
-      this.selectedAnimalType = ''
       this.selectedConservationStatus = ''
       this.selectedRegion = ''
-      this.$emit('resetFilters')
       this.emitCurrentFilters()
     },
     applyFilters() {
-      this.$emit('applyFilters', {
-        search: this.searchQuery,
-        state: this.selectedState,
-        animalType: this.selectedAnimalType,
-        conservation: this.selectedConservationStatus,
-        region: this.selectedRegion
-      })
+      this.emitCurrentFilters()
     }
   }
 }

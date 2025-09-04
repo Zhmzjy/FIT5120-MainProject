@@ -36,7 +36,6 @@ def get_observations():
     state = request.args.get('state')
     region = request.args.get('region')
     conservation_status = request.args.get('conservation_status')
-    animal_type = request.args.get('animal_type')
     search = request.args.get('search')
     
     where_conditions = ["wo.lat IS NOT NULL", "wo.lon IS NOT NULL"]
@@ -53,47 +52,26 @@ def get_observations():
     if conservation_status:
         where_conditions.append("wo.conservation_status = :conservation_status")
         params['conservation_status'] = conservation_status
-    
-    if animal_type:
-        if animal_type == "Animalia":
-            where_conditions.append("wo.kingdom = :animal_type")
-        else:
-            where_conditions.append("st.iconic_taxon_name = :animal_type")
-        params['animal_type'] = animal_type
-    
+
     if search:
         where_conditions.append("(wo.common_name ILIKE :search OR wo.scientific_name ILIKE :search)")
         params['search'] = f'%{search}%'
     
     where_clause = " AND ".join(where_conditions)
     
-    if animal_type and animal_type != "Animalia":
-        query = f"""
-        SELECT wo.scientific_name, wo.common_name, 
-               wo.lat, wo.lon, 
-               wo.state_territory, wo.ibra_region, wo.conservation_status,
-               wo.occurrence_count, wo.kingdom as animal_type,
-               s.image_url
-        FROM wildlife_observations wo
-        LEFT JOIN species s ON wo.scientific_name = s.scientific_name
-        LEFT JOIN species_taxonomy st ON wo.scientific_name = st.scientific_name
-        WHERE {where_clause}
-        ORDER BY wo.occurrence_count DESC
-        LIMIT :limit
-        """
-    else:
-        query = f"""
-        SELECT wo.scientific_name, wo.common_name, 
-               wo.lat, wo.lon, 
-               wo.state_territory, wo.ibra_region, wo.conservation_status,
-               wo.occurrence_count, wo.kingdom as animal_type,
-               s.image_url
-        FROM wildlife_observations wo
-        LEFT JOIN species s ON wo.scientific_name = s.scientific_name
-        WHERE {where_clause}
-        ORDER BY wo.occurrence_count DESC
-        LIMIT :limit
-        """
+    query = f"""
+    SELECT wo.scientific_name, wo.common_name, 
+           wo.lat, wo.lon, 
+           wo.state_territory, wo.ibra_region, wo.conservation_status,
+           wo.occurrence_count, wo.kingdom as animal_type,
+           sm.medium_url as image_url
+    FROM wildlife_observations wo
+    LEFT JOIN species_taxonomy st ON wo.scientific_name = st.scientific_name
+    LEFT JOIN species_media sm ON st.taxon_id = sm.taxon_id
+    WHERE {where_clause}
+    ORDER BY wo.occurrence_count DESC
+    LIMIT :limit
+    """
 
     try:
         data = db.execute_query(query, params)

@@ -17,12 +17,6 @@
     <div class="main-layout">
       <aside class="left-sidebar" :class="{ 'mobile-open': mobileMenuOpen }">
         <LeftFilters 
-          @search="handleSearch"
-          @stateFilter="handleStateFilter"
-          @animalTypeFilter="handleAnimalTypeFilter"
-          @conservationFilter="handleConservationFilter"
-          @regionFilter="handleRegionFilter"
-          @resetFilters="handleResetFilters"
           @applyFilters="handleApplyFilters"
         />
       </aside>
@@ -62,7 +56,6 @@ export default {
       activeFilters: {
         search: '',
         state: '',
-        animalType: '',
         conservation: '',
         region: ''
       },
@@ -82,26 +75,10 @@ export default {
     closeMobileSidebar() {
       this.mobileMenuOpen = false
     },
-    handleSearch(query) {
-      this.activeFilters.search = query
-    },
-    handleStateFilter(state) {
-      this.activeFilters.state = state
-    },
-    handleAnimalTypeFilter(animalType) {
-      this.activeFilters.animalType = animalType
-    },
-    handleConservationFilter(conservation) {
-      this.activeFilters.conservation = conservation
-    },
-    handleRegionFilter(region) {
-      this.activeFilters.region = region
-    },
     handleResetFilters() {
       this.activeFilters = {
         search: '',
         state: '',
-        animalType: '',
         conservation: '',
         region: ''
       }

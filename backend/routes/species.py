@@ -1,10 +1,8 @@
 from flask import Blueprint, jsonify, request
 from lib.db import DatabaseHelper
-from lib.csv_fallback import CSVFallback
 
 species_bp = Blueprint('species', __name__)
 db = DatabaseHelper()
-csv_fallback = CSVFallback()
 
 @species_bp.route('/', methods=['GET'])
 def get_species_list():

@@ -315,6 +315,25 @@ export default {
           return distance <= searchRadius
         })
         
+        const speciesMap = new Map()
+        nearbyAnimals.forEach(animal => {
+          const speciesKey = animal.scientific_name
+          if (!speciesMap.has(speciesKey)) {
+            speciesMap.set(speciesKey, {
+              common_name: animal.common_name,
+              scientific_name: animal.scientific_name,
+              conservation_status: animal.conservation_status,
+              animal_type: animal.animal_type,
+              image_url: animal.image_url,
+              latitude: animal.lat,
+              longitude: animal.lon,
+              count: animal.total_observations || 1
+            })
+          }
+        })
+
+        const uniqueAnimals = Array.from(speciesMap.values())
+
         const regionInfo = {
           clickedAnimal: {
             common_name: clickedProperties.common_name,
@@ -329,19 +348,9 @@ export default {
             region: clickedProperties.region,
             state: clickedProperties.state
           },
-          animals: nearbyAnimals.map(animal => ({
-            common_name: animal.common_name,
-            scientific_name: animal.scientific_name,
-            conservation_status: animal.conservation_status,
-            animal_type: animal.animal_type,
-            image_url: animal.image_url,
-            total_observations: animal.total_observations,
-            latitude: animal.lat,
-            longitude: animal.lon,
-            count: animal.total_observations
-          })),
+          animals: uniqueAnimals,
           totalSpecies: nearbyAnimals.length,
-          uniqueSpecies: new Set(nearbyAnimals.map(a => a.scientific_name)).size
+          uniqueSpecies: uniqueAnimals.length
         }
         
         this.$emit('regionSelected', regionInfo)

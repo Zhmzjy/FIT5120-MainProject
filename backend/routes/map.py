@@ -55,7 +55,10 @@ def get_observations():
         params['conservation_status'] = conservation_status
     
     if animal_type:
-        where_conditions.append("wo.kingdom = :animal_type")
+        if animal_type == "Animalia":
+            where_conditions.append("wo.kingdom = :animal_type")
+        else:
+            where_conditions.append("st.iconic_taxon_name = :animal_type")
         params['animal_type'] = animal_type
     
     if search:
@@ -64,19 +67,34 @@ def get_observations():
     
     where_clause = " AND ".join(where_conditions)
     
-    query = f"""
-    SELECT wo.scientific_name, wo.common_name, 
-           wo.lat, wo.lon, 
-           wo.state_territory, wo.ibra_region, wo.conservation_status,
-           wo.occurrence_count, wo.kingdom as animal_type
-    FROM wildlife_observations wo
-    LEFT JOIN species s ON wo.scientific_name = s.scientific_name
-    LEFT JOIN species_media sm ON s.taxon_id = sm.taxon_id
-    WHERE {where_clause}
-    ORDER BY wo.occurrence_count DESC
-    LIMIT :limit
-    """
-    
+    if animal_type and animal_type != "Animalia":
+        query = f"""
+        SELECT wo.scientific_name, wo.common_name, 
+               wo.lat, wo.lon, 
+               wo.state_territory, wo.ibra_region, wo.conservation_status,
+               wo.occurrence_count, wo.kingdom as animal_type,
+               s.image_url
+        FROM wildlife_observations wo
+        LEFT JOIN species s ON wo.scientific_name = s.scientific_name
+        LEFT JOIN species_taxonomy st ON wo.scientific_name = st.scientific_name
+        WHERE {where_clause}
+        ORDER BY wo.occurrence_count DESC
+        LIMIT :limit
+        """
+    else:
+        query = f"""
+        SELECT wo.scientific_name, wo.common_name, 
+               wo.lat, wo.lon, 
+               wo.state_territory, wo.ibra_region, wo.conservation_status,
+               wo.occurrence_count, wo.kingdom as animal_type,
+               s.image_url
+        FROM wildlife_observations wo
+        LEFT JOIN species s ON wo.scientific_name = s.scientific_name
+        WHERE {where_clause}
+        ORDER BY wo.occurrence_count DESC
+        LIMIT :limit
+        """
+
     try:
         data = db.execute_query(query, params)
         if data is None:

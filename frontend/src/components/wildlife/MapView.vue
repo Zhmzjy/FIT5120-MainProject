@@ -18,6 +18,13 @@
           </div>
         </div>
       </div>
+      <div v-if="showNoDataMessage" class="no-data-overlay">
+        <div class="no-data-content">
+          <div class="no-data-icon">🔍</div>
+          <h3>No Wildlife Found</h3>
+          <p>Try adjusting your filters to see more results</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -45,7 +52,8 @@ export default {
       map: null,
       errorMessage: null,
       observations: [],
-      abortController: null
+      abortController: null,
+      showNoDataMessage: false
     }
   },
   mounted() {
@@ -97,6 +105,8 @@ export default {
     async loadData() {
       if (!this.map || !this.map.isStyleLoaded()) return
 
+      this.showNoDataMessage = false
+
       try {
         this.$emit('loadingStateChange', true)
         await this.loadObservations()
@@ -129,6 +139,9 @@ export default {
 
         this.observations = observations
         this.addSpeciesMarkers()
+
+        // Show no data message if there are no observations
+        this.showNoDataMessage = observations.length === 0
       } catch (error) {
         if (error.name === 'AbortError') {
           console.log('Request canceled')
@@ -497,6 +510,38 @@ export default {
   width: 0;
   background: #007bff;
   animation: load 2s ease-in-out infinite;
+}
+
+.no-data-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 10;
+}
+
+.no-data-content {
+  text-align: center;
+  padding: var(--spacing-xl);
+  background: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.no-data-content h3 {
+  margin: 0 0 var(--spacing-md) 0;
+  color: var(--color-text);
+}
+
+.no-data-content p {
+  margin: 0;
+  color: var(--color-text-secondary);
 }
 
 @keyframes spin {

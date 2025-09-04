@@ -23,8 +23,11 @@
 
       <main class="center-content">
         <MapView 
+          ref="mapViewRef"
           :filters="activeFilters"
+          :isLoading="isLoading"
           @regionSelected="handleRegionSelection"
+          @loadingStateChange="handleLoadingStateChange"
         />
       </main>
 
@@ -59,7 +62,8 @@ export default {
         conservation: '',
         region: ''
       },
-      selectedRegion: null
+      selectedRegion: null,
+      isLoading: false
     }
   },
   methods: {
@@ -86,12 +90,20 @@ export default {
     },
     handleApplyFilters(filters) {
       this.activeFilters = { ...filters }
+      this.$nextTick(() => {
+        if (this.$refs.mapViewRef) {
+          this.$refs.mapViewRef.loadData()
+        }
+      })
     },
     handleRegionSelection(regionInfo) {
       this.selectedRegion = regionInfo
     },
     handleCloseDrawer() {
       this.selectedRegion = null
+    },
+    handleLoadingStateChange(loading) {
+      this.isLoading = loading
     }
   }
 }

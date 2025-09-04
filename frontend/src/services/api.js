@@ -53,9 +53,12 @@ class ApiService {
     return this.request('/map/stats')
   }
 
-  async getObservations(params = {}) {
+  async getObservations(params = {}, options = {}) {
+    if (!params.limit) {
+      params.limit = 5000
+    }
     const queryString = new URLSearchParams(params).toString()
-    return this.request(`/map/observations?${queryString}`)
+    return this.request(`/map/observations?${queryString}`, options)
   }
 
   async getRegions() {

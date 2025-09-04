@@ -68,34 +68,33 @@ export default {
   },
   methods: {
     onSearchInput() {
-      this.emitCurrentFilters()
+      // No longer emitting filters on search input
     },
     onStateChange() {
-      this.emitCurrentFilters()
+      // No longer emitting filters on state change
     },
     onConservationChange() {
-      this.emitCurrentFilters()
+      // No longer emitting filters on conservation status change
     },
     onRegionChange() {
-      this.emitCurrentFilters()
+      // No longer emitting filters on region change
     },
     emitCurrentFilters() {
-      this.$emit('applyFilters', {
-        search: this.searchQuery,
-        state: this.selectedState,
-        conservation: this.selectedConservationStatus,
-        region: this.selectedRegion
-      })
+      // No longer emitting filters automatically
     },
     resetFilters() {
       this.searchQuery = ''
       this.selectedState = ''
       this.selectedConservationStatus = ''
       this.selectedRegion = ''
-      this.emitCurrentFilters()
     },
     applyFilters() {
-      this.emitCurrentFilters()
+      this.$emit('applyFilters', {
+        search: this.searchQuery,
+        state: this.selectedState,
+        conservation: this.selectedConservationStatus,
+        region: this.selectedRegion
+      })
     }
   }
 }

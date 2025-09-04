@@ -9,6 +9,15 @@
     </div>
     <div v-else class="map-wrapper">
       <div id="mapbox-container" ref="mapContainer" class="map-container"></div>
+      <div v-if="isLoading" class="loading-overlay">
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <div class="loading-text">Loading wildlife data...</div>
+          <div class="loading-bar">
+            <div class="loading-progress"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -24,22 +33,19 @@ export default {
     filters: {
       type: Object,
       default: () => ({})
+    },
+    isLoading: {
+      type: Boolean,
+      default: false
     }
   },
-  emits: ['animalSelected'],
+  emits: ['regionSelected', 'loadingStateChange'],
   data() {
     return {
       map: null,
       errorMessage: null,
-      observations: []
-    }
-  },
-  watch: {
-    filters: {
-      handler() {
-        this.loadMapData()
-      },
-      deep: true
+      observations: [],
+      abortController: null
     }
   },
   mounted() {
@@ -73,7 +79,8 @@ export default {
         this.map.addControl(new mapboxgl.NavigationControl(), 'top-right')
 
         this.map.on('load', () => {
-          this.loadMapData()
+          console.log('Map loaded, ready for data')
+          this.loadData()
         })
 
         this.map.on('error', (error) => {
@@ -87,36 +94,47 @@ export default {
       }
     },
 
-    async loadMapData() {
+    async loadData() {
       if (!this.map || !this.map.isStyleLoaded()) return
 
       try {
+        this.$emit('loadingStateChange', true)
         await this.loadObservations()
       } catch (error) {
         console.error('Failed to load map data:', error)
+      } finally {
+        this.$emit('loadingStateChange', false)
       }
     },
 
     async loadObservations() {
       try {
-        const params = {
-          limit: 200000
+        if (this.abortController) {
+          this.abortController.abort()
         }
 
+        this.abortController = new AbortController()
+        const signal = this.abortController.signal
+
+        const params = {}
+
         if (this.filters.state) params.state = this.filters.state
-        if (this.filters.animalType) params.animal_type = this.filters.animalType
         if (this.filters.conservation) params.conservation_status = this.filters.conservation
         if (this.filters.region) params.region = this.filters.region
         if (this.filters.search) params.search = this.filters.search
 
-        const response = await ApiService.getObservations(params)
-        console.log("backend back:", response.total, response.observations.length)  
+        const response = await ApiService.getObservations(params, { signal })
+        console.log("All species loaded:", response.total, response.observations.length)
         const observations = response.observations || []
 
         this.observations = observations
-        this.addObservationMarkers()
+        this.addSpeciesMarkers()
       } catch (error) {
-        console.error('Failed to load observations:', error)
+        if (error.name === 'AbortError') {
+          console.log('Request canceled')
+        } else {
+          console.error('Failed to load observations:', error)
+        }
       }
     },
 
@@ -182,16 +200,16 @@ export default {
       )
     },
 
-    addObservationMarkers() {
+    addSpeciesMarkers() {
       try {
         const layersToRemove = ['animal-points', 'animal-labels']
-        
+
         layersToRemove.forEach(layerId => {
           if (this.map.getLayer(layerId)) {
             this.map.removeLayer(layerId)
           }
         })
-        
+
         if (this.map.getSource('observations')) {
           this.map.removeSource('observations')
         }
@@ -200,16 +218,18 @@ export default {
           return
         }
 
+        const aggregatedData = this.aggregateBySpecies(this.observations)
+
         const geojson = {
           type: 'FeatureCollection',
-          features: this.observations.map((obs, index) => {
+          features: aggregatedData.map((obs, index) => {
             const baseCoords = [parseFloat(obs.lon), parseFloat(obs.lat)]
             const offset = 0.002
             const randomOffset = [
               (Math.random() - 0.5) * offset,
               (Math.random() - 0.5) * offset
             ]
-            
+
             return {
               type: 'Feature',
               geometry: {
@@ -293,9 +313,10 @@ export default {
 
         this.setupClickHandlers()
       } catch (error) {
-        console.error('Error adding observation markers:', error)
+        console.error('Error adding species markers:', error)
       }
     },
+
 
     setupClickHandlers() {
       this.map.off('click', 'animal-points')
@@ -425,5 +446,67 @@ export default {
 
 .error-content small {
   color: var(--color-text-muted);
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 10;
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  margin-top: var(--spacing-sm);
+  font-size: var(--font-size-md);
+  color: #333;
+}
+
+.loading-bar {
+  margin-top: var(--spacing-md);
+  width: 100%;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+}
+
+.loading-progress {
+  height: 100%;
+  width: 0;
+  background: #007bff;
+  animation: load 2s ease-in-out infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes load {
+  0% { width: 0%; }
+  50% { width: 50%; }
+  100% { width: 0%; }
 }
 </style>

@@ -6,7 +6,7 @@
       <div class="top-nav-bar">
         <div class="nav-content">
           <div class="nav-left">
-            <h3 class="nav-title">Wildlife Academy</h3>
+            <button @click="navigateToHome" class="logo-button">Wildlife Academy</button>
           </div>
           <div class="nav-right">
             <button class="nav-btn" @click="navigateToHome">Home</button>
@@ -356,7 +356,7 @@ export default {
   padding: 0 1rem;
 }
 
-.nav-title {
+.logo-button {
   margin: 0;
   color: var(--text-white);
   font-size: var(--font-size-xl);
@@ -368,9 +368,11 @@ export default {
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--border-radius-lg);
   transition: all var(--transition-normal);
+  border: none;
+  cursor: pointer;
 }
 
-.nav-title:hover {
+.logo-button:hover {
   background: transparent;
   transform: scale(1.02);
   text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.9), 2px 2px 4px rgba(0, 0, 0, 1);

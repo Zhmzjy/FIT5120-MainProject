@@ -4,7 +4,7 @@
     <header class="top-nav">
       <div class="nav-content">
         <div class="logo">
-          <h2>Wildlife Academy</h2>
+          <button @click="goHome" class="logo-button">Wildlife Academy</button>
         </div>
         <nav class="nav-links">
           <button @click="goHome" class="nav-link">Home</button>
@@ -143,7 +143,7 @@ export default {
   z-index: 2;
 }
 
-.logo h2 {
+.logo-button {
   margin: 0;
   color: var(--text-white);
   font-size: var(--font-size-xl);
@@ -155,9 +155,11 @@ export default {
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--border-radius-lg);
   transition: all var(--transition-bounce);
+  border: none;
+  cursor: pointer;
 }
 
-.logo h2:hover {
+.logo-button:hover {
   background: transparent;
   transform: scale(1.02);
   text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.9), 2px 2px 4px rgba(0, 0, 0, 1);

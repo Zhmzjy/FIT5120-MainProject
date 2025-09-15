@@ -17,6 +17,16 @@ const routes = [
     name: 'AIChallenge',
     component: () => import('../pages/AIChallenge.vue')
   },
+  {
+    path: '/daily-wildle',
+    name: 'DailyWildle',
+    component: () => import('../pages/DailyWildle.vue')
+  },
+  {
+    path: '/conservation',
+    name: 'Conservation',
+    component: () => import('../pages/Conservation.vue')
+  },
   ...seasonalRoutes
 ]
 

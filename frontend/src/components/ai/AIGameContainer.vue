@@ -62,10 +62,10 @@ export default {
   max-width: 800px;
   margin: 0 auto;
   padding: var(--spacing-lg);
-  background: rgba(255, 255, 255, 0.95);
+  background: transparent;
   border-radius: var(--border-radius-xl);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 @media (max-width: 768px) {

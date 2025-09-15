@@ -1,7 +1,6 @@
 <template>
   <div class="result-screen">
     <div class="result-header">
-      <div class="ai-avatar">🤖</div>
       <h2 class="result-title">AI's Guess</h2>
     </div>
 
@@ -33,7 +32,6 @@
           @click="$emit('confirmCorrect')"
           class="verify-button correct-button"
         >
-          <span class="button-icon">🎉</span>
           <span class="button-text">Yes, correct!</span>
         </button>
 
@@ -41,7 +39,6 @@
           @click="$emit('confirmIncorrect')"
           class="verify-button incorrect-button"
         >
-          <span class="button-icon">🤔</span>
           <span class="button-text">No, wrong</span>
         </button>
       </div>
@@ -85,12 +82,10 @@
 
     <div class="game-actions">
       <button @click="$emit('restart')" class="action-button play-again-button">
-        <span class="button-icon">🔄</span>
         <span class="button-text">Play Again</span>
       </button>
 
       <button @click="$emit('exit')" class="action-button exit-button">
-        <span class="button-icon">🏠</span>
         <span class="button-text">Exit</span>
       </button>
     </div>
@@ -169,7 +164,7 @@ export default {
 
 .result-title {
   font-size: var(--font-size-xl);
-  color: var(--color-text);
+  color: black;
   margin: 0;
   font-family: var(--font-cartoon);
 }
@@ -222,14 +217,14 @@ export default {
 
 .animal-name {
   font-size: var(--font-size-lg);
-  color: var(--color-text);
+  color: black;
   margin: 0 0 var(--spacing-sm) 0;
   font-family: var(--font-cartoon);
 }
 
 .scientific-name {
   font-size: var(--font-size-md);
-  color: var(--color-text-secondary);
+  color: black;
   font-style: italic;
   margin: 0;
 }
@@ -240,7 +235,7 @@ export default {
 
 .verification-title {
   font-size: var(--font-size-lg);
-  color: var(--color-text);
+  color: black;
   margin-bottom: var(--spacing-lg);
   font-family: var(--font-cartoon);
 }
@@ -267,22 +262,22 @@ export default {
 
 .correct-button {
   background: var(--color-success);
-  color: white;
+  color: black;
 }
 
 .correct-button:hover {
-  background: #28a745;
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .incorrect-button {
   background: var(--color-warning);
-  color: white;
+  color: black;
 }
 
 .incorrect-button:hover {
-  background: #e0a800;
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .vocabulary-section {
@@ -291,7 +286,7 @@ export default {
 
 .vocabulary-title {
   font-size: var(--font-size-lg);
-  color: var(--color-text);
+  color: black;
   margin-bottom: var(--spacing-lg);
   font-family: var(--font-cartoon);
 }
@@ -321,13 +316,13 @@ export default {
 
 .vocabulary-term {
   font-weight: bold;
-  color: var(--color-primary);
+  color: black;
   margin-bottom: var(--spacing-sm);
 }
 
 .vocabulary-definition {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: black;
   line-height: 1.4;
 }
 
@@ -337,7 +332,7 @@ export default {
 
 .summary-title {
   font-size: var(--font-size-lg);
-  color: var(--color-text);
+  color: black;
   margin-bottom: var(--spacing-lg);
   font-family: var(--font-cartoon);
 }
@@ -360,7 +355,7 @@ export default {
 
 .answer-question {
   font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
+  color: black;
   flex: 1;
 }
 
@@ -373,17 +368,17 @@ export default {
 
 .answer-response.yes {
   background: var(--color-success);
-  color: white;
+  color: black;
 }
 
 .answer-response.no {
   background: var(--color-error);
-  color: white;
+  color: black;
 }
 
 .answer-response.dont_know {
   background: var(--color-warning);
-  color: white;
+  color: black;
 }
 
 .game-actions {
@@ -408,7 +403,7 @@ export default {
 
 .play-again-button {
   background: var(--color-primary);
-  color: white;
+  color: black;
 }
 
 .play-again-button:hover {
@@ -418,7 +413,7 @@ export default {
 
 .exit-button {
   background: var(--color-text-secondary);
-  color: white;
+  color: black;
 }
 
 .exit-button:hover {
@@ -459,4 +454,3 @@ export default {
   }
 }
 </style>
-

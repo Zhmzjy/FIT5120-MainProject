@@ -1,6 +1,6 @@
 <template>
   <div class="ai-challenge-page">
-    <img src="/images/backformap.jpg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;" alt="background">
+    <img src="/images/epic3-background.jpg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;" alt="background">
 
     <header class="top-nav">
       <div class="nav-content">
@@ -147,9 +147,9 @@ export default {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background: transparent;
+  backdrop-filter: none;
+  border-bottom: none;
 }
 
 .nav-content {
@@ -166,9 +166,10 @@ export default {
   border: none;
   font-size: var(--font-size-xl);
   font-weight: bold;
-  color: var(--color-primary);
+  color: white;
   cursor: pointer;
   font-family: var(--font-cartoon);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .nav-links {
@@ -180,16 +181,17 @@ export default {
   background: none;
   border: none;
   font-size: var(--font-size-md);
-  color: var(--color-text);
+  color: white;
   cursor: pointer;
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--border-radius-md);
   transition: background-color 0.3s;
   font-family: var(--font-cartoon);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .nav-link:hover {
-  background: var(--color-light);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .mobile-toggle {
@@ -198,6 +200,7 @@ export default {
   border: none;
   font-size: var(--font-size-lg);
   cursor: pointer;
+  color: white;
 }
 
 .main-content {

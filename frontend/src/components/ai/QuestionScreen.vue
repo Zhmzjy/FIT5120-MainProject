@@ -15,7 +15,6 @@
     </div>
 
     <div class="question-content">
-      <div class="ai-avatar">🤖</div>
       <div class="question-bubble">
         <h2 class="question-text">{{ currentQuestion }}</h2>
       </div>
@@ -26,9 +25,7 @@
       <div class="answer-buttons">
         <button
           @click="submitAnswer('yes')"
-          class="answer-button yes-button"
-        >
-          <span class="button-icon">✅</span>
+          class="answer-button yes-button">
           <span class="button-text">Yes</span>
         </button>
 
@@ -36,7 +33,6 @@
           @click="submitAnswer('no')"
           class="answer-button no-button"
         >
-          <span class="button-icon">❌</span>
           <span class="button-text">No</span>
         </button>
 
@@ -44,7 +40,6 @@
           @click="submitAnswer('dont_know')"
           class="answer-button maybe-button"
         >
-          <span class="button-icon">🤷</span>
           <span class="button-text">Don't Know</span>
         </button>
       </div>
@@ -206,41 +201,35 @@ export default {
   font-family: var(--font-cartoon);
   font-weight: bold;
   min-width: 120px;
-  background: white;
+  color: black;
   border: 3px solid transparent;
 }
 
 .yes-button {
-  color: var(--color-success);
-  border-color: var(--color-success);
+  background: var(--color-success);
 }
 
 .yes-button:hover {
-  background: var(--color-success);
-  color: white;
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .no-button {
-  color: var(--color-error);
-  border-color: var(--color-error);
+  background: var(--color-error);
 }
 
 .no-button:hover {
-  background: var(--color-error);
-  color: white;
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .maybe-button {
-  color: var(--color-warning);
-  border-color: var(--color-warning);
+  background: var(--color-warning);
 }
 
 .maybe-button:hover {
-  background: var(--color-warning);
-  color: white;
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .button-icon {

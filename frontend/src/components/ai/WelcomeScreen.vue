@@ -1,7 +1,6 @@
 <template>
   <div class="welcome-screen">
     <div class="welcome-header">
-      <div class="game-icon">🤖</div>
       <h1 class="game-title">AI Animal Challenge</h1>
       <p class="game-subtitle">Can you outsmart the AI?</p>
     </div>
@@ -10,15 +9,12 @@
       <h2>How to Play</h2>
       <div class="instruction-steps">
         <div class="instruction-step">
-          <div class="step-number">1</div>
           <div class="step-text">Think of an Australian animal</div>
         </div>
         <div class="instruction-step">
-          <div class="step-number">2</div>
           <div class="step-text">Answer Yes/No/Don't Know questions</div>
         </div>
         <div class="instruction-step">
-          <div class="step-number">3</div>
           <div class="step-text">See if the AI can guess your animal!</div>
         </div>
       </div>
@@ -27,23 +23,7 @@
     <div class="welcome-actions">
       <button @click="$emit('startGame')" class="start-button">
         Start Challenge
-        <span class="button-icon">🎯</span>
       </button>
-    </div>
-
-    <div class="game-features">
-      <div class="feature">
-        <span class="feature-icon">⚡</span>
-        <span class="feature-text">Quick rounds</span>
-      </div>
-      <div class="feature">
-        <span class="feature-icon">🧠</span>
-        <span class="feature-text">Learn new words</span>
-      </div>
-      <div class="feature">
-        <span class="feature-icon">🏆</span>
-        <span class="feature-text">Beat the AI</span>
-      </div>
     </div>
   </div>
 </template>
@@ -63,11 +43,6 @@ export default {
 
 .welcome-header {
   margin-bottom: var(--spacing-xl);
-}
-
-.game-icon {
-  font-size: 4rem;
-  margin-bottom: var(--spacing-md);
 }
 
 .game-title {
@@ -135,7 +110,7 @@ export default {
 }
 
 .start-button {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  background: linear-gradient(135deg, #333333, #000000);
   color: white;
   border: none;
   padding: var(--spacing-lg) var(--spacing-xl);
@@ -153,11 +128,7 @@ export default {
 
 .start-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.button-icon {
-  font-size: var(--font-size-lg);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
 .game-features {
@@ -175,10 +146,6 @@ export default {
   background: rgba(255, 255, 255, 0.7);
   border-radius: var(--border-radius-md);
   border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.feature-icon {
-  font-size: var(--font-size-lg);
 }
 
 .feature-text {

@@ -39,6 +39,7 @@
             </Button>
 
             <Button
+              type="primary"
               size="large"
               @click="navigateToDailyWildle"
             >

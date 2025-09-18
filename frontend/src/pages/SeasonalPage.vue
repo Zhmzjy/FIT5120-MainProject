@@ -11,6 +11,10 @@
           <div class="nav-right">
             <button class="nav-btn" @click="navigateToHome">Home</button>
             <button class="nav-btn" @click="navigateToWildlife">Learn Wildlife</button>
+            <button class="nav-btn" @click="navigateToSeasonal">Seasonal Activities</button>
+            <button class="nav-btn" @click="navigateToAIChallenge">AI Challenge</button>
+            <button class="nav-btn" @click="navigateToDailyWildle">Daily Wildle</button>
+            <button class="nav-btn" @click="navigateToConservation">Conservation</button>
           </div>
         </div>
       </div>
@@ -303,6 +307,26 @@ export default {
 
     navigateToWildlife() {
       this.$router.push('/learn-wildlife')
+    },
+
+    navigateToSeasonal() {
+      // Don't navigate if already on seasonal page
+      if (this.$route.path === '/seasonal') {
+        return;
+      }
+      this.$router.push('/seasonal')
+    },
+
+    navigateToAIChallenge() {
+      this.$router.push('/ai-challenge')
+    },
+
+    navigateToDailyWildle() {
+      this.$router.push('/daily-wildle')
+    },
+
+    navigateToConservation() {
+      this.$router.push('/conservation')
     }
   }
 }

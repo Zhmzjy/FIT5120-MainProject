@@ -10,8 +10,10 @@
         <nav class="nav-links">
           <button @click="goHome" class="nav-link">Home</button>
           <button @click="goToWildlife" class="nav-link">Learn Wildlife</button>
-          <button @click="goToSeasonal" class="nav-link">Seasonal Wildlife</button>
+          <button @click="goToSeasonal" class="nav-link">Seasonal Activities</button>
           <button @click="goToAIChallenge" class="nav-link">AI Challenge</button>
+          <button @click="goToDailyWildle" class="nav-link">Daily Wildle</button>
+          <button @click="goToConservation" class="nav-link">Conservation</button>
         </nav>
         <button @click="toggleMobileMenu" class="mobile-toggle">🍔</button>
       </div>
@@ -33,6 +35,7 @@
 
 <script>
 import DailyWildleContainer from '../components/daily/DailyWildleContainer.vue'
+import ApiService from '../services/api.js'
 
 export default {
   name: 'DailyWildle',
@@ -54,21 +57,27 @@ export default {
       }
     }
   },
-  mounted() {
-
+  async mounted() {
+    await this.loadAnimalData()
   },
   methods: {
     goHome() {
       this.$router.push('/')
     },
     goToWildlife() {
-      this.$router.push('/wildlife')
+      this.$router.push('/learn-wildlife')
     },
     goToSeasonal() {
       this.$router.push('/seasonal')
     },
     goToAIChallenge() {
       this.$router.push('/ai-challenge')
+    },
+    goToDailyWildle() {
+      this.$router.push('/daily-wildle')
+    },
+    goToConservation() {
+      this.$router.push('/conservation')
     },
     toggleMobileMenu() {
       this.mobileMenuOpen = !this.mobileMenuOpen
@@ -81,22 +90,55 @@ export default {
       this.gameState.hasPlayedToday = false
       this.gameState.phase = 'welcome'
     },
+    async loadAnimalData() {
+      try {
+        const animalData = await ApiService.getDailyWildleAnimal()
+        this.gameState.currentAnimal = {
+          common_name: animalData.common_name,
+          scientific_name: animalData.scientific_name,
+          image_url: animalData.image_url,
+          hints: [
+            'This animal lives in trees',
+            'This animal eats eucalyptus leaves',
+            'This animal is a marsupial',
+            'This animal sleeps most of the day',
+            'This animal is found in eastern Australia'
+          ]
+        }
+      } catch (error) {
+        console.error('Failed to load animal data:', error)
+        this.gameState.currentAnimal = {
+          common_name: "Koala",
+          scientific_name: "Phascolarctos cinereus",
+          image_url: "/images/koala.png",
+          hints: [
+            'This animal lives in trees',
+            'This animal eats eucalyptus leaves',
+            'This animal is a marsupial',
+            'This animal sleeps most of the day',
+            'This animal is found in eastern Australia'
+          ]
+        }
+      }
+    },
     handleStartDaily() {
       this.gameState.phase = 'playing'
-      this.gameState.currentAnimal = {
-        common_name: "Koala",
-        scientific_name: "Phascolarctos cinereus",
-        image_url: "/images/koala.png",
-        hints: [
-          "This animal lives in trees",
-          "This animal eats eucalyptus leaves",
-          "This animal is a marsupial",
-          "This animal sleeps most of the day",
-          "This animal is found in eastern Australia"
-        ]
-      }
       this.gameState.guesses = []
       this.gameState.feedback = null
+      if (!this.gameState.currentAnimal) {
+        this.gameState.currentAnimal = {
+          common_name: "Koala",
+          scientific_name: "Phascolarctos cinereus",
+          image_url: "/images/koala.png",
+          hints: [
+            'This animal lives in trees',
+            'This animal eats eucalyptus leaves',
+            'This animal is a marsupial',
+            'This animal sleeps most of the day',
+            'This animal is found in eastern Australia'
+          ]
+        }
+      }
     },
     handleSubmitGuess(guess) {
       this.gameState.guesses.push(guess)

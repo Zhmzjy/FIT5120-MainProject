@@ -10,9 +10,10 @@
         <nav class="nav-links">
           <button @click="goHome" class="nav-link">Home</button>
           <button @click="goToWildlife" class="nav-link">Learn Wildlife</button>
-          <button @click="goToSeasonal" class="nav-link">Seasonal Wildlife</button>
+          <button @click="goToSeasonal" class="nav-link">Seasonal Activities</button>
           <button @click="goToAIChallenge" class="nav-link">AI Challenge</button>
           <button @click="goToDailyWildle" class="nav-link">Daily Wildle</button>
+          <button @click="goToConservation" class="nav-link">Conservation</button>
         </nav>
         <button @click="toggleMobileMenu" class="mobile-toggle">🍔</button>
       </div>
@@ -28,7 +29,6 @@
 
 <script>
 import ConservationContainer from '../components/conservation/ConservationContainer.vue'
-
 export default {
   name: 'Conservation',
   components: {
@@ -44,7 +44,7 @@ export default {
       this.$router.push('/')
     },
     goToWildlife() {
-      this.$router.push('/wildlife')
+      this.$router.push('/learn-wildlife')
     },
     goToSeasonal() {
       this.$router.push('/seasonal')
@@ -54,6 +54,9 @@ export default {
     },
     goToDailyWildle() {
       this.$router.push('/daily-wildle')
+    },
+    goToConservation() {
+      this.$router.push('/conservation')
     },
     toggleMobileMenu() {
       this.mobileMenuOpen = !this.mobileMenuOpen

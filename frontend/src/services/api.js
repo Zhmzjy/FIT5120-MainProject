@@ -80,6 +80,10 @@ class ApiService {
   async getConservationSpecies() {
     return this.request('/conservation/species')
   }
+
+  async getDailyWildleAnimal() {
+    return this.request('/conservation/daily-animal')
+  }
 }
 
 export default new ApiService()

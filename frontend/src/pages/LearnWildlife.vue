@@ -7,8 +7,11 @@
           <button @click="goHome" class="logo-button">Wildlife Academy</button>
         </div>
         <nav class="nav-links">
-          <button @click="goHome" class="nav-link">Home</button>
-          <button @click="showSeasonalWildlife" class="nav-link">Seasonal Wildlife</button>
+          <button @click="goToWildlife" class="nav-link">Learn Wildlife</button>
+          <button @click="goToSeasonal" class="nav-link">Seasonal Activities</button>
+          <button @click="goToAIChallenge" class="nav-link">AI Challenge</button>
+          <button @click="goToDailyWildle" class="nav-link">Daily Wildle</button>
+          <button @click="goToConservation" class="nav-link">Conservation</button>
         </nav>
         <button @click="toggleMobileSidebar" class="mobile-toggle">🍔</button>
       </div>
@@ -104,6 +107,21 @@ export default {
     },
     handleLoadingStateChange(loading) {
       this.isLoading = loading
+    },
+    goToWildlife() {
+      this.$router.push('/learn-wildlife')
+    },
+    goToSeasonal() {
+      this.$router.push('/seasonal')
+    },
+    goToAIChallenge() {
+      this.$router.push('/ai-challenge')
+    },
+    goToDailyWildle() {
+      this.$router.push('/daily-wildle')
+    },
+    goToConservation() {
+      this.$router.push('/conservation')
     }
   }
 }

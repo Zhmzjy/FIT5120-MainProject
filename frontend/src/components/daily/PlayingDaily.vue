@@ -68,7 +68,7 @@
 
     <div v-if="showResult" class="game-actions">
       <button @click="$emit('playAgain')" class="action-button">
-        Tomorrow's Challenge
+        Play Again
       </button>
       <button @click="$emit('exit')" class="action-button secondary">
         Exit

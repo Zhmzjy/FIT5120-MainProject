@@ -89,3 +89,43 @@ def get_species_threat(common_name):
         'Koala': 'Deforestation and bushfires'
     }
     return threats.get(common_name, 'Habitat loss and human activities')
+
+@conservation_bp.route('/daily-animal', methods=['GET'])
+def get_daily_animal():
+    try:
+        db = DatabaseHelper()
+
+        query = """
+        SELECT DISTINCT 
+            s.common_name, 
+            s.scientific_name, 
+            s.image_url
+        FROM species s 
+        JOIN wildlife_observations w ON s.common_name = w.common_name 
+        WHERE s.common_name = 'Koala'
+        AND s.image_url IS NOT NULL
+        LIMIT 1
+        """
+
+        results = db.execute_query(query)
+
+        if not results:
+            return jsonify({
+                'common_name': 'Koala',
+                'scientific_name': 'Phascolarctos cinereus',
+                'image_url': '/images/koala.png'
+            })
+
+        row = results[0]
+        return jsonify({
+            'common_name': row['common_name'],
+            'scientific_name': row['scientific_name'],
+            'image_url': row['image_url']
+        })
+
+    except Exception as e:
+        return jsonify({
+            'common_name': 'Koala',
+            'scientific_name': 'Phascolarctos cinereus',
+            'image_url': '/images/koala.png'
+        }), 200

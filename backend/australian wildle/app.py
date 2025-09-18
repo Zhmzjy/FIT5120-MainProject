@@ -164,7 +164,7 @@ def _make_feedback(guess_row: Dict[str, Any], target_row: Dict[str, Any], reveal
     return f
 
 # ---------- Routes ----------
-@app.get("/game/today")
+@app.get("/wildle/today")
 def game_today():
     date_str = _game_date_str()
     target = _daily_target()
@@ -185,7 +185,7 @@ def game_today():
         },
     }
 
-@app.post("/game/guess")
+@app.post("/wildle/guess")
 def game_guess(payload: GuessIn):
     name = payload.guess_name.strip().lower()
     by_name = _by_common_name()
@@ -216,7 +216,7 @@ def game_guess(payload: GuessIn):
         "feedback": feedback
     }
 
-@app.get("/game/history")
+@app.get("/wildle/history")
 def game_history(limit: int = 30):
     out: List[Dict[str, Any]] = []
     n = len(_SPECIES_ROWS)

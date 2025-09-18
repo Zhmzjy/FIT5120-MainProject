@@ -10,241 +10,152 @@ app = FastAPI()
 
 # ---------- Data models ----------
 
-
 class Species(BaseModel):
     id: str
     common_name: str
     scientific_name: str
-    attrs: Dict[str, object]  # bool/str
-
+    attrs: Dict[str, object]  # bool/None
 
 class Question(BaseModel):
     id: str
     text: str
-    attribute: str  # e.g., "has_feathers"
-    qtype: str  # "boolean" or "enum"
-
+    attribute: str  # e.g., "omnivore_flag"
+    qtype: str      # "boolean"
 
 class AnswerPayload(BaseModel):
     session_id: str
     question_id: str
-    answer: str  # "yes" | "no" | "unsure" (or enum value)
+    answer: str  # "yes" | "no" | "dont_know"
 
+# ---------- Load data ----------
 
-# ---------- Load species CSV ----------
-
-ATTR_COLS = [
-    "is_mammal",
-    "is_bird",
-    "is_reptile",
-    "is_amphibian",
-    "is_fish",
-    "is_invertebrate",
-    "lays_eggs",
-    "is_marsupial",
-    "is_monotreme",
-    "can_fly",
-    "can_glide",
-    "is_venomous",
-    "is_marine",
-    "is_freshwater",
-    "is_terrestrial",
-    "is_nocturnal",
-    "is_diurnal",
-    "is_arboreal",
-    "is_burrowing",
-    "is_endemic",
-    "has_pouch",
-    "has_shell_or_spines",
-    "has_feathers",
-    "has_scales",
-    "has_fur",
-    "diet",
-    "primary_habitat",
-    "locomotion",
-    "size_band",
-    "conservation",
-    "region_hint",
-]
+DETAILS_CSV = "animal_details_top_animals.csv"
+BOOL_Q_CSV  = "dictionary_questions_bool.csv"
 
 SPECIES: List[Species] = []
+QUESTIONS: List[Question] = []
 
-
-def _as_bool(v: str) -> Optional[bool]:
-    if v in ("1", "true", "True", "yes", "Yes"):
+def _as_bool(v: Optional[str]) -> Optional[bool]:
+    if v is None:
+        return None
+    s = str(v).strip().lower()
+    if s in ("1","true","yes","y","t"):
         return True
-    if v in ("0", "false", "False", "no", "No"):
+    if s in ("0","false","no","n","f"):
         return False
     return None
 
-
-def load_species_csv(path="species.csv"):
-    out = []
+def _load_rows(path: str) -> List[Dict[str,str]]:
     with open(path, newline="", encoding="utf-8") as f:
-        r = csv.DictReader(f)
-        for row in r:
-            attrs = {}
-            for k in ATTR_COLS:
-                if k in (
-                    "diet",
-                    "primary_habitat",
-                    "locomotion",
-                    "size_band",
-                    "conservation",
-                    "region_hint",
-                ):
-                    attrs[k] = row[k].strip() if row[k] else None
-                else:
-                    attrs[k] = _as_bool(row[k])
-            out.append(
-                Species(
-                    id=row["id"],
-                    common_name=row["common_name"],
-                    scientific_name=row["scientific_name"],
-                    attrs=attrs,
-                )
-            )
-    return out
+        return list(csv.DictReader(f))
+
+def load_species(path: str) -> List[Species]:
+    rows = _load_rows(path)
+    out: List[Species] = []
+    for i, row in enumerate(rows):
+        sid = row.get("id") or f"s{i+1:03d}"
+        out.append(Species(
+            id=sid,
+            common_name=row.get("CommonName") or row.get("common_name") or "",
+            scientific_name=row.get("ScientificName") or row.get("scientific_name") or "",
+            attrs={},  # filled after we know which fields are in bool.csv
+        ))
+    return out, rows
+
+USE_IBRA_QUESTIONS = False # whether to include IBRA-related questions
+
+def load_bool_questions(path: str) -> List[Question]:
+    rows = _load_rows(path)
+    qlist: List[Question] = []
+    seen = set()
+    for r in rows:
+        field = (r.get("Field") or "").strip()
+        text  = (r.get("Question") or "").strip()
+        if not field or not text or field in seen:
+            continue
+        if not USE_IBRA_QUESTIONS and field.lower().startswith("ibra_"):
+            continue
+        seen.add(field)
+        qlist.append(Question(
+            id=f"q_{field}",
+            text=text,
+            attribute=field,
+            qtype="boolean",
+        ))
+    return qlist
 
 
-SPECIES = load_species_csv()
+# initialise species + raw rows
+SPECIES, _SPECIES_ROWS = load_species(DETAILS_CSV)
+# initialise questions (authoritative list of boolean fields)
+QUESTIONS = load_bool_questions(BOOL_Q_CSV)
 
-# ---------- Questions (map 1:1 to attributes) ----------
-
-QUESTIONS: List[Question] = [
-    Question(
-        id="q_feathers",
-        text="Does it have feathers?",
-        attribute="has_feathers",
-        qtype="boolean",
-    ),
-    Question(
-        id="q_scales",
-        text="Does it have scales?",
-        attribute="has_scales",
-        qtype="boolean",
-    ),
-    Question(
-        id="q_fur", text="Does it have fur?", attribute="has_fur", qtype="boolean"
-    ),
-    Question(
-        id="q_lays_eggs",
-        text="Does it lay eggs?",
-        attribute="lays_eggs",
-        qtype="boolean",
-    ),
-    Question(
-        id="q_pouch",
-        text="Does it have a pouch (marsupial)?",
-        attribute="is_marsupial",
-        qtype="boolean",
-    ),
-    Question(
-        id="q_monotreme",
-        text="Is it a monotreme (platypus/echidna)?",
-        attribute="is_monotreme",
-        qtype="boolean",
-    ),
-    Question(id="q_fly", text="Can it fly?", attribute="can_fly", qtype="boolean"),
-    Question(
-        id="q_glide", text="Can it glide?", attribute="can_glide", qtype="boolean"
-    ),
-    Question(
-        id="q_venom", text="Is it venomous?", attribute="is_venomous", qtype="boolean"
-    ),
-    Question(
-        id="q_marine",
-        text="Do you mostly find it in the ocean?",
-        attribute="is_marine",
-        qtype="boolean",
-    ),
-    Question(
-        id="q_fresh",
-        text="Do you find it in rivers or lakes?",
-        attribute="is_freshwater",
-        qtype="boolean",
-    ),
-    Question(
-        id="q_arboreal",
-        text="Does it live in trees a lot?",
-        attribute="is_arboreal",
-        qtype="boolean",
-    ),
-    Question(
-        id="q_burrow",
-        text="Does it dig or live in burrows?",
-        attribute="is_burrowing",
-        qtype="boolean",
-    ),
-    Question(
-        id="q_nocturnal",
-        text="Is it mostly active at night?",
-        attribute="is_nocturnal",
-        qtype="boolean",
-    ),
-    Question(
-        id="q_diurnal",
-        text="Is it mostly active in the day?",
-        attribute="is_diurnal",
-        qtype="boolean",
-    ),
-    Question(
-        id="q_locomotion_slither",
-        text="Does it slither?",
-        attribute="locomotion",
-        qtype="enum",
-    ),
-    Question(
-        id="q_locomotion_hop", text="Does it hop?", attribute="locomotion", qtype="enum"
-    ),
-    Question(
-        id="q_habitat_ocean",
-        text="Is its main home the ocean?",
-        attribute="primary_habitat",
-        qtype="enum",
-    ),
-    Question(
-        id="q_region_tropical",
-        text="Is it from tropical parts of Australia?",
-        attribute="region_hint",
-        qtype="enum",
-    ),
-]
+# project the boolean attributes for each species strictly to fields in bool.csv
+BOOL_FIELDS = [q.attribute for q in QUESTIONS]
+for sp, raw in zip(SPECIES, _SPECIES_ROWS):
+    attrs: Dict[str, object] = {}
+    for f in BOOL_FIELDS:
+        attrs[f] = _as_bool(raw.get(f))
+    sp.attrs = attrs
 
 # ---------- Sessions & inference ----------
-
 
 class SessionState:
     def __init__(self):
         self.candidates = {s.id: 1.0 for s in SPECIES}
         self.asked: List[str] = []
-        self.answers: Dict[str, str] = {}  # qid -> "yes"/"no"/"unsure" or enum value
-
+        self.answers: Dict[str, str] = {}  # qid -> "yes"/"no"/"dont_know"
 
 SESSIONS: Dict[str, SessionState] = {}
 
-# Likelihoods for boolean Q/A (tweakable)
-P_YES_TRUE = 0.95
-P_YES_FALSE = 0.05
-P_NO_TRUE = 0.05
-P_NO_FALSE = 0.95
-P_UNSURE_DECAY = 0.90
+P_YES_TRUE     = 0.95
+P_YES_FALSE    = 0.05
+P_NO_TRUE      = 0.05
+P_NO_FALSE     = 0.95
+P_DONT_KNOW    = 0.90
+
+# Exploration to Exploitation schedule
+EXPLORE_QUESTIONS      = 5     # stay neutral (pure info gain) for the first N questions
+EXPLOIT_CONF_THRESHOLD = 0.75  # or when best guess confidence passes this, start honing in
+YES_BONUS_WEIGHT       = 0.25  # how much to favour questions likely to get a "yes" in hone-in phase
+TOPK_FOR_YES_BONUS     = 3     # look at the top-K candidates to estimate yes-likelihood
 
 CONFIDENCE_THRESHOLD = 0.70
 MAX_QUESTIONS = 20
 
+def normalize(weights: Dict[str, float]) -> Dict[str, float]:
+    tot = sum(weights.values())
+    if tot <= 0:
+        n = len(weights)
+        return {k: 1.0/n for k in weights} if n else {}
+    return {k: v/tot for k,v in weights.items()}
+
+def entropy(weights: Dict[str, float]) -> float:
+    tot = sum(weights.values())
+    h = 0.0
+    for v in weights.values():
+        p = v / tot if tot else 0.0
+        if p > 0:
+            h -= p * math.log2(p)
+    return h
+
+def get_species_by_id(sid: str) -> Species:
+    for s in SPECIES:
+        if s.id == sid:
+            return s
+    raise KeyError(sid)
+
+def best_guess(state: SessionState):
+    w = normalize(state.candidates)
+    sid, val = max(w.items(), key=lambda kv: kv[1])
+    return sid, val
 
 def decision_payload(state: SessionState):
     sid, conf = best_guess(state)
     sp = get_species_by_id(sid)
     reason = (
-        "confidence_threshold"
-        if conf >= CONFIDENCE_THRESHOLD
-        else (
-            "max_questions"
-            if len(state.asked) >= MAX_QUESTIONS
-            else "no_questions_left"
-        )
+        "confidence_threshold" if conf >= CONFIDENCE_THRESHOLD
+        else ("max_questions" if len(state.asked) >= MAX_QUESTIONS else "no_questions_left")
     )
     return {
         "id": sp.id,
@@ -255,139 +166,102 @@ def decision_payload(state: SessionState):
         "questions_asked": len(state.asked),
     }
 
-
 def should_decide(state: SessionState) -> bool:
-    # stop if any stopping condition is met
     sid, conf = best_guess(state)
     if conf >= CONFIDENCE_THRESHOLD:
         return True
     if len(state.asked) >= MAX_QUESTIONS:
         return True
-    # also stop if there are no more questions left to ask
-    remaining_questions = [q for q in QUESTIONS if q.id not in state.asked]
-    if not remaining_questions:
-        return True
-    return False
+    remaining = [q for q in QUESTIONS if q.id not in state.asked]
+    return not remaining
 
+def simulate_update(weights: Dict[str, float], q: Question, ans: str) -> Dict[str, float]:
+    if ans == "dont_know":
+        return normalize(dict(weights))
 
-def get_species_by_id(sid: str) -> Species:
-    for s in SPECIES:
-        if s.id == sid:
-            return s
-    raise KeyError(sid)
-
-
-def normalize(weights: Dict[str, float]):
-    total = sum(weights.values())
-    if total <= 0:
-        # reset to uniform if we collapsed accidentally
-        n = len(weights)
-        return {k: 1.0 / n for k in weights}
-    return {k: v / total for k, v in weights.items()}
-
-
-def entropy(weights: Dict[str, float]) -> float:
-    total = sum(weights.values())
-    h = 0.0
-    for v in weights.values():
-        p = v / total if total else 0
-        if p > 0:
-            h -= p * math.log2(p)
-    return h
-
-
-def simulate_update(
-    weights: Dict[str, float], q: Question, hypothetical_answer: str
-) -> Dict[str, float]:
-    neww = dict(weights)
-    for sid in list(neww.keys()):
+    neww: Dict[str, float] = {}
+    for sid, w in weights.items():
         sp = get_species_by_id(sid)
-        attr_val = sp.attrs.get(q.attribute)
-        w = neww[sid]
-        if q.qtype == "boolean":
-            if hypothetical_answer == "yes":
-                if attr_val is True:
-                    w *= P_YES_TRUE
-                elif attr_val is False:
-                    w *= P_YES_FALSE
-                else:
-                    w *= P_UNSURE_DECAY
-            elif hypothetical_answer == "no":
-                if attr_val is True:
-                    w *= P_NO_TRUE
-                elif attr_val is False:
-                    w *= P_NO_FALSE
-                else:
-                    w *= P_UNSURE_DECAY
-            else:  # unsure
-                w *= P_UNSURE_DECAY
-        else:  # enum
-            if isinstance(attr_val, str) and hypothetical_answer == attr_val:
-                w *= 0.95
+        val = sp.attrs.get(q.attribute)  # True / False (dataset is boolean)
+
+        if ans == "yes":
+            if val is True:
+                w *= P_YES_TRUE
+            else:  # val is False (or absent, treated as neutral)
+                w *= P_YES_FALSE
+        else:  # ans == "no"
+            if val is True:
+                w *= P_NO_TRUE
             else:
-                # soften, don't kill
-                w *= 0.75
+                w *= P_NO_FALSE
+
         neww[sid] = w
+
     return normalize(neww)
 
 
+def _topk_by_weight(state: SessionState, k: int):
+    w = normalize(state.candidates)
+    return sorted(w.items(), key=lambda kv: kv[1], reverse=True)[:max(1, k)]
+
+
 def select_next_question(state: SessionState) -> Question:
-    # expected entropy reduction
-    best_q, best_gain = None, -1
-    current_h = entropy(state.candidates)
+    asked = set(state.asked)
+    cur_w = normalize(state.candidates)
+    cur_h = entropy(cur_w)
+
+    # decide whether to hone in yet
+    _, best_conf = best_guess(state)
+    hone_in = (len(state.asked) >= EXPLORE_QUESTIONS) or (best_conf >= EXPLOIT_CONF_THRESHOLD)
+
+    # cache top-k for yes-bias
+    topk = _topk_by_weight(state, TOPK_FOR_YES_BONUS)
+    topk_total = sum(w for _, w in topk) or 1.0
+
+    best_q, best_score = None, -1e18
+
     for q in QUESTIONS:
-        if q.id in state.asked:
+        if q.id in asked:
             continue
-        outcomes = (
-            ["yes", "no", "unsure"]
-            if q.qtype == "boolean"
-            else [
-                "fly",
-                "walk",
-                "hop",
-                "glide",
-                "slither",
-                "swim",
-                "reef",
-                "coastal",
-                "open_ocean",
-                "tropical",
-            ]
-        )
-        # keep outcome set small & relevant; in production, compute from data
+
+        # --- base: expected information gain (symmetric yes/no/dont_know priors) ---
         exp_h = 0.0
-        # assume naive priors for outcomes
-        priors = (
-            [0.45, 0.45, 0.10]
-            if q.qtype == "boolean"
-            else [1 / len(outcomes)] * len(outcomes)
-        )
-        for p_out, out in zip(priors, outcomes):
-            neww = simulate_update(
-                state.candidates, q, out if q.qtype == "boolean" else out
-            )
-            exp_h += p_out * entropy(neww)
-        gain = current_h - exp_h
-        if gain > best_gain:
-            best_gain = gain
+        priors = [0.45, 0.45, 0.10]  # yes / no / dont_know
+        for p_out, out in zip(priors, ["yes", "no", "dont_know"]):
+            nxt = simulate_update(cur_w, q, out)
+            exp_h += p_out * entropy(nxt)
+        gain = cur_h - exp_h
+
+        # --- hone-in bonus: favour questions top-k are likely to answer "yes" to ---
+        if hone_in:
+            # estimate P(answer=="yes" | top-k)
+            # treat missing as False for this heuristic (dataset is boolean in your case)
+            yes_mass = 0.0
+            for sid, w in topk:
+                sp = get_species_by_id(sid)
+                val = sp.attrs.get(q.attribute)  # True/False
+                if val is True:
+                    yes_mass += w
+            p_yes_topk = yes_mass / topk_total  # 0..1
+
+            # blend info gain with yes-likelihood
+            score = gain * (1.0 - YES_BONUS_WEIGHT) + YES_BONUS_WEIGHT * p_yes_topk
+        else:
+            score = gain
+
+        if score > best_score:
+            best_score = score
             best_q = q
+
     return best_q
 
 
-def apply_answer(state: SessionState, q: Question, answer: str):
+def apply_answer(state: SessionState, q: Question, ans: str):
     state.asked.append(q.id)
-    state.answers[q.id] = answer
-    state.candidates = simulate_update(state.candidates, q, answer)
-
-
-def best_guess(state: SessionState):
-    weights = normalize(state.candidates)
-    sid, w = max(weights.items(), key=lambda kv: kv[1])
-    return sid, w
-
+    state.answers[q.id] = ans
+    state.candidates = simulate_update(state.candidates, q, ans)
 
 # ---------- Routes ----------
-
 
 @app.post("/session/new")
 def new_session():
@@ -395,23 +269,21 @@ def new_session():
     SESSIONS[sid] = SessionState()
     return {"session_id": sid}
 
-
 @app.get("/next_question")
 def next_question(session_id: str):
-    if session_id not in SESSIONS:
+    st = SESSIONS.get(session_id)
+    if not st:
         raise HTTPException(404, "unknown session")
-    st = SESSIONS[session_id]
 
-    # If we should stop, return the final decision instead of a question
     if should_decide(st):
         return {"decision": decision_payload(st)}
 
     q = select_next_question(st)
     if not q:
-        # No questions left -> decide anyway
         return {"decision": decision_payload(st)}
-    return {"question": q.dict()}
 
+    # keep shape consistent with existing client
+    return {"question": q.dict()}
 
 @app.post("/answer")
 def answer(payload: AnswerPayload):
@@ -423,24 +295,19 @@ def answer(payload: AnswerPayload):
     if not q:
         raise HTTPException(404, "unknown question")
 
-    ans = payload.answer.lower()
-    if q.qtype == "boolean" and ans not in ("yes", "no", "unsure"):
-        raise HTTPException(400, "answer must be yes/no/unsure")
+    ans = payload.answer.strip().lower()
+    if ans not in ("yes","no","dont_know"):
+        raise HTTPException(400, "answer must be yes/no/dont_know")
 
-    # Apply the answer update
     apply_answer(st, q, ans)
 
-    # If it’s time to decide, return the decision now
     if should_decide(st):
         return {"decision": decision_payload(st)}
 
-    # Otherwise, return the next question to keep looping
     nxt = select_next_question(st)
     if not nxt:
-        # No further questions; decide anyway
         return {"decision": decision_payload(st)}
 
-    # Optional: include a lightweight preview of current top guess (not a decision!)
     sid, conf = best_guess(st)
     sp = get_species_by_id(sid)
     return {
@@ -452,7 +319,6 @@ def answer(payload: AnswerPayload):
             "confidence": round(conf, 3),
         },
     }
-
 
 @app.get("/guess")
 def guess(session_id: str):
@@ -467,7 +333,6 @@ def guess(session_id: str):
         "scientific_name": sp.scientific_name,
         "confidence": round(conf, 3),
     }
-
 
 @app.post("/reset")
 def reset(session_id: str):

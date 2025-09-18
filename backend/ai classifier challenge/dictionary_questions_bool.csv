@@ -1,0 +1,129 @@
+Field,Question
+eats_insects,Does your animal mostly eat insects?
+eats_fruit,Does your animal mostly eat fruit?
+eats_fish,Does your animal mostly eat fish?
+omnivore_flag,Does your animal eat both plants and animals?
+forages_canopy,Does your animal mostly look for food in the canopy (high in trees)?
+forages_understory,Does your animal mostly look for food in the understory (lower branches and shrubs)?
+forages_ground,Does your animal mostly look for food on the ground?
+forages_aerial,Does your animal mostly look for food in the air (while flying)?
+forages_underwater,Does your animal mostly look for food underwater?
+forages_water_surf,Does your animal mostly look for food on the water's surface?
+is_crepuscular,Is your animal crepuscular (active at dawn or dusk)?
+is_cathemeral,Is your animal cathemeral (active day and night)?
+can_fly,Can your animal fly?
+aerial_forager,Does your animal mostly look for food in the air (while flying)?
+ground_forager,Does your animal mostly look for food on the ground?
+wetland_user,Is your animal mostly found in wetlands or in water?
+nocturnal,Is your animal mostly nocturnal (active at night)?
+can_swim,Can your animal swim?
+specialist_flag,Does your animal have a specialist diet (eats only few types of food or doesn't have many ways to forage)?
+generalist_flag,Does your animal have a generalist diet (eats many different things or forages in many ways)?
+is_marsupial,Is your animal a marsupial?
+is_bat,"Is your animal part of any of the bat families (e.g., Pteropodidae, Vespertilionidae, Molossidae, Miniopteridae)?"
+habitat_forest_woodland,Does your animal live in Forest or Woodland?
+habitat_grassland_floodplain_savanna,Does your animal live in Grassland or Floodplain or Savanna?
+habitat_desert_arid_zone,Does your animal live in Desert or Arid Zone?
+habitat_rainforest_tropical,Does your animal live in Rainforest or Tropical?
+habitat_coastal_marine,Does your animal live in Coastal or Marine?
+habitat_alpine_subalpine,Does your animal live in Alpine or Subalpine?
+habitat_unknown,Is it unclear or unknown where your Animal lives?
+ibra_south_eastern_queensland,Does your animal live in South Eastern Queensland?
+ibra_murray_darling_depression,Does your animal live in Murray Darling Depression?
+ibra_sydney_basin,Does your animal live in Sydney Basin?
+ibra_south_eastern_highlands,Does your animal live in South Eastern Highlands?
+ibra_riverina,Does your animal live in Riverina?
+ibra_south_east_corner,Does your animal live in South East Corner?
+ibra_south_east_coastal_plain,Does your animal live in South East Coastal Plain?
+ibra_nsw_north_coast,Does your animal live in NSW North Coast?
+ibra_brigalow_belt_south,Does your animal live in Brigalow Belt South?
+ibra_wet_tropics,Does your animal live in Wet Tropics?
+ibra_naracoorte_coastal_plain,Does your animal live in Naracoorte Coastal Plain?
+ibra_nsw_south_western_slopes,Does your animal live in NSW South Western Slopes?
+ibra_southern_volcanic_plain,Does your animal live in Southern Volcanic Plain?
+ibra_brigalow_belt_north,Does your animal live in Brigalow Belt North?
+ibra_victorian_midlands,Does your animal live in Victorian Midlands?
+ibra_eyre_yorke_block,Does your animal live in Eyre Yorke Block?
+ibra_cape_york_peninsula,Does your animal live in Cape York Peninsula?
+ibra_darwin_coastal,Does your animal live in Darwin Coastal?
+ibra_flinders_lofty_block,Does your animal live in Flinders Lofty Block?
+ibra_new_england_tablelands,Does your animal live in New England Tablelands?
+ibra_channel_country,Does your animal live in Channel Country?
+ibra_kanmantoo,Does your animal live in Kanmantoo?
+ibra_central_mackay_coast,Does your animal live in Central Mackay Coast?
+ibra_mulga_lands,Does your animal live in Mulga Lands?
+ibra_darling_riverine_plains,Does your animal live in Darling Riverine Plains?
+ibra_dampierland,Does your animal live in Dampierland?
+ibra_einasleigh_uplands,Does your animal live in Einasleigh Uplands?
+ibra_victoria_bonaparte,Does your animal live in Victoria Bonaparte?
+ibra_furneaux,Does your animal live in Furneaux?
+ibra_pine_creek,Does your animal live in Pine Creek?
+ibra_nandewar,Does your animal live in Nandewar?
+ibra_australian_alps,Does your animal live in Australian Alps?
+ibra_mitchell_grass_downs,Does your animal live in Mitchell Grass Downs?
+ibra_tasmanian_south_east,Does your animal live in Tasmanian South East?
+ibra_macdonnell_ranges,Does your animal live in MacDonnell Ranges?
+ibra_cobar_peneplain,Does your animal live in Cobar Peneplain?
+ibra_swan_coastal_plain,Does your animal live in Swan Coastal Plain?
+ibra_gawler,Does your animal live in Gawler?
+ibra_gulf_plains,Does your animal live in Gulf Plains?
+ibra_simpson_strzelecki_dunefields,Does your animal live in Simpson Strzelecki Dunefields?
+ibra_carnarvon,Does your animal live in Carnarvon?
+ibra_gulf_fall_and_uplands,Does your animal live in Gulf Fall and Uplands?
+ibra_jarrah_forest,Does your animal live in Jarrah Forest?
+ibra_arnhem_coast,Does your animal live in Arnhem Coast?
+ibra_esperance_plains,Does your animal live in Esperance Plains?
+ibra_great_sandy_desert,Does your animal live in Great Sandy Desert?
+ibra_king,Does your animal live in King?
+ibra_broken_hill_complex,Does your animal live in Broken Hill Complex?
+ibra_ord_victoria_plain,Does your animal live in Ord Victoria Plain?
+ibra_stony_plains,Does your animal live in Stony Plains?
+ibra_mount_isa_inlier,Does your animal live in Mount Isa Inlier?
+ibra_pilbara,Does your animal live in Pilbara?
+ibra_daly_basin,Does your animal live in Daly Basin?
+ibra_great_victoria_desert,Does your animal live in Great Victoria Desert?
+ibra_warren,Does your animal live in Warren?
+ibra_tanami,Does your animal live in Tanami?
+ibra_gulf_coastal,Does your animal live in Gulf Coastal?
+ibra_northern_kimberley,Does your animal live in Northern Kimberley?
+ibra_finke,Does your animal live in Finke?
+ibra_desert_uplands,Does your animal live in Desert Uplands?
+ibra_tasmanian_northern_slopes,Does your animal live in Tasmanian Northern Slopes?
+ibra_avon_wheatbelt,Does your animal live in Avon Wheatbelt?
+ibra_pacific_subtropical_islands,Does your animal live in Pacific Subtropical Islands?
+ibra_arnhem_plateau,Does your animal live in Arnhem Plateau?
+ibra_geraldton_sandplains,Does your animal live in Geraldton Sandplains?
+ibra_tasmanian_northern_midlands,Does your animal live in Tasmanian Northern Midlands?
+ibra_tasmanian_southern_ranges,Does your animal live in Tasmanian Southern Ranges?
+ibra_central_kimberley,Does your animal live in Central Kimberley?
+ibra_tiwi_cobourg,Does your animal live in Tiwi Cobourg?
+ibra_nullarbor,Does your animal live in Nullarbor?
+ibra_burt_plain,Does your animal live in Burt Plain?
+ibra_tasmanian_west,Does your animal live in Tasmanian West?
+ibra_davenport_murchison_ranges,Does your animal live in Davenport Murchison Ranges?
+ibra_coolgardie,Does your animal live in Coolgardie?
+ibra_sturt_plateau,Does your animal live in Sturt Plateau?
+ibra_murchison,Does your animal live in Murchison?
+ibra_mallee,Does your animal live in Mallee?
+ibra_central_ranges,Does your animal live in Central Ranges?
+ibra_tasmanian_central_highlands,Does your animal live in Tasmanian Central Highlands?
+ibra_ben_lomond,Does your animal live in Ben Lomond?
+ibra_hampton,Does your animal live in Hampton?
+ibra_yalgoo,Does your animal live in Yalgoo?
+ibra_gascoyne,Does your animal live in Gascoyne?
+ibra_indian_tropical_islands,Does your animal live in Indian Tropical Islands?
+ibra_subantarctic_islands,Does your animal live in Subantarctic Islands?
+ibra_central_arnhem,Does your animal live in Central Arnhem?
+ibra_gibson_desert,Does your animal live in Gibson Desert?
+ibra_little_sandy_desert,Does your animal live in Little Sandy Desert?
+ibra_coral_sea,Does your animal live in Coral Sea?
+ibra_unknown,Is it unclear or unknown where your Animal lives?
+top_diet_fish,Does your animal mostly eat fish?
+top_diet_fruit,Does your animal mostly eat fruit?
+top_diet_invertebrates,"Does your animal mostly eat invertebrates (bugs, worms, etc.)?"
+top_diet_nectar,Does your animal mostly drink nectar from flowers?
+top_diet_other_plant,"Does your animal mostly eat other plant parts (leaves, stems, or roots)?"
+top_diet_scavenge,Does your animal mostly scavenge (eat animals that are already dead)?
+top_diet_seed,Does your animal mostly eat seeds?
+top_diet_vert_warm,Does your animal mostly eat warm-blooded animals (like mammals or birds)?
+top_diet_vertebrate_unknown,Does your animal mostly eat a mix of vertebrates?

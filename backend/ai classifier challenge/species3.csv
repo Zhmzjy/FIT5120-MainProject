@@ -1,4 +1,0 @@
-id,common_name,scientific_name,is_mammal,is_bird,is_reptile,is_amphibian,is_fish,is_invertebrate,lays_eggs,is_marsupial,is_monotreme,can_fly,can_glide,is_venomous,is_marine,is_freshwater,is_terrestrial,is_nocturnal,is_diurnal,is_arboreal,is_burrowing,is_endemic,has_pouch,has_shell_or_spines,has_feathers,has_scales,has_fur,diet,primary_habitat,locomotion,size_band,conservation,region_hint
-m_koala,Koala,Phascolarctos cinereus,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,1,0,1,0,1,1,0,0,0,1,herbivore,forest,walk,medium,vulnerable,east
-b_magpie,Australian Magpie,Gymnorhina tibicen,0,1,0,0,0,0,1,0,0,1,0,0,0,0,1,diurnal,0,0,0,1,0,1,0,0,0,omnivore,urban,fly,small,least_concern,temperate
-r_eastern_brown_snake,Eastern Brown Snake,Pseudonaja textilis,0,0,1,0,0,0,1,0,0,0,0,1,0,0,1,diurnal,0,0,0,0,0,0,1,0,0,carnivore,grassland,slither,medium,least_concern,se

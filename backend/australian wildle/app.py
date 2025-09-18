@@ -15,7 +15,7 @@ CSV_PATH = os.environ.get("WILDLE_CSV", "animal_details_top_animals_pruned.csv")
 SECRET = os.environ.get("WILDLE_SECRET", "change-me-please")
 
 EPBC_ORDER = ["Present", "Vulnerable", "Endangered", "Critically Endangered"]
-SIZE_ORDER = ["Small", "Medium", "Large", "Very Large"]
+SIZE_ORDER = ["Very Large", "Large", "Medium", "Small"]
 EPBC_RANK = {v: i for i, v in enumerate(EPBC_ORDER)}
 SIZE_RANK = {v: i for i, v in enumerate(SIZE_ORDER)}
 
@@ -41,8 +41,16 @@ def _derive_diet(row: Dict[str, Any]) -> List[str]:
     return sorted(items)
 
 def _derive_habitats(row: Dict[str, Any]) -> List[str]:
-    v = (row.get("foraging_top") or "").strip()
-    return [v] if v else []
+    # Build habitats strictly from the habitat_* boolean fields.
+    # Accepts true/1/yes (case-insensitive); ignores foraging_top.
+    items = []
+    for k, v in row.items():
+        if k.startswith("habitat_"):
+            s = str(v).strip().lower()
+            if s in ("true", "1", "yes", "y"):
+                items.append(k.replace("habitat_", ""))  # e.g. 'forest_woodland'
+    return sorted(items)
+
 
 _SPECIES_ROWS: List[Dict[str, Any]] = _load_rows(CSV_PATH)
 # normalise keys used later

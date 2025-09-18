@@ -76,6 +76,10 @@ class ApiService {
   async searchSpecies(query, limit = 20) {
     return this.request(`/map/search?q=${encodeURIComponent(query)}&limit=${limit}`)
   }
+
+  async getConservationSpecies() {
+    return this.request('/conservation/species')
+  }
 }
 
 export default new ApiService()

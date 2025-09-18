@@ -20,14 +20,6 @@
         </div>
       </div>
     </div>
-
-    <div class="call-to-action">
-      <div class="cta-content">
-        <h3>Start Today!</h3>
-        <p>Pick one tip to try this week. Every small action helps our wildlife friends!</p>
-        <div class="cta-icon">🌟</div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -209,77 +201,9 @@ export default {
   line-height: 1.3;
 }
 
-.call-to-action {
-  background: linear-gradient(135deg, #4CAF50, #81C784);
-  border-radius: 16px;
-  padding: 32px;
-  text-align: center;
-  color: white;
-  position: relative;
-  overflow: hidden;
-}
-
-.call-to-action::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><circle cx="2" cy="2" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="12" cy="8" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="18" cy="15" r="1" fill="%23ffffff" opacity="0.1"/></svg>');
-  animation: float 20s infinite linear;
-  pointer-events: none;
-}
-
-.cta-content {
-  position: relative;
-  z-index: 1;
-}
-
-.cta-content h3 {
-  font-size: 24px;
-  margin: 0 0 8px 0;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-}
-
-.cta-content p {
-  font-size: 16px;
-  margin: 0 0 16px 0;
-  opacity: 0.9;
-}
-
-.cta-icon {
-  font-size: 32px;
-  animation: bounce 2s infinite;
-}
-
-@keyframes float {
-  0% { transform: translateX(-100px) translateY(-100px); }
-  100% { transform: translateX(100px) translateY(100px); }
-}
-
-@keyframes bounce {
-  0%, 20%, 53%, 80%, 100% {
-    transform: translate3d(0, 0, 0);
-  }
-  40%, 43% {
-    transform: translate3d(0, -8px, 0);
-  }
-  70% {
-    transform: translate3d(0, -4px, 0);
-  }
-  90% {
-    transform: translate3d(0, -2px, 0);
-  }
-}
-
 @media (max-width: 768px) {
   .tips-grid {
     grid-template-columns: 1fr;
-  }
-
-  .call-to-action {
-    padding: 24px;
   }
 }
 </style>

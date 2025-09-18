@@ -5,7 +5,11 @@
       <p class="section-subtitle">These Australian animals are in danger and need protection</p>
     </div>
 
-    <div class="species-grid">
+    <div v-if="loading" class="loading-message">
+      Loading endangered species data...
+    </div>
+
+    <div v-else class="species-grid">
       <div v-for="animal in endangeredAnimals" :key="animal.id" class="species-card">
         <div class="species-image-container">
           <img :src="animal.image" :alt="animal.name" class="species-image" />
@@ -25,88 +29,35 @@
         </div>
       </div>
     </div>
-
-    <div class="legend">
-      <h4>Conservation Status Guide:</h4>
-      <div class="legend-items">
-        <div class="legend-item">
-          <div class="legend-badge critically-endangered"></div>
-          <span>Critically Endangered</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-badge endangered"></div>
-          <span>Endangered</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-badge vulnerable"></div>
-          <span>Vulnerable</span>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
+import ApiService from '../../services/api.js'
+
 export default {
   name: 'EndangeredSpecies',
   data() {
     return {
-      endangeredAnimals: [
-        {
-          id: 1,
-          name: 'Tasmanian Devil',
-          image: '/images/koala.png',
-          status: 'Endangered',
-          statusClass: 'endangered',
-          description: 'These fierce little animals live only in Tasmania and are known for their loud screeches.',
-          threat: 'Disease and habitat loss'
-        },
-        {
-          id: 2,
-          name: 'Northern Hairy-nosed Wombat',
-          image: '/images/koala.png',
-          status: 'Critically Endangered',
-          statusClass: 'critically-endangered',
-          description: 'Only about 300 of these special wombats are left in the wild.',
-          threat: 'Very small population'
-        },
-        {
-          id: 3,
-          name: 'Great Barrier Reef Marine Turtle',
-          image: '/images/koala.png',
-          status: 'Vulnerable',
-          statusClass: 'vulnerable',
-          description: 'These ancient sea creatures have been swimming in our oceans for millions of years.',
-          threat: 'Plastic pollution and warming seas'
-        },
-        {
-          id: 4,
-          name: 'Bilby',
-          image: '/images/koala.png',
-          status: 'Vulnerable',
-          statusClass: 'vulnerable',
-          description: 'These cute animals have long ears and dig burrows in the desert.',
-          threat: 'Habitat loss and introduced predators'
-        },
-        {
-          id: 5,
-          name: 'Orange-bellied Parrot',
-          image: '/images/koala.png',
-          status: 'Critically Endangered',
-          statusClass: 'critically-endangered',
-          description: 'Less than 50 of these colorful birds are left in the wild.',
-          threat: 'Habitat destruction'
-        },
-        {
-          id: 6,
-          name: 'Koala',
-          image: '/images/koala.png',
-          status: 'Vulnerable',
-          statusClass: 'vulnerable',
-          description: 'These sleepy marsupials spend most of their time in eucalyptus trees.',
-          threat: 'Deforestation and bushfires'
-        }
-      ]
+      endangeredAnimals: [],
+      loading: true
+    }
+  },
+  async mounted() {
+    await this.loadEndangeredSpecies()
+  },
+  methods: {
+    async loadEndangeredSpecies() {
+      try {
+        this.loading = true
+        const data = await ApiService.getConservationSpecies()
+        this.endangeredAnimals = data
+      } catch (error) {
+        console.error('Failed to load endangered species:', error)
+        this.endangeredAnimals = []
+      } finally {
+        this.loading = false
+      }
     }
   }
 }
@@ -229,66 +180,16 @@ export default {
   font-weight: 500;
 }
 
-.legend {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 12px;
-  padding: 20px;
+.loading-message {
   text-align: center;
-}
-
-.legend h4 {
   font-size: 18px;
-  color: black;
-  margin: 0 0 16px 0;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-}
-
-.legend-items {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.legend-badge {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-}
-
-.legend-badge.critically-endangered {
-  background: #B71C1C;
-}
-
-.legend-badge.endangered {
-  background: #D32F2F;
-}
-
-.legend-badge.vulnerable {
-  background: #F57C00;
-}
-
-.legend-item span {
-  font-size: 14px;
-  color: black;
-  font-weight: 500;
+  color: #666;
+  margin: 32px 0;
 }
 
 @media (max-width: 768px) {
   .species-grid {
     grid-template-columns: 1fr;
-  }
-
-  .legend-items {
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
   }
 }
 </style>

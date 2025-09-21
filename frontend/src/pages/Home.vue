@@ -29,6 +29,30 @@
             >
               Seasonal Activities
             </Button>
+
+            <Button
+              type="primary"
+              size="large"
+              @click="navigateToAIChallenge"
+            >
+              AI Challenge
+            </Button>
+
+            <Button
+              type="primary"
+              size="large"
+              @click="navigateToDailyWildle"
+            >
+              Daily Wildle
+            </Button>
+
+            <Button
+              type="primary"
+              size="large"
+              @click="navigateToConservation"
+            >
+              Conservation
+            </Button>
           </div>
         </div>
       </div>
@@ -52,6 +76,15 @@ export default {
     },
     navigateToSeasonal() {
       this.$router.push('/seasonal')
+    },
+    navigateToAIChallenge() {
+      this.$router.push('/ai-challenge')
+    },
+    navigateToDailyWildle() {
+      this.$router.push('/daily-wildle')
+    },
+    navigateToConservation() {
+      this.$router.push('/conservation')
     }
   }
 }

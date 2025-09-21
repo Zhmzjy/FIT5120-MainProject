@@ -12,6 +12,21 @@ const routes = [
     name: 'LearnWildlife',
     component: () => import('../pages/LearnWildlife.vue')
   },
+  {
+    path: '/ai-challenge',
+    name: 'AIChallenge',
+    component: () => import('../pages/AIChallenge.vue')
+  },
+  {
+    path: '/daily-wildle',
+    name: 'DailyWildle',
+    component: () => import('../pages/DailyWildle.vue')
+  },
+  {
+    path: '/conservation',
+    name: 'Conservation',
+    component: () => import('../pages/Conservation.vue')
+  },
   ...seasonalRoutes
 ]
 

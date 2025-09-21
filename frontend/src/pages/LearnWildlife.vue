@@ -4,11 +4,14 @@
     <header class="top-nav">
       <div class="nav-content">
         <div class="logo">
-          <h2>Wildlife Academy</h2>
+          <button @click="goHome" class="logo-button">Wildlife Academy</button>
         </div>
         <nav class="nav-links">
-          <button @click="goHome" class="nav-link">Home</button>
-          <button @click="showSeasonalWildlife" class="nav-link">Seasonal Wildlife</button>
+          <button @click="goToWildlife" class="nav-link">Learn Wildlife</button>
+          <button @click="goToSeasonal" class="nav-link">Seasonal Activities</button>
+          <button @click="goToAIChallenge" class="nav-link">AI Challenge</button>
+          <button @click="goToDailyWildle" class="nav-link">Daily Wildle</button>
+          <button @click="goToConservation" class="nav-link">Conservation</button>
         </nav>
         <button @click="toggleMobileSidebar" class="mobile-toggle">🍔</button>
       </div>
@@ -104,6 +107,21 @@ export default {
     },
     handleLoadingStateChange(loading) {
       this.isLoading = loading
+    },
+    goToWildlife() {
+      this.$router.push('/learn-wildlife')
+    },
+    goToSeasonal() {
+      this.$router.push('/seasonal')
+    },
+    goToAIChallenge() {
+      this.$router.push('/ai-challenge')
+    },
+    goToDailyWildle() {
+      this.$router.push('/daily-wildle')
+    },
+    goToConservation() {
+      this.$router.push('/conservation')
     }
   }
 }
@@ -143,7 +161,7 @@ export default {
   z-index: 2;
 }
 
-.logo h2 {
+.logo-button {
   margin: 0;
   color: var(--text-white);
   font-size: var(--font-size-xl);
@@ -155,9 +173,11 @@ export default {
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--border-radius-lg);
   transition: all var(--transition-bounce);
+  border: none;
+  cursor: pointer;
 }
 
-.logo h2:hover {
+.logo-button:hover {
   background: transparent;
   transform: scale(1.02);
   text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.9), 2px 2px 4px rgba(0, 0, 0, 1);

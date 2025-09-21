@@ -11,10 +11,9 @@ class DatabaseHelper:
     
     def connect(self):
         try:
-           
             database_url = os.getenv(
                 'DATABASE_URL',
-                'postgresql://main_db_user:password@dpg-xxxx.oregon-postgres.render.com/main_db?sslmode=require'
+                'postgresql://main_db_jm1x_user:JOVdTFv3CKeqJ6C4EKiL31QW9bhCoBhb@dpg-d2rhjmbe5dus73db2uag-a.oregon-postgres.render.com/main_db_jm1x'
             )
 
             self.engine = create_engine(

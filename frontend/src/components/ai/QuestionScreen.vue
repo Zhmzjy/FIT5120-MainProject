@@ -16,7 +16,7 @@
 
     <div class="question-content">
       <div class="question-bubble">
-        <h2 class="question-text">{{ currentQuestion }}</h2>
+        <h2 class="question-text">{{ questionText }}</h2>
       </div>
     </div>
 
@@ -63,7 +63,7 @@ export default {
   name: 'QuestionScreen',
   props: {
     currentQuestion: {
-      type: String,
+      type: [String, Object],
       required: true
     },
     questionNumber: {
@@ -72,13 +72,19 @@ export default {
     },
     totalQuestions: {
       type: Number,
-      default: 10
+      default: 20
     }
   },
   emits: ['submitAnswer'],
   computed: {
     progressPercentage() {
       return (this.questionNumber / this.totalQuestions) * 100
+    },
+    questionText() {
+      if (typeof this.currentQuestion === 'string') {
+        return this.currentQuestion
+      }
+      return this.currentQuestion?.text || 'Loading question...'
     }
   },
   methods: {

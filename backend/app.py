@@ -6,6 +6,8 @@ from routes.top import top_bp
 from routes.trends import trends_bp
 from routes.species import species_bp
 from routes.map import map_bp
+from routes.conservation import conservation_bp
+from routes.ai_challenge import ai_challenge_bp, init_ai_challenge
 
 app = Flask(__name__)
 CORS(app)
@@ -23,6 +25,14 @@ app.register_blueprint(top_bp, url_prefix='/api/top')
 app.register_blueprint(trends_bp, url_prefix='/api/trends')
 app.register_blueprint(species_bp, url_prefix='/api/species')
 app.register_blueprint(map_bp, url_prefix='/api/map')
+app.register_blueprint(conservation_bp, url_prefix='/api/conservation')
+app.register_blueprint(ai_challenge_bp, url_prefix='/api/ai-challenge')
+
+try:
+    init_ai_challenge()
+    print("AI Challenge initialized successfully")
+except Exception as e:
+    print(f"Warning: AI Challenge initialization failed: {e}")
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 8000))

@@ -42,3 +42,7 @@ logs/
 # Package files
 *.tar.gz
 *.zip
+backend/routes/__pycache__/conservation.cpython-311.pyc
+backend/routes/__pycache__/map.cpython-311.pyc
+backend/routes/__pycache__/map.cpython-311.pyc
+backend/routes/__pycache__/map.cpython-311.pyc

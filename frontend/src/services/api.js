@@ -76,6 +76,48 @@ class ApiService {
   async searchSpecies(query, limit = 20) {
     return this.request(`/map/search?q=${encodeURIComponent(query)}&limit=${limit}`)
   }
+
+  async getConservationSpecies() {
+    return this.request('/conservation/species')
+  }
+
+  async getDailyWildleAnimal() {
+    return this.request('/conservation/daily-animal')
+  }
+
+  async createAISession() {
+    return this.request('/ai-challenge/session/new', {
+      method: 'POST'
+    })
+  }
+
+  async getNextQuestion(sessionId) {
+    return this.request(`/ai-challenge/next_question?session_id=${sessionId}`)
+  }
+
+  async submitAnswer(sessionId, questionId, answer) {
+    return this.request('/ai-challenge/answer', {
+      method: 'POST',
+      body: JSON.stringify({
+        session_id: sessionId,
+        question_id: questionId,
+        answer: answer
+      })
+    })
+  }
+
+  async getCurrentGuess(sessionId) {
+    return this.request(`/ai-challenge/guess?session_id=${sessionId}`)
+  }
+
+  async resetAISession(sessionId) {
+    return this.request('/ai-challenge/reset', {
+      method: 'POST',
+      body: JSON.stringify({
+        session_id: sessionId
+      })
+    })
+  }
 }
 
 export default new ApiService()

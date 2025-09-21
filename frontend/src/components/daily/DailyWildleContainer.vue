@@ -7,17 +7,16 @@
 
     <PlayingDaily
       v-if="gameState.phase === 'playing'"
-      :currentAnimal="gameState.currentAnimal"
       :guesses="gameState.guesses"
-      :maxGuesses="gameState.maxGuesses"
       :feedback="gameState.feedback"
       :showResult="gameState.showResult"
+      :isCompleted="gameState.isCompleted"
+      :availableAnimals="gameState.availableAnimals"
       @submitGuess="$emit('submitGuess', $event)"
     />
 
     <CompletedDaily
-      v-if="gameState.phase === 'completed'"
-      :hasPlayedToday="gameState.hasPlayedToday"
+      v-if="gameState.showResult"
       @playAgain="$emit('playAgain')"
       @exit="$emit('exit')"
     />
@@ -41,6 +40,10 @@ export default {
       type: Object,
       required: true
     }
+    },
+    gameData: {
+      type: Object,
+      default: null
   },
   emits: ['startDaily', 'submitGuess', 'playAgain', 'exit']
 }

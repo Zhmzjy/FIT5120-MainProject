@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://fit5120-backend.onrender.com/api'
+const API_BASE_URL = 'http://localhost:3001/api'
 
 class ApiService {
   async request(endpoint, options = {}) {
@@ -117,6 +117,24 @@ class ApiService {
         session_id: sessionId
       })
     })
+  }
+
+  async getDailyWildleToday() {
+    return this.request('/daily-wildle/today')
+  }
+
+  async submitDailyWildleGuess(guessName, guessCount = 1) {
+    return this.request('/daily-wildle/guess', {
+      method: 'POST',
+      body: JSON.stringify({
+        guess_name: guessName,
+        guess_count: guessCount
+      })
+    })
+  }
+
+  async getDailyWildleHistory(limit = 30) {
+    return this.request(`/daily-wildle/history?limit=${limit}`)
   }
 }
 

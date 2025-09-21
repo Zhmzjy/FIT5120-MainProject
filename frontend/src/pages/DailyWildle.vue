@@ -22,6 +22,7 @@
     <div class="main-content">
       <DailyWildleContainer
         :gameState="gameState"
+        :gameData="gameData"
         @startDaily="handleStartDaily"
         @submitGuess="handleSubmitGuess"
         @playAgain="handlePlayAgain"
@@ -45,20 +46,19 @@ export default {
   data() {
     return {
       mobileMenuOpen: false,
+      gameData: null,
       gameState: {
         phase: 'welcome',
-        currentAnimal: null,
         guesses: [],
-        maxGuesses: 6,
         isCompleted: false,
-        hasPlayedToday: false,
+        showResult: false,
         feedback: null,
-        showResult: false
+        availableAnimals: []
       }
     }
   },
   async mounted() {
-    await this.loadAnimalData()
+    await this.loadGameData()
   },
   methods: {
     goHome() {
@@ -85,105 +85,130 @@ export default {
     closeMobileMenu() {
       this.mobileMenuOpen = false
     },
-    checkDailyStatus() {
-      // Remove daily restriction - always allow new game
-      this.gameState.hasPlayedToday = false
-      this.gameState.phase = 'welcome'
-    },
-    async loadAnimalData() {
+    async loadGameData() {
       try {
-        const animalData = await ApiService.getDailyWildleAnimal()
-        this.gameState.currentAnimal = {
-          common_name: animalData.common_name,
-          scientific_name: animalData.scientific_name,
-          image_url: animalData.image_url,
-          hints: [
-            'This animal lives in trees',
-            'This animal eats eucalyptus leaves',
-            'This animal is a marsupial',
-            'This animal sleeps most of the day',
-            'This animal is found in eastern Australia'
-          ]
-        }
+        const response = await ApiService.getDailyWildleToday()
+        this.gameData = response
+        this.gameState.availableAnimals = response.vocab.animals
       } catch (error) {
-        console.error('Failed to load animal data:', error)
-        this.gameState.currentAnimal = {
-          common_name: "Koala",
-          scientific_name: "Phascolarctos cinereus",
-          image_url: "/images/koala.png",
-          hints: [
-            'This animal lives in trees',
-            'This animal eats eucalyptus leaves',
-            'This animal is a marsupial',
-            'This animal sleeps most of the day',
-            'This animal is found in eastern Australia'
-          ]
-        }
+        console.error('Failed to load game data:', error)
       }
     },
     handleStartDaily() {
       this.gameState.phase = 'playing'
       this.gameState.guesses = []
       this.gameState.feedback = null
-      if (!this.gameState.currentAnimal) {
-        this.gameState.currentAnimal = {
-          common_name: "Koala",
-          scientific_name: "Phascolarctos cinereus",
-          image_url: "/images/koala.png",
-          hints: [
-            'This animal lives in trees',
-            'This animal eats eucalyptus leaves',
-            'This animal is a marsupial',
-            'This animal sleeps most of the day',
-            'This animal is found in eastern Australia'
-          ]
-        }
-      }
+      this.gameState.isCompleted = false
+      this.gameState.showResult = false
     },
-    handleSubmitGuess(guess) {
-      this.gameState.guesses.push(guess)
+    async handleSubmitGuess(guess) {
+      const currentGuessCount = this.gameState.guesses.length + 1
 
-      const correct = guess.toLowerCase().includes('koala')
+      try {
+        const response = await ApiService.submitDailyWildleGuess(guess, currentGuessCount)
 
-      if (correct) {
-        this.gameState.feedback = {
-          type: 'correct',
-          message: 'Correct! Well done!'
+        this.gameState.guesses.push({
+          guessName: guess,
+          isCorrect: response.solved,
+          isValidAnimal: true,
+          guess: response.guess,
+          feedback: response.feedback,
+          solved: response.solved
+        })
+
+        if (response.solved) {
+          this.gameState.feedback = {
+            type: 'correct',
+            message: 'Correct! Well done!'
+          }
+          this.gameState.isCompleted = true
+          this.gameState.showResult = true
+        } else if (response.game_over) {
+          this.gameState.feedback = {
+            type: 'failed',
+            message: response.message || `Game over! The correct answer was: ${response.correct_answer}`
+          }
+          this.gameState.isCompleted = true
+          this.gameState.showResult = true
+          if (response.correct_answer && response.correct_answer !== guess) {
+            this.gameState.guesses.push({
+              guessName: response.correct_answer,
+              isCorrect: true,
+              isValidAnimal: true,
+              guess: { CommonName: response.correct_answer },
+              feedback: response.feedback || null,
+              solved: true
+            })
+          }
+        } else if (currentGuessCount >= 10) {
+          this.gameState.feedback = {
+            type: 'failed',
+            message: `Game over! The correct answer was: ${response.guess?.CommonName || 'Unknown'}`
+          }
+          this.gameState.isCompleted = true
+          this.gameState.showResult = true
+        } else {
+          this.gameState.feedback = {
+            type: 'partial',
+            message: 'Not quite right. Check the feedback for clues!'
+          }
         }
-        this.gameState.isCompleted = true
-        this.gameState.showResult = true
-        this.saveProgress()
-      } else if (this.gameState.guesses.length >= this.gameState.maxGuesses) {
-        this.gameState.feedback = {
-          type: 'failed',
-          message: 'Out of guesses! The answer was Koala.'
-        }
-        this.gameState.isCompleted = true
-        this.gameState.showResult = true
-        this.saveProgress()
-      } else {
-        const hintIndex = Math.min(this.gameState.guesses.length - 1, this.gameState.currentAnimal.hints.length - 1)
-        this.gameState.feedback = {
-          type: 'incorrect',
-          message: 'Incorrect. Hint: ' + this.gameState.currentAnimal.hints[hintIndex]
+      } catch (error) {
+        this.gameState.guesses.push({
+          guessName: guess,
+          isCorrect: false,
+          isValidAnimal: false,
+          guess: { CommonName: guess },
+          feedback: null,
+          solved: false
+        })
+
+        if (currentGuessCount >= 10) {
+          this.gameState.feedback = {
+            type: 'failed',
+            message: `Game over! The correct answer was: ${this.gameData?.target?.CommonName || 'Unknown'}`
+          }
+          this.gameState.showResult = true
+          this.gameState.isCompleted = true
+          if (this.gameData?.target?.CommonName) {
+            this.gameState.guesses.push({
+              guessName: this.gameData.target.CommonName,
+              isCorrect: true,
+              isValidAnimal: true,
+              guess: this.gameData.target,
+              feedback: null,
+              solved: true
+            })
+          }
+        } else {
+          let hintMessage = "That animal is not in our database. "
+          if (currentGuessCount >= 2 && this.gameData?.target) {
+            const targetClass = this.gameData.target.taxon_class_ET
+            if (targetClass) {
+              hintMessage += `Hint: Today's animal is a ${targetClass.toLowerCase()}.`
+            } else {
+              hintMessage += "Try selecting from the autocomplete list."
+            }
+          } else {
+            hintMessage += "Try selecting from the autocomplete list."
+          }
+
+          this.gameState.feedback = {
+            type: 'error',
+            message: hintMessage
+          }
         }
       }
     },
     handlePlayAgain() {
-      // Always allow restart - no daily check
       this.gameState.phase = 'welcome'
       this.gameState.isCompleted = false
       this.gameState.showResult = false
-      this.gameState.hasPlayedToday = false
       this.gameState.guesses = []
       this.gameState.feedback = null
     },
     handleExit() {
       this.$router.push('/')
-    },
-    saveProgress() {
-      // Remove localStorage save - no daily tracking needed
-      this.gameState.hasPlayedToday = false
     }
   }
 }

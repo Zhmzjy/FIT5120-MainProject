@@ -35,6 +35,7 @@
 
 <script>
 import AIGameContainer from '../components/ai/AIGameContainer.vue'
+import ApiService from '../services/api.js'
 
 export default {
   name: 'AIChallenge',
@@ -44,6 +45,7 @@ export default {
   data() {
     return {
       mobileMenuOpen: false,
+      sessionId: null,
       gameState: {
         phase: 'welcome',
         currentQuestion: null,
@@ -82,62 +84,90 @@ export default {
     closeMobileMenu() {
       this.mobileMenuOpen = false
     },
-    handleStartGame() {
-      this.gameState.phase = 'playing'
-      this.gameState.questionHistory = []
-      this.gameState.userAnswers = []
-      this.gameState.candidateAnimals = []
-      this.gameState.currentQuestion = "Does your animal live in water?"
-    },
-    handleSubmitAnswer(answer) {
-      this.gameState.userAnswers.push({
-        question: this.gameState.currentQuestion,
-        answer: answer
-      })
-
-      if (this.gameState.userAnswers.length >= 10) {
-        this.gameState.phase = 'result'
-        this.gameState.aiGuess = {
-          common_name: "Koala",
-          scientific_name: "Phascolarctos cinereus",
-          conservation_status: "Vulnerable",
-          image_url: "/images/koala.png"
-        }
-        this.gameState.vocabulary = [
-          { term: "Marsupial", definition: "An animal that carries its baby in a pouch" },
-          { term: "Eucalyptus", definition: "A type of tree that koalas love to eat" },
-          { term: "Vulnerable", definition: "A species that might become endangered" }
-        ]
-      } else {
-        this.gameState.currentQuestion = this.getNextQuestion()
+    async handleStartGame() {
+      try {
+        const response = await ApiService.createAISession()
+        this.sessionId = response.session_id
+        this.gameState.phase = 'playing'
+        this.gameState.questionHistory = []
+        this.gameState.userAnswers = []
+        this.gameState.candidateAnimals = []
+        await this.loadNextQuestion()
+      } catch (error) {
+        console.error('Failed to start game:', error)
+        this.gameState.currentQuestion = "Error loading question. Please try again."
       }
     },
-    getNextQuestion() {
-      const questions = [
-        "Does your animal live in water?",
-        "Is your animal a mammal?",
-        "Does your animal have fur?",
-        "Is your animal larger than a cat?",
-        "Does your animal live in trees?",
-        "Is your animal active during the day?",
-        "Does your animal eat plants?",
-        "Does your animal have a pouch?",
-        "Is your animal found in Australia?",
-        "Does your animal make sounds?"
-      ]
-      return questions[this.gameState.userAnswers.length] || "Final question..."
+    async loadNextQuestion() {
+      try {
+        const response = await ApiService.getNextQuestion(this.sessionId)
+        if (response.decision) {
+          this.gameState.phase = 'result'
+          this.gameState.aiGuess = {
+            common_name: response.decision.common_name,
+            scientific_name: response.decision.scientific_name,
+            confidence: response.decision.confidence,
+            questions_asked: response.decision.questions_asked
+          }
+          this.gameState.vocabulary = []
+        } else if (response.question) {
+          this.gameState.currentQuestion = response.question
+        }
+      } catch (error) {
+        console.error('Failed to load question:', error)
+        this.gameState.currentQuestion = "Error loading question. Please try again."
+      }
     },
-    handleRestartGame() {
-      this.gameState = {
-        phase: 'welcome',
-        currentQuestion: null,
-        questionHistory: [],
-        userAnswers: [],
-        candidateAnimals: [],
-        aiGuess: null,
-        isCorrectGuess: null,
-        gameResult: null,
-        vocabulary: []
+    async handleSubmitAnswer(answer) {
+      try {
+        this.gameState.userAnswers.push({
+          question: this.gameState.currentQuestion?.text || this.gameState.currentQuestion,
+          answer: answer
+        })
+
+        const response = await ApiService.submitAnswer(
+          this.sessionId,
+          this.gameState.currentQuestion?.id || 'unknown',
+          answer
+        )
+
+        if (response.decision) {
+          this.gameState.phase = 'result'
+          this.gameState.aiGuess = {
+            common_name: response.decision.common_name,
+            scientific_name: response.decision.scientific_name,
+            confidence: response.decision.confidence,
+            questions_asked: response.decision.questions_asked
+          }
+          this.gameState.vocabulary = []
+        } else if (response.next_question) {
+          this.gameState.currentQuestion = response.next_question
+        }
+      } catch (error) {
+        console.error('Failed to submit answer:', error)
+        await this.loadNextQuestion()
+      }
+    },
+    async handleRestartGame() {
+      try {
+        if (this.sessionId) {
+          await ApiService.resetAISession(this.sessionId)
+        }
+        this.gameState = {
+          phase: 'welcome',
+          currentQuestion: null,
+          questionHistory: [],
+          userAnswers: [],
+          candidateAnimals: [],
+          aiGuess: null,
+          isCorrectGuess: null,
+          gameResult: null,
+          vocabulary: []
+        }
+        this.sessionId = null
+      } catch (error) {
+        console.error('Failed to restart game:', error)
+        this.gameState.phase = 'welcome'
       }
     },
     handleExitGame() {

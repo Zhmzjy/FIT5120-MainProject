@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://fit5120-backend.onrender.com/api'
+const API_BASE_URL = 'http://localhost:3001/api'
 
 class ApiService {
   async request(endpoint, options = {}) {
@@ -83,6 +83,40 @@ class ApiService {
 
   async getDailyWildleAnimal() {
     return this.request('/conservation/daily-animal')
+  }
+
+  async createAISession() {
+    return this.request('/ai-challenge/session/new', {
+      method: 'POST'
+    })
+  }
+
+  async getNextQuestion(sessionId) {
+    return this.request(`/ai-challenge/next_question?session_id=${sessionId}`)
+  }
+
+  async submitAnswer(sessionId, questionId, answer) {
+    return this.request('/ai-challenge/answer', {
+      method: 'POST',
+      body: JSON.stringify({
+        session_id: sessionId,
+        question_id: questionId,
+        answer: answer
+      })
+    })
+  }
+
+  async getCurrentGuess(sessionId) {
+    return this.request(`/ai-challenge/guess?session_id=${sessionId}`)
+  }
+
+  async resetAISession(sessionId) {
+    return this.request('/ai-challenge/reset', {
+      method: 'POST',
+      body: JSON.stringify({
+        session_id: sessionId
+      })
+    })
   }
 }
 

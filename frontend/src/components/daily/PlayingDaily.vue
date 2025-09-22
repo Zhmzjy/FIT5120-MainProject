@@ -58,9 +58,9 @@
     <div v-if="guesses.length > 0" class="guesses-history">
       <h4 class="history-title">Your Guesses:</h4>
       <div class="guesses-list">
-        <div v-for="(guess, index) in guesses" :key="index" class="guess-item">
+        <div v-for="(guess, index) in reversedGuesses" :key="index" class="guess-item">
           <div class="guess-header">
-            <span class="guess-number">{{ index + 1 }}.</span>
+            <span class="guess-number">{{ guesses.length - index }}.</span>
             <span class="guess-name">{{ getGuessName(guess) }}</span>
             <span class="guess-result" :class="getGuessResultClass(guess)">
               {{ getGuessResultIcon(guess) }}
@@ -135,6 +135,9 @@ export default {
   computed: {
     latestGuess() {
       return this.guesses.length > 0 ? this.guesses[this.guesses.length - 1] : null
+    },
+    reversedGuesses() {
+      return this.guesses.slice().reverse()
     }
   },
   methods: {

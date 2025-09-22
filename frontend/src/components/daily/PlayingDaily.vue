@@ -112,7 +112,7 @@ export default {
       type: Boolean,
       default: false
     },
-    availableAnimals: {
+  emits: ['submitGuess'],
       type: Array,
       default: () => []
     },

@@ -17,6 +17,8 @@
 
     <CompletedDaily
       v-if="gameState.showResult"
+      :gameState="gameState"
+      :gameData="gameData"
       @playAgain="$emit('playAgain')"
       @exit="$emit('exit')"
     />

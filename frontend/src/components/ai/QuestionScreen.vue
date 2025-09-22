@@ -35,7 +35,7 @@
           @click="submitAnswer('dont_know')"
           :disabled="!currentQuestion || isSubmitting"
           type="secondary"
-          size="large"
+          size="medium"
         >
           Don't Know
         </Button>

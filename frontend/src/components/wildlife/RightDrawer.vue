@@ -32,11 +32,19 @@
               :class="getStatusClass(animal.conservation_status)"
               @click="selectAnimal(animal)"
             >
-              <div class="animal-card-image" v-if="animal.image_url">
-                <img :src="animal.image_url" :alt="animal.common_name" />
-              </div>
-              <div class="animal-card-image no-image-card" v-else>
-                <div class="no-image-text">No Image Data</div>
+              <div class="animal-card-image">
+                <img
+                  v-if="wikipediaImages[animal.common_name]"
+                  :src="wikipediaImages[animal.common_name]"
+                  :alt="animal.common_name"
+                  @error="handleImageError($event, animal.common_name)"
+                />
+                <div v-else-if="loadingImages[animal.common_name]" class="loading-placeholder">
+                  <div class="image-spinner"></div>
+                </div>
+                <div v-else class="no-image-placeholder">
+                  <div class="no-image-text">No Image</div>
+                </div>
               </div>
               <div class="animal-card-content">
                 <h6>{{ animal.common_name }}</h6>
@@ -63,14 +71,18 @@
         <div class="animal-detail-content">
           <div class="animal-detail-image-container">
             <img 
-              v-if="selectedAnimal.image_url" 
-              :src="selectedAnimal.image_url" 
+              v-if="wikipediaImages[selectedAnimal.common_name]"
+              :src="wikipediaImages[selectedAnimal.common_name]"
               :alt="selectedAnimal.common_name"
               class="animal-detail-image"
-              @error="handleImageError"
+              @error="handleImageError($event, selectedAnimal.common_name)"
             />
+            <div v-else-if="loadingImages[selectedAnimal.common_name]" class="detail-loading-placeholder">
+              <div class="image-spinner"></div>
+              <p>Loading image...</p>
+            </div>
             <div class="detail-no-image-placeholder" v-else>
-              <p>No Image Data Available</p>
+              <p>No Image Available</p>
             </div>
           </div>
           
@@ -106,7 +118,7 @@
               </div>
               <div class="detail-item" v-if="selectedAnimal.count">
                 <span class="detail-label">Observations:</span>
-                <span class="detail-value">{{ selectedAnimal.count }} recorded</span>
+                <span class="detail-value">{{ selectedAnimal.count }}</span>
               </div>
             </div>
           </div>
@@ -136,6 +148,8 @@
 </template>
 
 <script>
+import { getWikipediaImage } from '@/utils/wikipediaImage.js'
+
 export default {
   name: 'RightDrawer',
   props: {
@@ -144,23 +158,63 @@ export default {
       default: null
     }
   },
+  emits: ['closeDrawer'],
   data() {
     return {
       isOpen: false,
       selectedAnimal: null,
-      showAnimalDetail: false
+      showAnimalDetail: false,
+      wikipediaImages: {},
+      loadingImages: {},
+      imageErrors: new Set()
     }
   },
   watch: {
-    regionData(newRegionData) {
-      if (newRegionData) {
-        this.isOpen = true
-        this.showAnimalDetail = false
-        this.selectedAnimal = null
-      }
+    regionData: {
+      handler(newRegionData) {
+        if (newRegionData) {
+          this.isOpen = true
+          this.showAnimalDetail = false
+          this.selectedAnimal = null
+          this.loadWikipediaImages(newRegionData.animals)
+        }
+      },
+      immediate: true
     }
   },
   methods: {
+    async loadWikipediaImages(animals) {
+      if (!animals || animals.length === 0) return
+
+      for (const animal of animals) {
+        if (!animal.common_name || this.wikipediaImages[animal.common_name] || this.imageErrors.has(animal.common_name)) {
+          continue
+        }
+
+        this.loadingImages = { ...this.loadingImages, [animal.common_name]: true }
+
+        try {
+          const imageUrl = await getWikipediaImage(animal.common_name)
+          if (imageUrl) {
+            this.wikipediaImages = { ...this.wikipediaImages, [animal.common_name]: imageUrl }
+          } else {
+            this.imageErrors.add(animal.common_name)
+          }
+        } catch (error) {
+          console.error(`Failed to load image for ${animal.common_name}:`, error)
+          this.imageErrors.add(animal.common_name)
+        } finally {
+          this.loadingImages = { ...this.loadingImages, [animal.common_name]: false }
+        }
+      }
+    },
+
+    handleImageError(event, animalName) {
+      event.target.style.display = 'none'
+      this.imageErrors.add(animalName)
+      this.wikipediaImages = { ...this.wikipediaImages, [animalName]: null }
+    },
+
     toggleDrawer() {
       this.isOpen = !this.isOpen
     },
@@ -178,16 +232,12 @@ export default {
       }
       return statusMap[status] || 'status-unknown'
     },
-    handleImageError(event) {
-      event.target.style.display = 'none'
-      const placeholder = event.target.parentElement.querySelector('.image-error-placeholder')
-      if (placeholder) {
-        placeholder.style.display = 'flex'
-      }
-    },
     selectAnimal(animal) {
       this.selectedAnimal = animal
       this.showAnimalDetail = true
+      if (!this.wikipediaImages[animal.common_name] && !this.imageErrors.has(animal.common_name)) {
+        this.loadWikipediaImages([animal])
+      }
     },
     backToRegionView() {
       this.showAnimalDetail = false
@@ -417,6 +467,40 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.loading-placeholder, .detail-loading-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 120px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.no-image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  color: #6c757d;
+}
+
+.image-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .no-image-card {

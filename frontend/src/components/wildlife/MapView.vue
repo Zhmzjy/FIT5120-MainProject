@@ -202,7 +202,6 @@ export default {
           common_name: species.common_name,
           animal_type: location.animal_type,
           conservation_status: location.conservation_status,
-          image_url: species.image_url,
           lat: location.lat,
           lon: location.lon,
           state_territory: location.state_territory,
@@ -263,7 +262,6 @@ export default {
                 location_count: obs.location_count,
                 total_observations: obs.total_observations,
                 animal_type: obs.animal_type,
-                image_url: obs.image_url,
                 lat: parseFloat(obs.lat),
                 lon: parseFloat(obs.lon)
               }
@@ -291,10 +289,14 @@ export default {
             ],
             'circle-color': [
               'case',
-              ['==', ['get', 'conservation_status'], 'Critically Endangered'], '#ff4444',
-              ['==', ['get', 'conservation_status'], 'Endangered'], '#ff8800',
-              ['==', ['get', 'conservation_status'], 'Vulnerable'], '#ffcc00',
-              '#44aa44'
+              ['==', ['get', 'conservation_status'], 'Critically Endangered'], '#dc2626',
+              ['==', ['get', 'conservation_status'], 'Endangered'], '#ea580c',
+              ['==', ['get', 'conservation_status'], 'Vulnerable'], '#d97706',
+              ['==', ['get', 'conservation_status'], 'Extinct'], '#7f1d1d',
+              ['==', ['get', 'conservation_status'], 'Extinct in the wild'], '#991b1b',
+              ['==', ['get', 'conservation_status'], 'Conservation Dependent'], '#f59e0b',
+              ['==', ['get', 'conservation_status'], 'Present'], '#16a34a',
+              '#6b7280'
             ],
             'circle-stroke-width': 3,
             'circle-stroke-color': '#ffffff',

@@ -3,7 +3,11 @@
     <div class="hero-section">
       <div class="hero-overlay"></div>
 
-      <TopNavigation @toggleMobileMenu="toggleMobileMenu" />
+      <TopNavigation
+        @toggleMobileMenu="toggleMobileMenu"
+        :theme="'seasonal'"
+        :selectedSeason="selectedSeason"
+      />
 
       <div class="hero-content">
         <h1 class="main-title" :style="titleStyle">Seasonal Wildlife Activities</h1>
@@ -303,7 +307,7 @@ export default {
 
     navigateToSeasonal() {
       // Don't navigate if already on seasonal page
-      if (this.$route.path === '/seasonal') {
+      if this.$route.path === '/seasonal' {
         return;
       }
       this.$router.push('/seasonal')

@@ -3,21 +3,11 @@
     <div class="hero-section">
       <div class="hero-overlay"></div>
 
-      <div class="top-nav-bar">
-        <div class="nav-content">
-          <div class="nav-left">
-            <button @click="navigateToHome" class="logo-button">Wildlife Academy</button>
-          </div>
-          <div class="nav-right">
-            <button class="nav-btn" @click="navigateToHome">Home</button>
-            <button class="nav-btn" @click="navigateToWildlife">Learn Wildlife</button>
-            <button class="nav-btn" @click="navigateToSeasonal">Seasonal Activities</button>
-            <button class="nav-btn" @click="navigateToAIChallenge">AI Challenge</button>
-            <button class="nav-btn" @click="navigateToDailyWildle">Daily Wildle</button>
-            <button class="nav-btn" @click="navigateToConservation">Conservation</button>
-          </div>
-        </div>
-      </div>
+      <TopNavigation
+        @toggleMobileMenu="toggleMobileMenu"
+        :theme="'seasonal'"
+        :selectedSeason="selectedSeason"
+      />
 
       <div class="hero-content">
         <h1 class="main-title" :style="titleStyle">Seasonal Wildlife Activities</h1>
@@ -31,6 +21,7 @@
     </div>
 
     <div class="wildlife-analysis-section">
+      <div class="section-overlay"></div>
 
       <div class="analysis-container">
         <div class="data-analysis-wrapper">
@@ -158,12 +149,16 @@
 
 <script>
 import SeasonButtonGroup from '../components/seasonal/SeasonButtonGroup.vue'
+import Button from '../components/common/Button.vue'
 import apiService from '../services/api.js'
+import TopNavigation from '../components/common/TopNavigation.vue'
 
 export default {
   name: 'SeasonalPage',
   components: {
-    SeasonButtonGroup
+    SeasonButtonGroup,
+    Button,
+    TopNavigation
   },
   data() {
   return {
@@ -172,7 +167,8 @@ export default {
     seasonActivity: [],
     topSpecies: {},
     loading: false,
-    error: null
+    error: null,
+    mobileMenuOpen: false
   }
 },
   computed: {
@@ -311,7 +307,7 @@ export default {
 
     navigateToSeasonal() {
       // Don't navigate if already on seasonal page
-      if (this.$route.path === '/seasonal') {
+      if this.$route.path === '/seasonal' {
         return;
       }
       this.$router.push('/seasonal')
@@ -327,6 +323,10 @@ export default {
 
     navigateToConservation() {
       this.$router.push('/conservation')
+    },
+
+    toggleMobileMenu() {
+      this.mobileMenuOpen = !this.mobileMenuOpen
     }
   }
 }
@@ -349,99 +349,27 @@ export default {
   height: 100vh;
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   overflow: hidden;
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.30);
+  background: rgba(0,0,0,0.15);
   z-index: 1;
-}
-
-
-.top-nav-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 10;
-  background: transparent;
-  padding: 1rem 0;
-}
-
-.nav-content {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 1rem;
-}
-
-.logo-button {
-  margin: 0;
-  color: var(--text-white);
-  font-size: var(--font-size-xl);
-  font-family: var(--font-family-heading);
-  font-weight: bold;
-  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8), 1px 1px 2px rgba(0, 0, 0, 0.9);
-  animation: logoFloat 2s ease-in-out infinite;
-  background: transparent;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius-lg);
-  transition: all var(--transition-normal);
-  border: none;
-  cursor: pointer;
-}
-
-.logo-button:hover {
-  background: transparent;
-  transform: scale(1.02);
-  text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.9), 2px 2px 4px rgba(0, 0, 0, 1);
-}
-
-@keyframes logoFloat {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-3px); }
-}
-
-.nav-right {
-  display: flex;
-  align-items: center;
-}
-
-.nav-left {
-  display: flex;
-  gap: 1rem;
-}
-
-.nav-btn {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: var(--font-cartoon);
-  font-weight: bold;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.nav-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .hero-content {
   position: relative;
   z-index: 3;
   text-align: center;
-  padding: 6rem 2rem 2rem 2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
 }
 
 .main-title {
@@ -456,7 +384,7 @@ export default {
 .subtitle {
   font-size: 1.2rem;
   margin-bottom: 2rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
   transition: color 0.3s ease;
   font-family: var(--font-cartoon);
 }
@@ -467,14 +395,36 @@ export default {
   overflow: hidden;
 }
 
-.wildlife-analysis-section::before {
-  content: "";
+.section-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.30);
+  background: rgba(0, 0, 0, 0.15);
   z-index: 1;
 }
 
+.side-background {
+  position: absolute;
+  top: 0;
+  width: 300px;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.left-bg {
+  left: 0;
+}
+
+.right-bg {
+  right: 0;
+}
+
+.side-background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.6) contrast(1.2);
+}
 
 .analysis-container {
   position: relative;
@@ -484,30 +434,14 @@ export default {
   padding: 4rem 2rem;
 }
 
-
 .data-analysis-wrapper {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 24px;
   padding: 3rem;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   margin: 2rem 0;
-}
-
-@media (max-width: 768px) {
-  .data-analysis-wrapper {
-    padding: 2rem 1.5rem;
-    border-radius: 16px;
-    margin: 1rem 0;
-  }
-}
-
-@media (max-width: 480px) {
-  .data-analysis-wrapper {
-    padding: 1.5rem 1rem;
-    border-radius: 12px;
-  }
 }
 
 .analysis-header {
@@ -525,7 +459,7 @@ export default {
 
 .analysis-subtitle {
   font-size: 1.1rem;
-  color: #64748b;
+  color: #666;
   font-family: var(--font-cartoon);
 }
 
@@ -538,18 +472,26 @@ export default {
   padding: 2rem;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   gap: 2rem;
   max-width: 600px;
   margin: 0 auto;
+  transition: all 0.3s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
 }
 
 .kpi-icon {
   font-size: 3rem;
   padding: 1rem;
-  background: #f1f5f9;
+  background: #f8f9fa;
   border-radius: 12px;
+  border: 1px solid #e9ecef;
 }
 
 .kpi-number {
@@ -560,13 +502,13 @@ export default {
 
 .kpi-label {
   font-size: 1.2rem;
-  color: #1e293b;
+  color: #333;
   margin-bottom: 0.5rem;
 }
 
 .kpi-detail {
-  color: #22c55e;
   font-size: 0.9rem;
+  color: #666;
 }
 
 .activity-time-chart {
@@ -574,7 +516,14 @@ export default {
   padding: 2rem;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(0, 0, 0, 0.1);
   margin-bottom: 4rem;
+  transition: all 0.3s ease;
+}
+
+.activity-time-chart:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
 }
 
 .chart-title {
@@ -582,7 +531,7 @@ export default {
   font-weight: bold;
   margin-bottom: 2rem;
   text-align: center;
-  color: #1e293b;
+  color: #333;
 }
 
 .time-chart-container {
@@ -597,7 +546,8 @@ export default {
 
 .time-bar {
   height: 200px;
-  background: #f1f5f9;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
   border-radius: 8px;
   position: relative;
   margin-bottom: 1rem;
@@ -619,18 +569,18 @@ export default {
 
 .time-name {
   font-weight: bold;
-  color: #1e293b;
+  color: #333;
 }
 
 .time-range {
   font-size: 0.8rem;
-  color: #64748b;
+  color: #666;
 }
 
 .observation-count {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #059669;
+  color: #444;
 }
 
 .star-animals-section {
@@ -642,7 +592,7 @@ export default {
   font-weight: bold;
   margin-bottom: 2rem;
   text-align: center;
-  color: #1e293b;
+  color: #333;
 }
 
 .star-animals-grid {
@@ -653,27 +603,29 @@ export default {
 
 .star-animal-card {
   background: white;
-  padding: 2rem;
+  padding: 1.25rem;
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(0, 0, 0, 0.1);
   position: relative;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .star-animal-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .animal-rank {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: #fbbf24;
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-weight: bold;
   font-size: 0.9rem;
+  z-index: 2;
 }
 
 .animal-image-container {
@@ -682,32 +634,40 @@ export default {
 }
 
 .animal-image {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
+  width: 100%;
+  height: 200px;
   object-fit: cover;
-  margin-bottom: 0.5rem;
+  border-radius: 12px;
+  margin-bottom: 0;
 }
 
 .observation-badge {
-  background: #059669;
+  position: absolute;
+  top: 8px;
+  left: 8px;
   color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.animal-details {
+  text-align: left;
 }
 
 .animal-name {
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: bold;
-  margin-bottom: 0.25rem;
-  color: #1e293b;
+  margin-bottom: 0.5rem;
+  color: #333;
 }
 
 .animal-scientific {
   font-style: italic;
-  color: #64748b;
+  color: #666;
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
@@ -716,6 +676,7 @@ export default {
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .stat-item {
@@ -723,23 +684,19 @@ export default {
   align-items: center;
   gap: 0.25rem;
   font-size: 0.85rem;
-  color: #64748b;
+  color: #555;
+  background: #f8f9fa;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
 }
 
 .recent-observation {
   padding: 0.75rem;
-  background: #f8fafc;
+  background: #f0f9ff;
+  border: 1px solid #e0f2fe;
   border-radius: 8px;
   font-size: 0.9rem;
-}
-
-.obs-label {
-  font-weight: 600;
-  color: #374151;
-}
-
-.obs-location {
-  color: #059669;
+  border-left: 4px solid #0ea5e9;
 }
 
 .trend-comparison-section {
@@ -747,6 +704,13 @@ export default {
   padding: 2rem;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.trend-comparison-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
 }
 
 .season-comparison {
@@ -759,7 +723,7 @@ export default {
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 1.5rem;
-  color: #1e293b;
+  color: #333;
 }
 
 .comparison-bars {
@@ -777,13 +741,14 @@ export default {
 
 .season-name {
   font-weight: 500;
-  color: #374151;
+  color: #333;
   font-size: 0.9rem;
 }
 
 .comparison-bar {
   height: 24px;
-  background: #f1f5f9;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
   border-radius: 12px;
   position: relative;
   overflow: hidden;
@@ -802,178 +767,8 @@ export default {
 
 .season-value {
   font-size: 0.85rem;
-  color: #64748b;
+  color: #666;
   text-align: right;
-}
-
-.top-species-chart {
-  padding: 1rem;
-}
-
-.species-chart-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.species-bar {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.75rem;
-  background: #f8fafc;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.species-bar:hover {
-  background: #f1f5f9;
-  transform: translateX(5px);
-}
-
-.species-info {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  min-width: 200px;
-  flex-shrink: 0;
-}
-
-.species-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #e2e8f0;
-}
-
-.species-name {
-  font-weight: 500;
-  color: #1e293b;
-  font-size: 0.9rem;
-}
-
-.bar-container {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  position: relative;
-}
-
-.species-bar-fill {
-  height: 20px;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-  min-width: 20px;
-}
-
-.species-count {
-  font-weight: 600;
-  color: #374151;
-  font-size: 0.9rem;
-  min-width: 50px;
-  text-align: right;
-}
-
-.species-line-chart {
-  padding: 1rem;
-  background: #f8fafc;
-  border-radius: 12px;
-  margin-top: 1rem;
-}
-
-.line-chart-svg {
-  width: 100%;
-  height: 300px;
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.chart-label {
-  font-family: var(--font-cartoon);
-}
-
-.axis-label {
-  font-family: var(--font-cartoon);
-}
-
-.monthly-trends-chart {
-  padding: 1rem;
-}
-
-.species-trends-chart {
-  padding: 1rem;
-  background: #f8fafc;
-  border-radius: 12px;
-  margin-top: 1rem;
-}
-
-.trends-chart-svg {
-  width: 100%;
-  height: 400px;
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.grid-lines line {
-  opacity: 0.3;
-}
-
-.month-label {
-  font-family: var(--font-cartoon);
-}
-
-.count-label {
-  font-family: var(--font-cartoon);
-}
-
-.trends-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  padding: 1rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.legend-color {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.legend-icon {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid #e5e7eb;
-}
-
-.legend-name {
-  color: #374151;
-  font-weight: 500;
-}
-
-.no-data-message {
-  text-align: center;
-  padding: 2rem;
-  color: #64748b;
-  font-style: italic;
 }
 
 .scroll-arrow {
@@ -985,8 +780,9 @@ export default {
   cursor: pointer;
   width: 50px;
   height: 50px;
-  background: rgba(255, 255, 255, 0.9);
+  background: white;
   border-radius: 50%;
+  border: 2px solid #ddd;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -995,7 +791,7 @@ export default {
 }
 
 .scroll-arrow:hover {
-  background: rgba(255, 255, 255, 1);
+  background: #f8f9fa;
   transform: translateX(-50%) translateY(-5px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
@@ -1020,16 +816,18 @@ export default {
 }
 
 @media (max-width: 768px) {
+  .data-analysis-wrapper {
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+    margin: 1rem 0;
+  }
+
   .main-title {
     font-size: 2rem;
   }
 
   .subtitle {
     font-size: 1rem;
-  }
-
-  .side-background {
-    width: 100px;
   }
 
   .analysis-title {
@@ -1042,11 +840,6 @@ export default {
 
   .star-animals-grid {
     grid-template-columns: 1fr;
-  }
-
-  .trend-container {
-    grid-template-columns: 1fr;
-    gap: 2rem;
   }
 
   .kpi-card {
@@ -1063,6 +856,10 @@ export default {
   .arrow-icon {
     width: 20px;
     height: 20px;
+  }
+
+  .side-background {
+    display: none;
   }
 }
 </style>

@@ -28,19 +28,23 @@
     <div class="guess-verification">
       <h3 class="verification-title">Was the AI correct?</h3>
       <div class="verification-buttons">
-        <button
-          @click="$emit('confirmCorrect')"
-          class="verify-button correct-button"
-        >
-          <span class="button-text">Yes, correct!</span>
-        </button>
 
-        <button
-          @click="$emit('confirmIncorrect')"
-          class="verify-button incorrect-button"
+        <Button
+          class="verify-button correct-button"
+          @click="$emit('confirmCorrect')"
+          type="primary"
+          size="large"
         >
-          <span class="button-text">No, wrong</span>
-        </button>
+          Yes, correct!
+        </Button>
+        <Button
+          class="verify-button incorrect-button"
+          @click="$emit('confirmIncorrect')"
+          type="secondary"
+          size="large"
+        >
+          No, wrong
+        </Button>
       </div>
     </div>
 
@@ -81,20 +85,24 @@
     </div>
 
     <div class="game-actions">
-      <button @click="$emit('restart')" class="action-button play-again-button">
-        <span class="button-text">Play Again</span>
-      </button>
-
-      <button @click="$emit('exit')" class="action-button exit-button">
-        <span class="button-text">Exit</span>
-      </button>
+      <Button @click="$emit('restart')" class="action-button play-again-button" type="primary" size="large">
+        Play Again
+      </Button>
+      <Button @click="$emit('exit')" class="action-button exit-button" type="secondary" size="large">
+        Exit Game
+      </Button>
     </div>
   </div>
 </template>
 
 <script>
+import Button from '../common/Button.vue'
+
 export default {
   name: 'ResultScreen',
+  components: {
+    Button
+  },
   props: {
     aiGuess: {
       type: Object,
@@ -149,34 +157,34 @@ export default {
 
 <style scoped>
 .result-screen {
-  padding: var(--spacing-xl);
+  padding: 32px;
   text-align: center;
 }
 
 .result-header {
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: 32px;
 }
 
 .ai-avatar {
   font-size: 3rem;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 16px;
 }
 
 .result-title {
-  font-size: var(--font-size-xl);
+  font-size: 24px;
   color: black;
   margin: 0;
-  font-family: var(--font-cartoon);
+  font-family: 'Comic Sans MS', cursive, sans-serif;
 }
 
 .animal-result {
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: 32px;
 }
 
 .animal-card {
   background: white;
-  border-radius: var(--border-radius-xl);
-  padding: var(--spacing-xl);
+  border-radius: 16px;
+  padding: 32px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   max-width: 400px;
   margin: 0 auto;
@@ -184,24 +192,24 @@ export default {
 
 .animal-image-container {
   position: relative;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: 24px;
 }
 
 .animal-image {
   width: 200px;
   height: 200px;
   object-fit: cover;
-  border-radius: var(--border-radius-lg);
-  border: 3px solid var(--color-light);
+  border-radius: 12px;
+  border: 3px solid #f0f0f0;
 }
 
 .conservation-badge {
   position: absolute;
   top: 8px;
   right: 8px;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--border-radius-md);
-  font-size: var(--font-size-xs);
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
   font-weight: bold;
   color: white;
 }
@@ -216,33 +224,33 @@ export default {
 }
 
 .animal-name {
-  font-size: var(--font-size-lg);
+  font-size: 20px;
   color: black;
-  margin: 0 0 var(--spacing-sm) 0;
-  font-family: var(--font-cartoon);
+  margin: 0 0 8px 0;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
 }
 
 .scientific-name {
-  font-size: var(--font-size-md);
+  font-size: 16px;
   color: black;
   font-style: italic;
   margin: 0;
 }
 
 .guess-verification {
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: 32px;
 }
 
 .verification-title {
-  font-size: var(--font-size-lg);
+  font-size: 20px;
   color: black;
-  margin-bottom: var(--spacing-lg);
-  font-family: var(--font-cartoon);
+  margin-bottom: 24px;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
 }
 
 .verification-buttons {
   display: flex;
-  gap: var(--spacing-md);
+  gap: 16px;
   justify-content: center;
   flex-wrap: wrap;
 }
@@ -250,18 +258,18 @@ export default {
 .verify-button {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-lg);
+  gap: 8px;
+  padding: 16px 24px;
   border: none;
-  border-radius: var(--border-radius-lg);
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;
-  font-family: var(--font-cartoon);
+  font-family: 'Comic Sans MS', cursive, sans-serif;
   font-weight: bold;
 }
 
 .correct-button {
-  background: var(--color-success);
+  background: #4CAF50;
   color: black;
 }
 
@@ -271,7 +279,7 @@ export default {
 }
 
 .incorrect-button {
-  background: var(--color-warning);
+  background: #FFC107;
   color: black;
 }
 
@@ -281,28 +289,28 @@ export default {
 }
 
 .vocabulary-section {
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: 32px;
 }
 
 .vocabulary-title {
-  font-size: var(--font-size-lg);
+  font-size: 20px;
   color: black;
-  margin-bottom: var(--spacing-lg);
-  font-family: var(--font-cartoon);
+  margin-bottom: 24px;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
 }
 
 .vocabulary-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-md);
+  gap: 16px;
   max-width: 600px;
   margin: 0 auto;
 }
 
 .vocabulary-card {
-  background: var(--color-light);
-  padding: var(--spacing-md);
-  border-radius: var(--border-radius-lg);
+  background: #f5f5f5;
+  padding: 16px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;
   border: 2px solid transparent;
@@ -310,31 +318,31 @@ export default {
 
 .vocabulary-card:hover {
   background: white;
-  border-color: var(--color-primary);
+  border-color: #3498db;
   transform: translateY(-2px);
 }
 
 .vocabulary-term {
   font-weight: bold;
   color: black;
-  margin-bottom: var(--spacing-sm);
+  margin-bottom: 8px;
 }
 
 .vocabulary-definition {
-  font-size: var(--font-size-sm);
+  font-size: 14px;
   color: black;
   line-height: 1.4;
 }
 
 .answer-summary {
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: 32px;
 }
 
 .summary-title {
-  font-size: var(--font-size-lg);
+  font-size: 20px;
   color: black;
-  margin-bottom: var(--spacing-lg);
-  font-family: var(--font-cartoon);
+  margin-bottom: 24px;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
 }
 
 .answers-list {
@@ -347,43 +355,43 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-sm) var(--spacing-md);
-  margin-bottom: var(--spacing-xs);
-  background: var(--color-light);
-  border-radius: var(--border-radius-md);
+  padding: 8px 16px;
+  margin-bottom: 4px;
+  background: #f5f5f5;
+  border-radius: 8px;
 }
 
 .answer-question {
-  font-size: var(--font-size-sm);
+  font-size: 14px;
   color: black;
   flex: 1;
 }
 
 .answer-response {
   font-weight: bold;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--border-radius-sm);
-  font-size: var(--font-size-sm);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
 .answer-response.yes {
-  background: var(--color-success);
+  background: #4CAF50;
   color: black;
 }
 
 .answer-response.no {
-  background: var(--color-error);
+  background: #f44336;
   color: black;
 }
 
 .answer-response.dont_know {
-  background: var(--color-warning);
+  background: #FFC107;
   color: black;
 }
 
 .game-actions {
   display: flex;
-  gap: var(--spacing-md);
+  gap: 16px;
   justify-content: center;
   flex-wrap: wrap;
 }
@@ -391,39 +399,39 @@ export default {
 .action-button {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md) var(--spacing-lg);
+  gap: 8px;
+  padding: 16px 24px;
   border: none;
-  border-radius: var(--border-radius-lg);
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;
-  font-family: var(--font-cartoon);
+  font-family: 'Comic Sans MS', cursive, sans-serif;
   font-weight: bold;
 }
 
 .play-again-button {
-  background: var(--color-primary);
+  background: #3498db;
   color: black;
 }
 
 .play-again-button:hover {
-  background: var(--color-secondary);
+  background: #2980b9;
   transform: translateY(-2px);
 }
 
 .exit-button {
-  background: var(--color-text-secondary);
+  background: #95a5a6;
   color: black;
 }
 
 .exit-button:hover {
-  background: var(--color-text);
+  background: #7f8c8d;
   transform: translateY(-2px);
 }
 
 @media (max-width: 768px) {
   .result-screen {
-    padding: var(--spacing-lg);
+    padding: 24px;
   }
 
   .animal-image {
@@ -450,7 +458,7 @@ export default {
   .answer-item {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--spacing-xs);
+    gap: 4px;
   }
 }
 </style>

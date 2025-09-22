@@ -2,26 +2,12 @@
   <div class="daily-wildle-page">
     <img src="/images/epic3-background.jpg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;" alt="background">
 
-    <header class="top-nav">
-      <div class="nav-content">
-        <div class="logo">
-          <button @click="goHome" class="logo-button">Wildlife Academy</button>
-        </div>
-        <nav class="nav-links">
-          <button @click="goHome" class="nav-link">Home</button>
-          <button @click="goToWildlife" class="nav-link">Learn Wildlife</button>
-          <button @click="goToSeasonal" class="nav-link">Seasonal Activities</button>
-          <button @click="goToAIChallenge" class="nav-link">AI Challenge</button>
-          <button @click="goToDailyWildle" class="nav-link">Daily Wildle</button>
-          <button @click="goToConservation" class="nav-link">Conservation</button>
-        </nav>
-        <button @click="toggleMobileMenu" class="mobile-toggle">🍔</button>
-      </div>
-    </header>
+    <TopNavigation @toggleMobileMenu="toggleMobileMenu" />
 
     <div class="main-content">
       <DailyWildleContainer
         :gameState="gameState"
+        :gameData="gameData"
         @startDaily="handleStartDaily"
         @submitGuess="handleSubmitGuess"
         @playAgain="handlePlayAgain"
@@ -35,155 +21,89 @@
 
 <script>
 import DailyWildleContainer from '../components/daily/DailyWildleContainer.vue'
+import TopNavigation from '../components/common/TopNavigation.vue'
 import ApiService from '../services/api.js'
 
 export default {
   name: 'DailyWildle',
   components: {
-    DailyWildleContainer
+    DailyWildleContainer,
+    TopNavigation
   },
   data() {
     return {
       mobileMenuOpen: false,
+      gameData: null,
       gameState: {
         phase: 'welcome',
-        currentAnimal: null,
         guesses: [],
-        maxGuesses: 6,
-        isCompleted: false,
-        hasPlayedToday: false,
-        feedback: null,
-        showResult: false
+        currentAnimal: null,
+        gameOver: false,
+        won: false,
+        attempts: 0,
+        maxAttempts: 10
       }
     }
   },
-  async mounted() {
-    await this.loadAnimalData()
-  },
   methods: {
-    goHome() {
-      this.$router.push('/')
-    },
-    goToWildlife() {
-      this.$router.push('/learn-wildlife')
-    },
-    goToSeasonal() {
-      this.$router.push('/seasonal')
-    },
-    goToAIChallenge() {
-      this.$router.push('/ai-challenge')
-    },
-    goToDailyWildle() {
-      this.$router.push('/daily-wildle')
-    },
-    goToConservation() {
-      this.$router.push('/conservation')
-    },
     toggleMobileMenu() {
       this.mobileMenuOpen = !this.mobileMenuOpen
     },
     closeMobileMenu() {
       this.mobileMenuOpen = false
     },
-    checkDailyStatus() {
-      // Remove daily restriction - always allow new game
-      this.gameState.hasPlayedToday = false
-      this.gameState.phase = 'welcome'
-    },
-    async loadAnimalData() {
+    async handleStartDaily() {
       try {
-        const animalData = await ApiService.getDailyWildleAnimal()
-        this.gameState.currentAnimal = {
-          common_name: animalData.common_name,
-          scientific_name: animalData.scientific_name,
-          image_url: animalData.image_url,
-          hints: [
-            'This animal lives in trees',
-            'This animal eats eucalyptus leaves',
-            'This animal is a marsupial',
-            'This animal sleeps most of the day',
-            'This animal is found in eastern Australia'
-          ]
+        const response = await ApiService.getDailyWildleAnimal()
+        this.gameData = response
+        this.gameState.phase = 'playing'
+        this.gameState.currentAnimal = response
+        this.gameState.guesses = []
+        this.gameState.gameOver = false
+        this.gameState.won = false
+        this.gameState.attempts = 0
+      } catch (error) {
+        console.error('Failed to start daily game:', error)
+      }
+    },
+    async handleSubmitGuess(guess) {
+      try {
+        const response = await ApiService.submitDailyGuess(guess)
+
+        this.gameState.guesses.push({
+          guess: guess,
+          feedback: response.feedback,
+          isCorrect: response.is_correct
+        })
+
+        this.gameState.attempts++
+
+        if (response.is_correct) {
+          this.gameState.won = true
+          this.gameState.gameOver = true
+          this.gameState.phase = 'result'
+        } else if (this.gameState.attempts >= this.gameState.maxAttempts) {
+          this.gameState.gameOver = true
+          this.gameState.phase = 'result'
         }
       } catch (error) {
-        console.error('Failed to load animal data:', error)
-        this.gameState.currentAnimal = {
-          common_name: "Koala",
-          scientific_name: "Phascolarctos cinereus",
-          image_url: "/images/koala.png",
-          hints: [
-            'This animal lives in trees',
-            'This animal eats eucalyptus leaves',
-            'This animal is a marsupial',
-            'This animal sleeps most of the day',
-            'This animal is found in eastern Australia'
-          ]
-        }
-      }
-    },
-    handleStartDaily() {
-      this.gameState.phase = 'playing'
-      this.gameState.guesses = []
-      this.gameState.feedback = null
-      if (!this.gameState.currentAnimal) {
-        this.gameState.currentAnimal = {
-          common_name: "Koala",
-          scientific_name: "Phascolarctos cinereus",
-          image_url: "/images/koala.png",
-          hints: [
-            'This animal lives in trees',
-            'This animal eats eucalyptus leaves',
-            'This animal is a marsupial',
-            'This animal sleeps most of the day',
-            'This animal is found in eastern Australia'
-          ]
-        }
-      }
-    },
-    handleSubmitGuess(guess) {
-      this.gameState.guesses.push(guess)
-
-      const correct = guess.toLowerCase().includes('koala')
-
-      if (correct) {
-        this.gameState.feedback = {
-          type: 'correct',
-          message: 'Correct! Well done!'
-        }
-        this.gameState.isCompleted = true
-        this.gameState.showResult = true
-        this.saveProgress()
-      } else if (this.gameState.guesses.length >= this.gameState.maxGuesses) {
-        this.gameState.feedback = {
-          type: 'failed',
-          message: 'Out of guesses! The answer was Koala.'
-        }
-        this.gameState.isCompleted = true
-        this.gameState.showResult = true
-        this.saveProgress()
-      } else {
-        const hintIndex = Math.min(this.gameState.guesses.length - 1, this.gameState.currentAnimal.hints.length - 1)
-        this.gameState.feedback = {
-          type: 'incorrect',
-          message: 'Incorrect. Hint: ' + this.gameState.currentAnimal.hints[hintIndex]
-        }
+        console.error('Failed to submit guess:', error)
       }
     },
     handlePlayAgain() {
-      // Always allow restart - no daily check
-      this.gameState.phase = 'welcome'
-      this.gameState.isCompleted = false
-      this.gameState.showResult = false
-      this.gameState.hasPlayedToday = false
-      this.gameState.guesses = []
-      this.gameState.feedback = null
+      this.gameState = {
+        phase: 'welcome',
+        guesses: [],
+        currentAnimal: null,
+        gameOver: false,
+        won: false,
+        attempts: 0,
+        maxAttempts: 10
+      }
+      this.gameData = null
     },
     handleExit() {
       this.$router.push('/')
-    },
-    saveProgress() {
-      // Remove localStorage save - no daily tracking needed
-      this.gameState.hasPlayedToday = false
     }
   }
 }
@@ -194,72 +114,12 @@ export default {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-}
-
-.top-nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: transparent;
-  backdrop-filter: none;
-  border-bottom: none;
-}
-
-.nav-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 16px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo-button {
-  background: none;
-  border: none;
-  font-size: 24px;
-  font-weight: bold;
-  color: white;
-  cursor: pointer;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.nav-links {
-  display: flex;
-  gap: 24px;
-}
-
-.nav-link {
-  background: none;
-  border: none;
-  font-size: 16px;
-  color: white;
-  cursor: pointer;
-  padding: 8px 16px;
-  border-radius: 8px;
-  transition: background-color 0.3s;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.nav-link:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.mobile-toggle {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: white;
+  font-family: var(--font-cartoon);
 }
 
 .main-content {
   flex: 1;
-  padding: 32px;
+  padding: var(--spacing-xl);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -276,16 +136,8 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .nav-links {
-    display: none;
-  }
-
-  .mobile-toggle {
-    display: block;
-  }
-
   .main-content {
-    padding: 16px;
+    padding: var(--spacing-md);
   }
 }
 </style>

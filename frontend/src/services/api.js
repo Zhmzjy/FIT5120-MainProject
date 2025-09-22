@@ -118,6 +118,24 @@ class ApiService {
       })
     })
   }
+
+  async getDailyWildleToday() {
+    return this.request('/daily-wildle/today')
+  }
+
+  async submitDailyWildleGuess(guessName, guessCount = 1) {
+    return this.request('/daily-wildle/guess', {
+      method: 'POST',
+      body: JSON.stringify({
+        guess_name: guessName,
+        guess_count: guessCount
+      })
+    })
+  }
+
+  async getDailyWildleHistory(limit = 30) {
+    return this.request(`/daily-wildle/history?limit=${limit}`)
+  }
 }
 
 export default new ApiService()

@@ -9,7 +9,7 @@
       <h2>How to Play</h2>
       <div class="instruction-steps">
         <div class="instruction-step">
-          <div class="step-text">You have 6 guesses to find today's animal</div>
+          <div class="step-text">You have 10 guesses to find today's animal</div>
         </div>
         <div class="instruction-step">
           <div class="step-text">Get hints with each wrong guess</div>

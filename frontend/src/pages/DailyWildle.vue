@@ -41,7 +41,11 @@ export default {
         gameOver: false,
         won: false,
         attempts: 0,
-        maxAttempts: 10
+        maxAttempts: 10,
+        showResult: false,
+        isCompleted: false,
+        availableAnimals: [],
+        feedback: null
       }
     }
   },
@@ -62,32 +66,48 @@ export default {
         this.gameState.gameOver = false
         this.gameState.won = false
         this.gameState.attempts = 0
+        this.gameState.showResult = false
+        this.gameState.isCompleted = false
+        this.gameState.availableAnimals = response.vocab?.animals || []
+        this.gameState.feedback = null
       } catch (error) {
         console.error('Failed to start daily game:', error)
       }
     },
     async handleSubmitGuess(guess) {
       try {
-        const response = await ApiService.submitDailyGuess(guess)
+        this.gameState.attempts++
+        const response = await ApiService.submitDailyGuess(guess, this.gameState.attempts)
 
         this.gameState.guesses.push({
-          guess: guess,
+          guess: response.guess,
           feedback: response.feedback,
-          isCorrect: response.is_correct
+          isCorrect: response.solved,
+          solved: response.solved
         })
 
-        this.gameState.attempts++
+        this.gameState.feedback = response
 
-        if (response.is_correct) {
+        if (response.solved) {
           this.gameState.won = true
           this.gameState.gameOver = true
+          this.gameState.showResult = true
+          this.gameState.isCompleted = true
           this.gameState.phase = 'result'
-        } else if (this.gameState.attempts >= this.gameState.maxAttempts) {
+        } else if (response.game_over || this.gameState.attempts >= this.gameState.maxAttempts) {
           this.gameState.gameOver = true
+          this.gameState.showResult = true
+          this.gameState.isCompleted = true
           this.gameState.phase = 'result'
         }
       } catch (error) {
         console.error('Failed to submit guess:', error)
+        if (error.message.includes('unknown animal name')) {
+          this.gameState.feedback = {
+            type: 'error',
+            message: 'That animal is not in our database. Try selecting from the autocomplete list.'
+          }
+        }
       }
     },
     handlePlayAgain() {
@@ -98,7 +118,11 @@ export default {
         gameOver: false,
         won: false,
         attempts: 0,
-        maxAttempts: 10
+        maxAttempts: 10,
+        showResult: false,
+        isCompleted: false,
+        availableAnimals: [],
+        feedback: null
       }
       this.gameData = null
     },

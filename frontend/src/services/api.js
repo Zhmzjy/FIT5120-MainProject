@@ -82,7 +82,7 @@ class ApiService {
   }
 
   async getDailyWildleAnimal() {
-    return this.request('/conservation/daily-animal')
+    return this.request('/daily-wildle/today')
   }
 
   async createAISession() {
@@ -123,11 +123,11 @@ class ApiService {
     return this.request('/daily-wildle/today')
   }
 
-  async submitDailyWildleGuess(guessName, guessCount = 1) {
+  async submitDailyGuess(guess, guessCount = 1) {
     return this.request('/daily-wildle/guess', {
       method: 'POST',
       body: JSON.stringify({
-        guess_name: guessName,
+        guess_name: guess,
         guess_count: guessCount
       })
     })

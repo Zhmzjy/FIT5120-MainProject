@@ -39,11 +39,11 @@ export default {
     gameState: {
       type: Object,
       required: true
-    }
     },
     gameData: {
       type: Object,
       default: null
+    }
   },
   emits: ['startDaily', 'submitGuess', 'playAgain', 'exit']
 }

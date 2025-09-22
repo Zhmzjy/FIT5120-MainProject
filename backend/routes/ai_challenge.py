@@ -7,6 +7,8 @@ from typing import Dict, List, Optional
 
 ai_challenge_bp = Blueprint('ai_challenge', __name__)
 
+USE_IBRA_QUESTIONS = False
+
 class Species:
     def __init__(self, id: str, common_name: str, scientific_name: str, attrs: Dict[str, Optional[bool]]):
         self.id = id
@@ -83,10 +85,10 @@ def load_bool_questions(path: str) -> List[Question]:
         text = (r.get("Question") or "").strip()
         if not field or not text or field in seen:
             continue
-        seen.add(field)
-        qlist.append(Question(
         if not USE_IBRA_QUESTIONS and field.lower().startswith("ibra_"):
             continue
+        seen.add(field)
+        qlist.append(Question(
             id=f"q_{field}",
             text=text,
             attribute=field,

@@ -298,18 +298,16 @@ def answer():
         return jsonify({"error": "answer must be yes/no/dont_know"}), 400
 
     apply_answer(st, q, ans)
-    if question_id in st.asked:
-        return jsonify({"error": "question already answered"}), 400
-
 
     if should_decide(st):
         return jsonify({"decision": decision_payload(st)})
 
-
     available_questions = [q for q in QUESTIONS if q.id not in st.asked]
     if not available_questions:
         return jsonify({"decision": decision_payload(st)})
+
     nxt = select_next_question(st)
+
     if not nxt:
         return jsonify({"decision": decision_payload(st)})
 

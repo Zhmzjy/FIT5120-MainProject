@@ -27,11 +27,10 @@
 
     <div class="guess-verification">
       <h3 class="verification-title">Was the AI correct?</h3>
-      <div class="verification-buttons">
-
+      <div v-if="!userFeedback" class="verification-buttons">
         <Button
           class="verify-button correct-button"
-          @click="$emit('confirmCorrect')"
+          @click="handleCorrectGuess"
           type="primary"
           size="large"
         >
@@ -39,12 +38,15 @@
         </Button>
         <Button
           class="verify-button incorrect-button"
-          @click="$emit('confirmIncorrect')"
+          @click="handleIncorrectGuess"
           type="secondary"
           size="large"
         >
           No, wrong
         </Button>
+      </div>
+      <div v-if="userFeedback" class="feedback-message" :class="userFeedback.type">
+        {{ userFeedback.message }}
       </div>
     </div>
 
@@ -120,7 +122,8 @@ export default {
   emits: ['confirmCorrect', 'confirmIncorrect', 'restart', 'exit'],
   data() {
     return {
-      showDefinitions: []
+      showDefinitions: [],
+      userFeedback: null
     }
   },
   computed: {
@@ -150,6 +153,20 @@ export default {
         case 'dont_know': return "Don't Know"
         default: return answer
       }
+    },
+    handleCorrectGuess() {
+      this.userFeedback = {
+        message: 'Great! You and AI matched the same animal 🐨✨',
+        type: 'success'
+      }
+      this.$emit('confirmCorrect')
+    },
+    handleIncorrectGuess() {
+      this.userFeedback = {
+        message: 'Nice try, AI! But I am smarter today 😎',
+        type: 'error'
+      }
+      this.$emit('confirmIncorrect')
     }
   }
 }
@@ -163,11 +180,6 @@ export default {
 
 .result-header {
   margin-bottom: 32px;
-}
-
-.ai-avatar {
-  font-size: 3rem;
-  margin-bottom: 16px;
 }
 
 .result-title {
@@ -286,6 +298,27 @@ export default {
 .incorrect-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.feedback-message {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+.feedback-message.success {
+  background: #d4edda;
+  color: #155724;
+  border: 2px solid #c3e6cb;
+}
+
+.feedback-message.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 2px solid #f5c6cb;
 }
 
 .vocabulary-section {

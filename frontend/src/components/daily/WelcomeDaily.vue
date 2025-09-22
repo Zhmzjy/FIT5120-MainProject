@@ -21,16 +21,21 @@
     </div>
 
     <div class="welcome-actions">
-      <button @click="$emit('startDaily')" class="start-button">
+      <Button @click="$emit('startDaily')" class="start-button" type="primary" size="large">
         Start Today's Challenge
-      </button>
+      </Button>
     </div>
   </div>
 </template>
 
 <script>
+import Button from '../common/Button.vue'
+
 export default {
   name: 'WelcomeDaily',
+  components: {
+    Button
+  },
   emits: ['startDaily']
 }
 </script>

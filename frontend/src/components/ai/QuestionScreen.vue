@@ -1,47 +1,44 @@
 <template>
   <div class="question-screen">
     <div class="question-header">
-      <div class="progress-container">
-        <div class="progress-bar">
-          <div
-            class="progress-fill"
-            :style="{ width: progressPercentage + '%' }"
-          ></div>
-        </div>
-        <div class="progress-text">
-          Question {{ questionNumber }} of {{ totalQuestions }}
-        </div>
-      </div>
+      <h2 class="question-title">Think of an Australian Animal</h2>
+      <p class="question-subtitle">Answer the questions to help me guess!</p>
+      <div class="progress">Question {{ questionNumber || 1 }}</div>
     </div>
 
     <div class="question-content">
-      <div class="question-bubble">
-        <h2 class="question-text">{{ questionText }}</h2>
+      <div class="question-box">
+        <h3 class="question-text">{{ currentQuestion?.text || 'Loading question...' }}</h3>
       </div>
-    </div>
 
-    <div class="answer-section">
-      <h3 class="answer-prompt">Your Answer:</h3>
-      <div class="answer-buttons">
-        <button
-          @click="submitAnswer('yes')"
-          class="answer-button yes-button">
-          <span class="button-text">Yes</span>
-        </button>
-
-        <button
-          @click="submitAnswer('no')"
+      <div class="answer-options">
+        <Button
+          class="answer-button yes-button"
+          @click="$emit('answer', 'yes')"
+          :disabled="!currentQuestion"
+          type="primary"
+          size="medium"
+        >
+          Yes
+        </Button>
+        <Button
           class="answer-button no-button"
+          @click="$emit('answer', 'no')"
+          :disabled="!currentQuestion"
+          type="secondary"
+          size="medium"
         >
-          <span class="button-text">No</span>
-        </button>
-
-        <button
-          @click="submitAnswer('dont_know')"
-          class="answer-button maybe-button"
+          No
+        </Button>
+        <Button
+          class="answer-button dont-know-button"
+          @click="$emit('answer', 'dont_know')"
+          :disabled="!currentQuestion"
+          type="secondary"
+          size="large"
         >
-          <span class="button-text">Don't Know</span>
-        </button>
+          Don't Know
+        </Button>
       </div>
     </div>
 
@@ -59,8 +56,13 @@
 </template>
 
 <script>
+import Button from '../common/Button.vue'
+
 export default {
   name: 'QuestionScreen',
+  components: {
+    Button
+  },
   props: {
     currentQuestion: {
       type: [String, Object],
@@ -187,6 +189,13 @@ export default {
   font-family: var(--font-cartoon);
 }
 
+.answer-options {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
+  align-items: center;
+}
+
 .answer-buttons {
   display: flex;
   gap: var(--spacing-md);
@@ -198,44 +207,48 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-lg);
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
   border: none;
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--border-radius-md);
   cursor: pointer;
   transition: all 0.2s;
   font-family: var(--font-cartoon);
   font-weight: bold;
-  min-width: 120px;
-  color: black;
-  border: 3px solid transparent;
+  min-width: 60px;
+  color: white;
+  font-size: var(--font-size-sm);
+  text-align: center;
 }
 
 .yes-button {
-  background: var(--color-success);
+  background: #4CAF50;
 }
 
 .yes-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: #45a049;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .no-button {
-  background: var(--color-error);
+  background: #f44336;
 }
 
 .no-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: #da190b;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.maybe-button {
-  background: var(--color-warning);
+.dont-know-button {
+  background: #ff9800;
 }
 
-.maybe-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.dont-know-button:hover {
+  background: #e68900;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .button-icon {

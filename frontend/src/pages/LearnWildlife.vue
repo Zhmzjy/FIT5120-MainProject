@@ -1,21 +1,10 @@
 <template>
   <div class="wildlife-app">
-    <img src="/images/backformap.jpg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;" alt="background">
-    <header class="top-nav">
-      <div class="nav-content">
-        <div class="logo">
-          <button @click="goHome" class="logo-button">Wildlife Academy</button>
-        </div>
-        <nav class="nav-links">
-          <button @click="goToWildlife" class="nav-link">Learn Wildlife</button>
-          <button @click="goToSeasonal" class="nav-link">Seasonal Activities</button>
-          <button @click="goToAIChallenge" class="nav-link">AI Challenge</button>
-          <button @click="goToDailyWildle" class="nav-link">Daily Wildle</button>
-          <button @click="goToConservation" class="nav-link">Conservation</button>
-        </nav>
-        <button @click="toggleMobileSidebar" class="mobile-toggle">🍔</button>
-      </div>
-    </header>
+    <div class="background-wrapper">
+      <img src="/images/backformap.jpg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; filter: brightness(0.8) contrast(1.1);" alt="background">
+    </div>
+
+    <TopNavigation @toggleMobileMenu="toggleMobileSidebar" />
 
     <div class="main-layout">
       <aside class="left-sidebar" :class="{ 'mobile-open': mobileMenuOpen }">
@@ -45,16 +34,20 @@
 </template>
 
 <script>
-import LeftFilters from '../components/wildlife/LeftFilters.vue'
 import MapView from '../components/wildlife/MapView.vue'
+import LeftFilters from '../components/wildlife/LeftFilters.vue'
 import RightDrawer from '../components/wildlife/RightDrawer.vue'
+import Button from '../components/common/Button.vue'
+import TopNavigation from '../components/common/TopNavigation.vue'
 
 export default {
   name: 'LearnWildlife',
   components: {
-    LeftFilters,
     MapView,
-    RightDrawer
+    LeftFilters,
+    RightDrawer,
+    Button,
+    TopNavigation
   },
   data() {
     return {
@@ -109,6 +102,9 @@ export default {
       this.isLoading = loading
     },
     goToWildlife() {
+      if (this.$route.path === '/learn-wildlife') {
+        return;
+      }
       this.$router.push('/learn-wildlife')
     },
     goToSeasonal() {
@@ -139,105 +135,14 @@ export default {
   padding: 0;
 }
 
-.top-nav {
-  background: url('/images/backformap.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  filter: brightness(0.8) contrast(1.1);
-  padding: 0 var(--spacing-lg);
-  flex-shrink: 0;
-  z-index: 100;
-  position: relative;
+.background-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-}
-
-.nav-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 70px;
-  position: relative;
-  z-index: 2;
-}
-
-.logo-button {
-  margin: 0;
-  color: var(--text-white);
-  font-size: var(--font-size-xl);
-  font-family: var(--font-family-heading);
-  font-weight: bold;
-  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8), 1px 1px 2px rgba(0, 0, 0, 0.9);
-  animation: logoFloat 2s ease-in-out infinite;
-  background: transparent;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius-lg);
-  transition: all var(--transition-bounce);
-  border: none;
-  cursor: pointer;
-}
-
-.logo-button:hover {
-  background: transparent;
-  transform: scale(1.02);
-  text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.9), 2px 2px 4px rgba(0, 0, 0, 1);
-}
-
-@keyframes logoFloat {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-3px); }
-}
-
-.nav-links {
-  display: flex;
-  gap: var(--spacing-md);
-  align-items: center;
-}
-
-.nav-link {
-  background: transparent;
-  color: var(--text-white);
-  border: 2px solid rgba(255, 255, 255, 0.7);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius-pill);
-  font-family: var(--font-family-primary);
-  font-weight: bold;
-  cursor: pointer;
-  transition: all var(--transition-bounce);
-  font-size: var(--font-size-sm);
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.nav-link:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: var(--text-white);
-  border-color: rgba(255, 255, 255, 1);
-  transform: translateY(-2px) scale(1.05);
-  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
-}
-
-.mobile-toggle {
-  display: none;
-  background: transparent;
-  color: var(--text-white);
-  border: 2px solid rgba(255, 255, 255, 0.7);
-  padding: var(--spacing-sm);
-  border-radius: 50%;
-  font-size: var(--font-size-lg);
-  cursor: pointer;
-  transition: all var(--transition-bounce);
-  width: 50px;
-  height: 50px;
-  align-items: center;
-  justify-content: center;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.mobile-toggle:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 1);
-  transform: rotate(180deg) scale(1.1);
-  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+  z-index: -1;
 }
 
 .main-layout {
@@ -258,11 +163,7 @@ export default {
 
 .center-content {
   flex: 1;
-  background: url('/images/backformap.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  filter: brightness(0.8) contrast(1.1);
+  background: transparent;
   overflow: hidden;
   padding: 20px;
 }
@@ -278,19 +179,11 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .nav-links {
-    display: none;
-  }
-
-  .mobile-toggle {
-    display: block;
-  }
-
   .left-sidebar {
     position: fixed;
-    top: 60px;
+    top: 70px;
     left: -320px;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 70px);
     z-index: 200;
     transition: left 0.3s ease;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
@@ -309,10 +202,6 @@ export default {
 @media (max-width: 480px) {
   .center-content {
     padding: 5px;
-  }
-
-  .nav-content {
-    padding: 0 10px;
   }
 }
 </style>

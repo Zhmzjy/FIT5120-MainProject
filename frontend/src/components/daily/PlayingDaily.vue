@@ -93,8 +93,13 @@
 </template>
 
 <script>
+import Button from '../common/Button.vue'
+
 export default {
   name: 'PlayingDaily',
+  components: {
+    Button
+  },
   props: {
     guesses: {
       type: Array,
@@ -121,7 +126,7 @@ export default {
       default: null
     }
   },
-  emits: ['submitGuess', 'playAgain', 'exit'],
+  emits: ['submitGuess'],
   data() {
     return {
       currentGuess: ''

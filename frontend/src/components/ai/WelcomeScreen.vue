@@ -21,16 +21,21 @@
     </div>
 
     <div class="welcome-actions">
-      <button @click="$emit('startGame')" class="start-button">
+      <Button @click="$emit('startGame')" class="start-button" type="primary" size="large">
         Start Challenge
-      </button>
+      </Button>
     </div>
   </div>
 </template>
 
 <script>
+import Button from '../common/Button.vue'
+
 export default {
   name: 'WelcomeScreen',
+  components: {
+    Button
+  },
   emits: ['startGame']
 }
 </script>

@@ -8,11 +8,15 @@
       <div class="animal-card">
         <div class="animal-image-container">
           <img
-            :src="aiGuess.image_url"
+            :src="animalImageUrl"
             :alt="aiGuess.common_name"
             class="animal-image"
             @error="handleImageError"
+            @load="imageLoaded = true"
           />
+          <div v-if="isLoadingImage || !imageLoaded" class="image-placeholder">
+            <div class="loading-spinner"></div>
+          </div>
           <div class="conservation-badge" :class="conservationClass">
             {{ aiGuess.conservation_status }}
           </div>
@@ -21,6 +25,11 @@
         <div class="animal-info">
           <h3 class="animal-name">{{ aiGuess.common_name }}</h3>
           <p class="scientific-name">{{ aiGuess.scientific_name }}</p>
+          <div v-if="wikipediaUrl" class="learn-more">
+            <a :href="wikipediaUrl" target="_blank" class="wikipedia-link">
+              Learn More on Wikipedia
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -123,7 +132,10 @@ export default {
   data() {
     return {
       showDefinitions: [],
-      userFeedback: null
+      userFeedback: null,
+      imageLoaded: false,
+      wikipediaImageUrl: null,
+      isLoadingImage: false
     }
   },
   computed: {
@@ -133,11 +145,52 @@ export default {
       if (status?.includes('endangered')) return 'endangered'
       if (status?.includes('vulnerable')) return 'vulnerable'
       return 'least-concern'
+    },
+    animalImageUrl() {
+      return this.wikipediaImageUrl || '/images/koala.png'
+    },
+    wikipediaUrl() {
+      if (this.aiGuess.scientific_name) {
+        return `https://en.wikipedia.org/wiki/${encodeURIComponent(this.aiGuess.scientific_name)}`
+      }
+      return `https://en.wikipedia.org/wiki/${encodeURIComponent(this.aiGuess.common_name)}`
     }
   },
+  async mounted() {
+    await this.fetchWikipediaImage()
+  },
   methods: {
+    async fetchWikipediaImage() {
+      this.isLoadingImage = true
+      try {
+        let searchTerm = this.aiGuess.scientific_name || this.aiGuess.common_name
+        let apiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(searchTerm)}`
+
+        let response = await fetch(apiUrl)
+
+        if (!response.ok && this.aiGuess.scientific_name) {
+          searchTerm = this.aiGuess.common_name
+          apiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(searchTerm)}`
+          response = await fetch(apiUrl)
+        }
+
+        if (response.ok) {
+          const data = await response.json()
+          if (data.thumbnail && data.thumbnail.source) {
+            this.wikipediaImageUrl = data.thumbnail.source.replace(/\/\d+px-/, '/400px-')
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch Wikipedia image:', error)
+      } finally {
+        this.isLoadingImage = false
+      }
+    },
     handleImageError(event) {
-      event.target.src = '/images/koala.png'
+      if (this.wikipediaImageUrl && event.target.src !== '/images/koala.png') {
+        event.target.src = '/images/koala.png'
+        this.wikipediaImageUrl = null
+      }
     },
     toggleDefinition(term) {
       if (this.showDefinitions.includes(term)) {
@@ -205,6 +258,8 @@ export default {
 .animal-image-container {
   position: relative;
   margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
 }
 
 .animal-image {
@@ -213,6 +268,34 @@ export default {
   object-fit: cover;
   border-radius: 12px;
   border: 3px solid #f0f0f0;
+}
+
+.image-placeholder {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  border-radius: 12px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 4px solid #3498db;
+  border-top: 4px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .conservation-badge {
@@ -246,7 +329,22 @@ export default {
   font-size: 16px;
   color: black;
   font-style: italic;
-  margin: 0;
+  margin: 0 0 8px 0;
+}
+
+.learn-more {
+  margin-top: 8px;
+}
+
+.wikipedia-link {
+  font-size: 14px;
+  color: #3498db;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.wikipedia-link:hover {
+  text-decoration: underline;
 }
 
 .guess-verification {
@@ -468,6 +566,11 @@ export default {
   }
 
   .animal-image {
+    width: 150px;
+    height: 150px;
+  }
+
+  .image-placeholder {
     width: 150px;
     height: 150px;
   }

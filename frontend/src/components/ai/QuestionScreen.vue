@@ -14,8 +14,8 @@
       <div class="answer-options">
         <Button
           class="answer-button yes-button"
-          @click="$emit('answer', 'yes')"
-          :disabled="!currentQuestion"
+          @click="submitAnswer('yes')"
+          :disabled="!currentQuestion || isSubmitting"
           type="primary"
           size="medium"
         >
@@ -23,8 +23,8 @@
         </Button>
         <Button
           class="answer-button no-button"
-          @click="$emit('answer', 'no')"
-          :disabled="!currentQuestion"
+          @click="submitAnswer('no')"
+          :disabled="!currentQuestion || isSubmitting"
           type="secondary"
           size="medium"
         >
@@ -32,8 +32,8 @@
         </Button>
         <Button
           class="answer-button dont-know-button"
-          @click="$emit('answer', 'dont_know')"
-          :disabled="!currentQuestion"
+          @click="submitAnswer('dont_know')"
+          :disabled="!currentQuestion || isSubmitting"
           type="secondary"
           size="large"
         >
@@ -66,32 +66,48 @@ export default {
   props: {
     currentQuestion: {
       type: [String, Object],
-      required: true
+      default: null
     },
     questionNumber: {
       type: Number,
-      required: true
+      default: 1
     },
     totalQuestions: {
       type: Number,
-      default: 20
+      default: 10
     }
   },
   emits: ['submitAnswer'],
-  computed: {
-    progressPercentage() {
-      return (this.questionNumber / this.totalQuestions) * 100
-    },
-    questionText() {
-      if (typeof this.currentQuestion === 'string') {
-        return this.currentQuestion
-      }
-      return this.currentQuestion?.text || 'Loading question...'
+  data() {
+    return {
+      isSubmitting: false,
+      lastSubmittedQuestion: null
     }
   },
   methods: {
     submitAnswer(answer) {
+      if (this.isSubmitting || !this.currentQuestion) {
+        return
+      }
+
+      if (this.lastSubmittedQuestion === this.currentQuestion?.id) {
+        return
+      }
+
+      this.isSubmitting = true
+      this.lastSubmittedQuestion = this.currentQuestion?.id
       this.$emit('submitAnswer', answer)
+
+      setTimeout(() => {
+        this.isSubmitting = false
+      }, 1000)
+    }
+  },
+  watch: {
+    currentQuestion(newQuestion) {
+      if (newQuestion && newQuestion.id !== this.lastSubmittedQuestion) {
+        this.isSubmitting = false
+      }
     }
   }
 }

@@ -10,7 +10,7 @@
       :currentQuestion="gameState.currentQuestion"
       :questionNumber="gameState.userAnswers.length + 1"
       :totalQuestions="10"
-      @answer="$emit('submitAnswer', $event)"
+      @submitAnswer="$emit('submitAnswer', $event)"
     />
 
     <ResultScreen

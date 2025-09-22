@@ -35,7 +35,7 @@
           @click="$emit('answer', 'dont_know')"
           :disabled="!currentQuestion"
           type="secondary"
-          size="large"
+          size="medium"
         >
           Don't Know
         </Button>

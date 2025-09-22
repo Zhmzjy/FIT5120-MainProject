@@ -298,7 +298,7 @@ def answer():
         return jsonify({"error": "answer must be yes/no/dont_know"}), 400
 
     apply_answer(st, q, ans)
-
+xia
     if should_decide(st):
         return jsonify({"decision": decision_payload(st)})
 

@@ -85,6 +85,8 @@ def load_bool_questions(path: str) -> List[Question]:
             continue
         seen.add(field)
         qlist.append(Question(
+        if not USE_IBRA_QUESTIONS and field.lower().startswith("ibra_"):
+            continue
             id=f"q_{field}",
             text=text,
             attribute=field,

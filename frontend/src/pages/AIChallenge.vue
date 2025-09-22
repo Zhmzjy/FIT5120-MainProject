@@ -120,16 +120,16 @@ export default {
     },
     async handleSubmitAnswer(answer) {
       try {
-        this.gameState.userAnswers.push({
-          question: this.gameState.currentQuestion?.text || this.gameState.currentQuestion,
-          answer: answer
-        })
-
         const response = await ApiService.submitAnswer(
           this.sessionId,
           this.gameState.currentQuestion?.id || 'unknown',
           answer
         )
+
+        this.gameState.userAnswers.push({
+          question: this.gameState.currentQuestion?.text || this.gameState.currentQuestion,
+          answer: answer
+        })
 
         if (response.decision) {
           this.gameState.phase = 'result'

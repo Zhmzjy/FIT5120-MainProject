@@ -32,6 +32,11 @@ const routes = [
     name: 'YearlyAnalysis',
     component: () => import('../pages/YearlyAnalysis.vue')
   },
+  {
+    path: '/audio-game',
+    name: 'AudioMatchingGame',
+    component: () => import('../pages/AudioMatchingGame.vue')
+  },
   ...seasonalRoutes
 ]
 

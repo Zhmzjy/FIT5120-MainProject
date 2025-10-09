@@ -12,13 +12,15 @@
 
       <div v-else-if="!chartData || chartData.length === 0" class="no-data">
         <p>No trend data available for this species</p>
+        <p v-if="species">Species ID: {{ species.taxonId }}</p>
       </div>
 
       <div v-else class="chart-wrapper">
-        <div class="debug-info" style="margin-bottom: 10px; font-size: 12px; color: #666;">
-          Data points: {{ chartData.length }} | Canvas ready: {{ canvasReady }}
-        </div>
-        <canvas ref="chartCanvas" :width="chartWidth" :height="chartHeight" style="border: 1px solid #ddd;"></canvas>
+        <canvas
+          ref="chartCanvas"
+          :style="{ width: chartWidth + 'px', height: chartHeight + 'px' }"
+          class="trend-canvas"
+        ></canvas>
 
         <div class="trend-summary">
           <div class="summary-stats">
@@ -74,11 +76,6 @@ export default {
       default: false
     }
   },
-  data() {
-    return {
-      canvasReady: false
-    }
-  },
   computed: {
     chartWidth() {
       return 800
@@ -121,29 +118,43 @@ export default {
   },
   watch: {
     chartData: {
-      handler() {
-        this.$nextTick(() => {
-          this.renderChart()
-        })
+      handler(newData) {
+        console.log('Chart data changed:', newData)
+        this.scheduleRender()
       },
       immediate: true
+    },
+    species: {
+      handler(newSpecies) {
+        console.log('Species changed:', newSpecies)
+        this.scheduleRender()
+      }
     }
   },
   mounted() {
-    this.$nextTick(() => {
-      this.canvasReady = !!this.$refs.chartCanvas
-      this.renderChart()
-    })
+    this.scheduleRender()
   },
   methods: {
+    scheduleRender() {
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.renderChart()
+        }, 100)
+      })
+    },
     renderChart() {
+      console.log('Rendering chart for species:', this.species?.commonName, 'with data:', this.chartData)
+
       if (!this.chartData || this.chartData.length === 0) {
         console.log('No chart data available')
         return
       }
 
       if (!this.$refs.chartCanvas) {
-        console.log('Canvas ref not available')
+        console.log('Canvas ref not available, retrying...')
+        setTimeout(() => {
+          this.renderChart()
+        }, 50)
         return
       }
 
@@ -155,8 +166,15 @@ export default {
         return
       }
 
+      const devicePixelRatio = window.devicePixelRatio || 1
       const width = this.chartWidth
       const height = this.chartHeight
+
+      canvas.width = width * devicePixelRatio
+      canvas.height = height * devicePixelRatio
+
+      ctx.scale(devicePixelRatio, devicePixelRatio)
+
       const padding = 60
 
       ctx.clearRect(0, 0, width, height)
@@ -193,7 +211,7 @@ export default {
       })
 
       ctx.fillStyle = '#2d3748'
-      ctx.font = '12px sans-serif'
+      ctx.font = '12px Arial, sans-serif'
       ctx.textAlign = 'center'
 
       this.chartData.forEach((point, index) => {
@@ -209,7 +227,7 @@ export default {
         ctx.fillText(Math.round(value).toLocaleString(), padding - 10, y + 4)
       }
 
-      console.log('Chart rendered successfully with', this.chartData.length, 'data points')
+      console.log('Chart rendered successfully')
     }
   }
 }
@@ -262,6 +280,11 @@ export default {
 
 .chart-wrapper {
   text-align: center;
+}
+
+.trend-canvas {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
 }
 
 .trend-summary {

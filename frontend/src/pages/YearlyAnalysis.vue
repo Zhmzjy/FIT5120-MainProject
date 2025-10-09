@@ -329,6 +329,7 @@ export default {
       this.loadSpeciesTrend(species.taxonId)
     },
     handleSpeciesSearchSelected(species) {
+      console.log('Species search selected:', species, 'taxonId:', species.taxonId)
       this.selectedSpeciesForTrend = species
       this.loadSpeciesTrend(species.taxonId)
     },
@@ -345,9 +346,12 @@ export default {
       }, 1000)
     },
     loadSpeciesTrend(taxonId) {
+      console.log('Loading trend for taxonId:', taxonId)
+      console.log('Available trend data:', Object.keys(this.mockData.trendData))
       this.trendLoading = true
       setTimeout(() => {
         this.trendLoading = false
+        console.log('Trend loaded for taxonId:', taxonId, 'data:', this.mockData.trendData[taxonId])
       }, 600)
     }
   },

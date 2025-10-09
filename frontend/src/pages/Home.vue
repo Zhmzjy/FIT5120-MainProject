@@ -57,6 +57,14 @@
             <Button
               type="primary"
               size="large"
+              @click="navigateToAudioGame"
+            >
+              Audio Matching Game
+            </Button>
+
+            <Button
+              type="primary"
+              size="large"
               @click="navigateToYearlyAnalysis"
             >
               Yearly Analysis
@@ -93,6 +101,9 @@ export default {
     },
     navigateToConservation() {
       this.$router.push('/conservation')
+    },
+    navigateToAudioGame() {
+      this.$router.push('/audio-game')
     },
     navigateToYearlyAnalysis() {
       this.$router.push('/yearly-analysis')

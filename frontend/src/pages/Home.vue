@@ -53,6 +53,14 @@
             >
               Conservation
             </Button>
+
+            <Button
+              type="primary"
+              size="large"
+              @click="navigateToYearlyAnalysis"
+            >
+              Yearly Analysis
+            </Button>
           </div>
         </div>
       </div>
@@ -85,6 +93,9 @@ export default {
     },
     navigateToConservation() {
       this.$router.push('/conservation')
+    },
+    navigateToYearlyAnalysis() {
+      this.$router.push('/yearly-analysis')
     }
   }
 }

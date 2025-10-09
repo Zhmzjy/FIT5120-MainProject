@@ -81,6 +81,30 @@ class ApiService {
     return this.request('/conservation/species')
   }
 
+  async getYearlyMostCommon(year) {
+    return this.request(`/yearly/most-common?year=${year}`)
+  }
+
+  async getYearlyLeastCommon(year) {
+    return this.request(`/yearly/least-common?year=${year}`)
+  }
+
+  async compareYears(year1, year2) {
+    return this.request(`/yearly/compare?year1=${year1}&year2=${year2}`)
+  }
+
+  async getSpeciesYearlyTrend(taxonId, startYear, endYear) {
+    return this.request(`/yearly/species-trend?taxon_id=${taxonId}&start_year=${startYear}&end_year=${endYear}`)
+  }
+
+  async getYearlySpeciesList(year) {
+    return this.request(`/yearly/species?year=${year}`)
+  }
+
+  async getAvailableYears() {
+    return this.request('/yearly/available-years')
+  }
+
   async getDailyWildleAnimal() {
     return this.request('/daily-wildle/today')
   }

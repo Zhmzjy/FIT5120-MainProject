@@ -11,6 +11,7 @@
         <Button @click="goToAIChallenge" class="nav-link">AI Challenge</Button>
         <Button @click="goToDailyWildle" class="nav-link">Daily Wildle</Button>
         <Button @click="goToConservation" class="nav-link">Conservation</Button>
+        <Button @click="goToYearlyAnalysis" class="nav-link">Yearly Analysis</Button>
       </nav>
       <Button @click="toggleMobileMenu" class="mobile-toggle">🍔</Button>
     </div>
@@ -44,6 +45,9 @@ export default {
     },
     goToConservation() {
       this.$router.push('/conservation')
+    },
+    goToYearlyAnalysis() {
+      this.$router.push('/yearly-analysis')
     },
     toggleMobileMenu() {
       this.$emit('toggleMobileMenu')

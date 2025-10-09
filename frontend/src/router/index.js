@@ -27,6 +27,11 @@ const routes = [
     name: 'Conservation',
     component: () => import('../pages/Conservation.vue')
   },
+  {
+    path: '/yearly-analysis',
+    name: 'YearlyAnalysis',
+    component: () => import('../pages/YearlyAnalysis.vue')
+  },
   ...seasonalRoutes
 ]
 

@@ -2,7 +2,7 @@
   <header class="top-nav">
     <div class="nav-content">
       <div class="logo">
-        <Button @click="goHome" class="logo-button">Wildlife Academy</Button>
+        <Button @click="goHome" class="logo-button">Dondig's Wildlife Seminary</Button>
       </div>
       <nav class="nav-links">
         <Button @click="goHome" class="nav-link">Home</Button>
@@ -65,12 +65,17 @@ export default {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: transparent;
   backdrop-filter: none;
   border-bottom: none;
   padding: 0 var(--spacing-lg);
   flex-shrink: 0;
   overflow: hidden;
+  background: linear-gradient(
+      135deg,
+      rgba(0, 17, 34, 0.2) 0%,
+      rgba(45, 80, 22, 0.15) 50%,
+      rgba(0, 105, 148, 0.2) 100%
+  );
 }
 
 .nav-content {

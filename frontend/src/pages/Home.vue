@@ -1,112 +1,53 @@
 <template>
-  <Layout>
-    <div class="home-page">
-      <div class="hero-section">
-        <div class="background-image">
-          <img src="/images/v2osk-1Z2niiBPg5A-unsplash.jpg" alt="Australian Wildlife Background" />
-          <div class="overlay"></div>
-        </div>
+  <div class="home-page">
+    <div class="background-wrapper">
+      <img
+        src="/images/v2osk-1Z2niiBPg5A-unsplash.jpg"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1"
+        alt="background"
+      />
+    </div>
 
-        <div class="hero-content">
-          <h1 class="main-title">Welcome to Wildlife Academy</h1>
-          <p class="subtitle">
-            Explore Australia's wildlife through games, maps, and AI — fun learning for kids, and adventures for families.
-          </p>
+    <TopNavigation @toggleMobileMenu="toggleMobileMenu" />
 
-          <div class="action-buttons">
-            <Button
-              type="primary"
-              size="large"
-              @click="navigateToLearnWildlife"
-            >
-              Learn Wildlife
-            </Button>
-
-            <Button
-              type="primary"
-              size="large"
-              @click="navigateToSeasonal"
-            >
-              Seasonal Activities
-            </Button>
-
-            <Button
-              type="primary"
-              size="large"
-              @click="navigateToAIChallenge"
-            >
-              AI Challenge
-            </Button>
-
-            <Button
-              type="primary"
-              size="large"
-              @click="navigateToDailyWildle"
-            >
-              Daily Wildle
-            </Button>
-
-            <Button
-              type="primary"
-              size="large"
-              @click="navigateToConservation"
-            >
-              Conservation
-            </Button>
-
-            <Button
-              type="primary"
-              size="large"
-              @click="navigateToAudioGame"
-            >
-              Audio Matching Game
-            </Button>
-
-            <Button
-              type="primary"
-              size="large"
-              @click="navigateToYearlyAnalysis"
-            >
-              Yearly Analysis
-            </Button>
-          </div>
-        </div>
+    <div class="hero-section">
+      <div class="overlay"></div>
+      <div class="hero-content">
+        <h1 class="main-title">Welcome to Dondig's Wildlife Seminary</h1>
+        <p class="subtitle">
+          Explore Australia's wildlife through games, maps, and AI — fun learning
+          for kids, and adventures for families.
+        </p>
       </div>
     </div>
-  </Layout>
+
+    <div
+      v-if="mobileMenuOpen"
+      class="mobile-overlay"
+      @click="closeMobileMenu"
+    ></div>
+  </div>
 </template>
 
 <script>
-import Layout from '../components/common/Layout.vue'
-import Button from '../components/common/Button.vue'
+import TopNavigation from '../components/common/TopNavigation.vue'
 
 export default {
   name: 'Home',
   components: {
-    Layout,
-    Button
+    TopNavigation
+  },
+  data() {
+    return {
+      mobileMenuOpen: false
+    }
   },
   methods: {
-    navigateToLearnWildlife() {
-      this.$router.push('/learn-wildlife')
+    toggleMobileMenu() {
+      this.mobileMenuOpen = !this.mobileMenuOpen
     },
-    navigateToSeasonal() {
-      this.$router.push('/seasonal')
-    },
-    navigateToAIChallenge() {
-      this.$router.push('/ai-challenge')
-    },
-    navigateToDailyWildle() {
-      this.$router.push('/daily-wildle')
-    },
-    navigateToConservation() {
-      this.$router.push('/conservation')
-    },
-    navigateToAudioGame() {
-      this.$router.push('/audio-game')
-    },
-    navigateToYearlyAnalysis() {
-      this.$router.push('/yearly-analysis')
+    closeMobileMenu() {
+      this.mobileMenuOpen = false
     }
   }
 }
@@ -119,6 +60,15 @@ export default {
   position: relative;
 }
 
+.background-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
 .hero-section {
   width: 100%;
   height: 100vh;
@@ -127,22 +77,7 @@ export default {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-}
-
-.background-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-.background-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+  padding-top: 70px;
 }
 
 .overlay {
@@ -153,71 +88,66 @@ export default {
   height: 100%;
   background: linear-gradient(
     135deg,
-    rgba(0, 17, 34, 0.4) 0%,
-    rgba(45, 80, 22, 0.3) 50%,
-    rgba(0, 105, 148, 0.4) 100%
+    rgba(0, 17, 34, 0.2) 0%,
+    rgba(45, 80, 22, 0.15) 50%,
+    rgba(0, 105, 148, 0.2) 100%
   );
-  z-index: 2;
+  z-index: 1;
 }
 
 .hero-content {
   position: relative;
-  z-index: 3;
+  z-index: 2;
   text-align: center;
   max-width: 800px;
-  padding: var(--spacing-xl);
-  color: var(--text-white);
+  padding: 2rem;
+  color: #ffffff;
 }
 
 .main-title {
   font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 700;
-  margin-bottom: var(--spacing-lg);
-  text-shadow: 2px 2px 4px var(--shadow-dark);
+  margin-bottom: 5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   line-height: 1.1;
+  transform: translateY(-155px);
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
 }
 
 .subtitle {
   font-size: clamp(1.1rem, 2.5vw, 1.5rem);
   line-height: 1.6;
-  margin-bottom: var(--spacing-2xl);
-  text-shadow: 1px 1px 2px var(--shadow-dark);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
   opacity: 0.95;
   max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
+  transform: translateY(-150px);
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
 }
 
-.action-buttons {
-  display: flex;
-  gap: var(--spacing-lg);
-  justify-content: center;
-  flex-wrap: wrap;
+.mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
 
 @media (max-width: 768px) {
+  .hero-section {
+    padding-top: 60px;
+  }
+
   .hero-content {
-    padding: var(--spacing-lg);
-  }
-
-  .action-buttons {
-    flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-md);
-  }
-
-  .main-title {
-    margin-bottom: var(--spacing-md);
-  }
-
-  .subtitle {
-    margin-bottom: var(--spacing-xl);
+    padding: 1rem;
   }
 }
 
 @media (max-width: 480px) {
   .hero-content {
-    padding: var(--spacing-md);
+    padding: 1rem;
   }
 }
 </style>

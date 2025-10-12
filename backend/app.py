@@ -9,6 +9,7 @@ from routes.map import map_bp
 from routes.conservation import conservation_bp
 from routes.ai_challenge import ai_challenge_bp, init_ai_challenge
 from routes.daily_wildle import daily_wildle_bp, init_daily_wildle
+from routes.audio import audio_bp
 
 app = Flask(__name__)
 CORS(app)
@@ -29,6 +30,7 @@ app.register_blueprint(map_bp, url_prefix='/api/map')
 app.register_blueprint(conservation_bp, url_prefix='/api/conservation')
 app.register_blueprint(ai_challenge_bp, url_prefix='/api/ai-challenge')
 app.register_blueprint(daily_wildle_bp, url_prefix='/api/daily-wildle')
+app.register_blueprint(audio_bp, url_prefix='/api/audio')
 
 try:
     init_ai_challenge()

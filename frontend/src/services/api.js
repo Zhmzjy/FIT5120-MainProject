@@ -160,6 +160,18 @@ class ApiService {
   async getDailyWildleHistory(limit = 30) {
     return this.request(`/daily-wildle/history?limit=${limit}`)
   }
+
+  async getAllAnimalSounds() {
+    return this.request('/audio/sounds')
+  }
+
+  async getRandomAnimalSounds(count = 5) {
+    return this.request(`/audio/random?count=${count}`)
+  }
+
+  async getAnimalDetails(name) {
+    return this.request(`/audio/details/${encodeURIComponent(name)}`)
+  }
 }
 
 export default new ApiService()

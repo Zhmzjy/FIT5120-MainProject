@@ -93,6 +93,7 @@ import AudioPlayer from '../components/audio/AudioPlayer.vue'
 import AnswerOptions from '../components/audio/AnswerOptions.vue'
 import GameResult from '../components/audio/GameResult.vue'
 import GameSummary from '../components/audio/GameSummary.vue'
+import api from '../services/api'
 
 export default {
   name: 'AudioMatchingGame',
@@ -117,54 +118,16 @@ export default {
       showResult: false,
       isCorrect: false,
       gameResults: [],
-      animals: [
-        {
-          id: 1,
-          commonName: 'Koala',
-          scientificName: 'Phascolarctos cinereus',
-          imageUrl: '/images/koala.png',
-          audioUrl: '/audio/koala.mp3'
-        },
-        {
-          id: 2,
-          commonName: 'Kangaroo',
-          scientificName: 'Osphranter rufus',
-          imageUrl: '/images/kangaroo.png',
-          audioUrl: '/audio/kangaroo.mp3'
-        },
-        {
-          id: 3,
-          commonName: 'Rainbow Lorikeet',
-          scientificName: 'Trichoglossus moluccanus',
-          imageUrl: '/images/koala.png',
-          audioUrl: '/audio/lorikeet.mp3'
-        },
-        {
-          id: 4,
-          commonName: 'Australian Magpie',
-          scientificName: 'Gymnorhina tibicen',
-          imageUrl: '/images/kangaroo.png',
-          audioUrl: '/audio/magpie.mp3'
-        },
-        {
-          id: 5,
-          commonName: 'Tasmanian Devil',
-          scientificName: 'Sarcophilus harrisii',
-          imageUrl: '/images/koala.png',
-          audioUrl: '/audio/devil.mp3'
-        },
-        {
-          id: 6,
-          commonName: 'Bilby',
-          scientificName: 'Macrotis lagotis',
-          imageUrl: '/images/kangaroo.png',
-          audioUrl: '/audio/bilby.mp3'
-        }
-      ],
+      animals: [],
+      allAnimals: [],
       currentAnimal: null,
       currentOptions: [],
-      usedAnimals: []
+      usedAnimals: [],
+      loading: false
     }
+  },
+  async mounted() {
+    await this.loadAnimals()
   },
   computed: {
     progressPercentage() {
@@ -178,13 +141,32 @@ export default {
     }
   },
   methods: {
+    async loadAnimals() {
+      try {
+        this.loading = true
+        const data = await api.getAllAnimalSounds()
+        this.allAnimals = data.map(animal => ({
+          id: animal.id,
+          commonName: animal.commonName,
+          scientificName: animal.scientificName,
+          audioUrl: `https://fit5120-backend.onrender.com/api${animal.soundUrl}`
+        }))
+      } catch (error) {
+        console.error('Failed to load animals:', error)
+      } finally {
+        this.loading = false
+      }
+    },
     toggleMobileMenu() {
       this.mobileMenuOpen = !this.mobileMenuOpen
     },
     closeMobileMenu() {
       this.mobileMenuOpen = false
     },
-    startGame() {
+    async startGame() {
+      if (this.allAnimals.length === 0) {
+        await this.loadAnimals()
+      }
       this.gameStarted = true
       this.resetGameState()
       this.loadNextRound()
@@ -195,6 +177,7 @@ export default {
       this.gameResults = []
       this.usedAnimals = []
       this.gameCompleted = false
+      this.animals = [...this.allAnimals]
     },
     loadNextRound() {
       this.audioReady = false
@@ -204,7 +187,7 @@ export default {
 
       const availableAnimals = this.animals.filter(animal => !this.usedAnimals.includes(animal.id))
 
-      if (availableAnimals.length === 0) {
+      if (availableAnimals.length === 0 || this.currentRound > this.totalRounds) {
         this.completeGame()
         return
       }

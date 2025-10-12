@@ -82,6 +82,12 @@
       </div>
     </div>
 
+    <AnimalDetailModal
+      :isOpen="showDetailModal"
+      :animal="selectedAnimalForDetail"
+      @close="closeDetailModal"
+    />
+
     <div v-if="mobileMenuOpen" class="mobile-overlay" @click="closeMobileMenu"></div>
   </div>
 </template>
@@ -93,6 +99,7 @@ import AudioPlayer from '../components/audio/AudioPlayer.vue'
 import AnswerOptions from '../components/audio/AnswerOptions.vue'
 import GameResult from '../components/audio/GameResult.vue'
 import GameSummary from '../components/audio/GameSummary.vue'
+import AnimalDetailModal from '../components/audio/AnimalDetailModal.vue'
 import api from '../services/api'
 import { getWikipediaImage } from '@/utils/wikipediaImage.js'
 
@@ -104,7 +111,8 @@ export default {
     AudioPlayer,
     AnswerOptions,
     GameResult,
-    GameSummary
+    GameSummary,
+    AnimalDetailModal
   },
   data() {
     return {
@@ -127,9 +135,11 @@ export default {
       loading: false,
       specificImages: {
         'Southern Long-nosed Bandicoot': 'https://upload.wikimedia.org/wikipedia/commons/5/50/Long-nosed_Bandicoot_0059.jpg',
-        'Bare-nosed Wombat': 'https://upload.wikimedia.org/wikipedia/commons/1/18/Vombatus_ursinus_-Maria_Island_National_Park.jpg',
+        'Bare-nosed Wombat, Common Wombat': 'https://upload.wikimedia.org/wikipedia/commons/1/18/Vombatus_ursinus_-Maria_Island_National_Park.jpg',
         'Greater Glider (southern and central)': 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Petauroides_volans.jpg'
-      }
+      },
+      showDetailModal: false,
+      selectedAnimalForDetail: null
     }
   },
   async mounted() {
@@ -277,7 +287,12 @@ export default {
       this.startGame()
     },
     viewAnimalDetails(animal) {
-      console.log('View animal details:', animal)
+      this.selectedAnimalForDetail = animal
+      this.showDetailModal = true
+    },
+    closeDetailModal() {
+      this.showDetailModal = false
+      this.selectedAnimalForDetail = null
     },
     goHome() {
       this.$router.push('/')

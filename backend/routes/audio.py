@@ -88,6 +88,36 @@ def get_animal_details(animal_id):
 
     return jsonify(details)
 
+@audio_bp.route('/details/name/<string:common_name>', methods=['GET'])
+def get_animal_details_by_name(common_name):
+    query = """
+        SELECT ad.common_name, ad.scientific_name, ad.description, 
+               ad.habitat, ad.diet, ad.conservation_status, ad.fun_fact,
+               asound.sound_url
+        FROM animal_details ad
+        LEFT JOIN animal_sounds asound ON ad.common_name = asound.common_name
+        WHERE ad.common_name = :common_name
+    """
+
+    result = db.execute_query(query, {'common_name': common_name})
+
+    if not result or len(result) == 0:
+        return jsonify({'error': 'Animal not found'}), 404
+
+    row = result[0]
+    details = {
+        'commonName': row['common_name'],
+        'scientificName': row['scientific_name'],
+        'description': row['description'],
+        'habitat': row['habitat'],
+        'diet': row['diet'],
+        'conservationStatus': row['conservation_status'],
+        'funFact': row['fun_fact'],
+        'soundUrl': row['sound_url']
+    }
+
+    return jsonify(details)
+
 @audio_bp.route('/<filename>', methods=['GET'])
 def serve_audio_file(filename):
     try:

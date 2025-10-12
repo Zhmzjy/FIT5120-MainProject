@@ -170,7 +170,7 @@ class ApiService {
   }
 
   async getAnimalDetails(name) {
-    return this.request(`/audio/details/${encodeURIComponent(name)}`)
+    return this.request(`/audio/details/name/${encodeURIComponent(name)}`)
   }
 }
 

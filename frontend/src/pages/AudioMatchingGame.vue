@@ -149,7 +149,7 @@ export default {
           id: animal.id,
           commonName: animal.commonName,
           scientificName: animal.scientificName,
-          audioUrl: `https://fit5120-backend.onrender.com/api${animal.soundUrl}`
+          audioUrl: animal.soundUrl
         }))
       } catch (error) {
         console.error('Failed to load animals:', error)
@@ -227,7 +227,7 @@ export default {
       this.selectedOption = optionId
       this.isCorrect = optionId === this.currentAnimal.id
 
-      if (this.isCorrect) {
+      if this.isCorrect) {
         this.correctAnswers++
       }
 

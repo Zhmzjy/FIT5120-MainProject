@@ -11,7 +11,7 @@ from routes.ai_challenge import ai_challenge_bp, init_ai_challenge
 from routes.daily_wildle import daily_wildle_bp, init_daily_wildle
 from routes.audio import audio_bp
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 CORS(app)
 
 @app.route('/')

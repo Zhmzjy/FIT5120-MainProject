@@ -23,10 +23,10 @@ def get_all_sounds():
     sounds = []
     for row in result:
         sounds.append({
-            'id': row[0],
-            'commonName': row[1],
-            'scientificName': row[2],
-            'soundUrl': row[3]
+            'id': row['id'],
+            'commonName': row['common_name'],
+            'scientificName': row['scientific_name'],
+            'soundUrl': row['sound_url']
         })
 
     return jsonify(sounds)
@@ -50,55 +50,43 @@ def get_random_sounds():
     sounds = []
     for row in result:
         sounds.append({
-            'id': row[0],
-            'commonName': row[1],
-            'scientificName': row[2],
-            'soundUrl': row[3]
+            'id': row['id'],
+            'commonName': row['common_name'],
+            'scientificName': row['scientific_name'],
+            'soundUrl': row['sound_url']
         })
 
     return jsonify(sounds)
 
-@audio_bp.route('/details/<name>', methods=['GET'])
-def get_animal_details(name):
+@audio_bp.route('/details/<int:animal_id>', methods=['GET'])
+def get_animal_details(animal_id):
     query = """
-        SELECT common_name, scientific_name, year, conservation_status,
-               occurrence_count, taxon_class, body_mass_g, size_category,
-               diet_type, foraging_behavior, activity_pattern, is_nocturnal,
-               can_fly, can_swim, eats_insects, eats_fruit, eats_fish,
-               is_marsupial, is_bat, habitats
-        FROM animal_details
-        WHERE common_name = :name
+        SELECT ad.common_name, ad.scientific_name, ad.description, 
+               ad.habitat, ad.diet, ad.conservation_status, ad.fun_fact,
+               asound.sound_url
+        FROM animal_details ad
+        LEFT JOIN animal_sounds asound ON ad.common_name = asound.common_name
+        WHERE ad.id = :animal_id
     """
 
-    result = db.execute_query(query, {'name': name})
+    result = db.execute_query(query, {'animal_id': animal_id})
 
     if not result or len(result) == 0:
         return jsonify({'error': 'Animal not found'}), 404
 
     row = result[0]
+    details = {
+        'commonName': row['common_name'],
+        'scientificName': row['scientific_name'],
+        'description': row['description'],
+        'habitat': row['habitat'],
+        'diet': row['diet'],
+        'conservationStatus': row['conservation_status'],
+        'funFact': row['fun_fact'],
+        'soundUrl': row['sound_url']
+    }
 
-    return jsonify({
-        'commonName': row[0],
-        'scientificName': row[1],
-        'year': row[2],
-        'conservationStatus': row[3],
-        'occurrenceCount': row[4],
-        'taxonClass': row[5],
-        'bodyMass': float(row[6]) if row[6] else None,
-        'sizeCategory': row[7],
-        'dietType': row[8],
-        'foragingBehavior': row[9],
-        'activityPattern': row[10],
-        'isNocturnal': row[11],
-        'canFly': row[12],
-        'canSwim': row[13],
-        'eatsInsects': row[14],
-        'eatsFruit': row[15],
-        'eatsFish': row[16],
-        'isMarsupial': row[17],
-        'isBat': row[18],
-        'habitats': row[19]
-    })
+    return jsonify(details)
 
 @audio_bp.route('/<filename>', methods=['GET'])
 def serve_audio_file(filename):

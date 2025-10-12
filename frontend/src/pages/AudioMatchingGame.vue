@@ -135,7 +135,7 @@ export default {
       loading: false,
       specificImages: {
         'Southern Long-nosed Bandicoot': 'https://upload.wikimedia.org/wikipedia/commons/5/50/Long-nosed_Bandicoot_0059.jpg',
-        'Bare-nosed Wombat, Common Wombat': 'https://upload.wikimedia.org/wikipedia/commons/1/18/Vombatus_ursinus_-Maria_Island_National_Park.jpg',
+        'Bare-nosed Wombat': 'https://upload.wikimedia.org/wikipedia/commons/1/18/Vombatus_ursinus_-Maria_Island_National_Park.jpg',
         'Greater Glider (southern and central)': 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Petauroides_volans.jpg'
       },
       showDetailModal: false,

@@ -43,7 +43,7 @@
             <p>{{ animalDetails.diet }}</p>
           </div>
 
-          <div v-if="animalDetails.funFact" class="info-section fun-fact">
+          <div v-if="animalDetails.funFact" class="info-section">
             <h3>Fun Fact</h3>
             <p>{{ animalDetails.funFact }}</p>
           </div>
@@ -284,19 +284,6 @@ export default {
   color: #4a5568;
   line-height: 1.6;
   margin: 0;
-}
-
-.fun-fact {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-}
-
-.fun-fact h3 {
-  color: white;
-}
-
-.fun-fact p {
-  color: rgba(255, 255, 255, 0.95);
 }
 
 .modal-actions {

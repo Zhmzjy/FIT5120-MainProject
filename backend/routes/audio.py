@@ -1,55 +1,54 @@
-from flask import Blueprint, jsonify, send_file
+from flask import Blueprint, jsonify, send_file, request
+from lib.db import DatabaseHelper
 import os
 
 audio_bp = Blueprint('audio', __name__)
+db = DatabaseHelper()
 
 AUDIO_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'species_sound_file')
 
 @audio_bp.route('/sounds', methods=['GET'])
 def get_all_sounds():
-    from lib.db import get_db_connection
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
+    query = """
         SELECT id, common_name, scientific_name, sound_url
         FROM animal_sounds
         ORDER BY common_name
-    """)
+    """
+
+    result = db.execute_query(query)
+
+    if not result:
+        return jsonify([])
 
     sounds = []
-    for row in cursor.fetchall():
+    for row in result:
         sounds.append({
             'id': row[0],
             'commonName': row[1],
             'scientificName': row[2],
             'soundUrl': row[3]
         })
-
-    cursor.close()
-    conn.close()
 
     return jsonify(sounds)
 
 @audio_bp.route('/random', methods=['GET'])
 def get_random_sounds():
-    from flask import request
-    from lib.db import get_db_connection
-
     count = request.args.get('count', 5, type=int)
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
+    query = """
         SELECT id, common_name, scientific_name, sound_url
         FROM animal_sounds
         ORDER BY RANDOM()
-        LIMIT %s
-    """, (count,))
+        LIMIT :count
+    """
+
+    result = db.execute_query(query, {'count': count})
+
+    if not result:
+        return jsonify([])
 
     sounds = []
-    for row in cursor.fetchall():
+    for row in result:
         sounds.append({
             'id': row[0],
             'commonName': row[1],
@@ -57,33 +56,26 @@ def get_random_sounds():
             'soundUrl': row[3]
         })
 
-    cursor.close()
-    conn.close()
-
     return jsonify(sounds)
 
 @audio_bp.route('/details/<name>', methods=['GET'])
 def get_animal_details(name):
-    from lib.db import get_db_connection
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
+    query = """
         SELECT common_name, scientific_name, year, conservation_status,
                occurrence_count, taxon_class, body_mass_g, size_category,
                diet_type, foraging_behavior, activity_pattern, is_nocturnal,
                can_fly, can_swim, eats_insects, eats_fruit, eats_fish,
                is_marsupial, is_bat, habitats
         FROM animal_details
-        WHERE common_name = %s
-    """, (name,))
+        WHERE common_name = :name
+    """
 
-    row = cursor.fetchone()
-    cursor.close()
-    conn.close()
+    result = db.execute_query(query, {'name': name})
 
-    if not row:
+    if not result or len(result) == 0:
         return jsonify({'error': 'Animal not found'}), 404
+
+    row = result[0]
 
     return jsonify({
         'commonName': row[0],
@@ -119,4 +111,3 @@ def serve_audio_file(filename):
         return send_file(file_path, mimetype='audio/mpeg')
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-

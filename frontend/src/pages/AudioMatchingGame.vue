@@ -227,7 +227,7 @@ export default {
       this.selectedOption = optionId
       this.isCorrect = optionId === this.currentAnimal.id
 
-      if this.isCorrect) {
+      if(this.isCorrect) {
         this.correctAnswers++
       }
 

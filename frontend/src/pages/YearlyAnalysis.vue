@@ -84,6 +84,8 @@ import YearlyStatsCard from '../components/yearly/YearlyStatsCard.vue'
 import SpeciesComparisonCard from '../components/yearly/SpeciesComparisonCard.vue'
 import TrendChart from '../components/yearly/TrendChart.vue'
 import SpeciesSearch from '../components/yearly/SpeciesSearch.vue'
+import api from '../services/api'
+import { getWikipediaImage } from '@/utils/wikipediaImage.js'
 
 export default {
   name: 'YearlyAnalysis',
@@ -98,205 +100,24 @@ export default {
   data() {
     return {
       mobileMenuOpen: false,
-      selectedYear: 2024,
-      compareYear: 2023,
+      selectedYear: 2022,
+      compareYear: 2021,
       analysisMode: 'single',
-      availableYears: [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015],
+      availableYears: [],
       loading: false,
       trendLoading: false,
       selectedSpeciesForTrend: null,
-      mockData: {
-        2024: {
-          mostCommon: [
-            {
-              taxonId: 1,
-              commonName: 'Rainbow Lorikeet',
-              scientificName: 'Trichoglossus moluccanus',
-              count: 15420,
-              imageUrl: '/images/koala.png',
-              trend: { direction: 'up', percentage: 12 }
-            },
-            {
-              taxonId: 2,
-              commonName: 'Australian Magpie',
-              scientificName: 'Gymnorhina tibicen',
-              count: 12350,
-              imageUrl: '/images/kangaroo.png',
-              trend: { direction: 'up', percentage: 8 }
-            },
-            {
-              taxonId: 3,
-              commonName: 'Koala',
-              scientificName: 'Phascolarctos cinereus',
-              count: 8920,
-              imageUrl: '/images/koala.png',
-              trend: { direction: 'down', percentage: 5 }
-            }
-          ],
-          leastCommon: [
-            {
-              taxonId: 101,
-              commonName: 'Bilby',
-              scientificName: 'Macrotis lagotis',
-              count: 42,
-              imageUrl: '/images/kangaroo.png',
-              trend: { direction: 'down', percentage: 18 }
-            },
-            {
-              taxonId: 102,
-              commonName: 'Tasmanian Devil',
-              scientificName: 'Sarcophilus harrisii',
-              count: 67,
-              imageUrl: '/images/koala.png',
-              trend: { direction: 'down', percentage: 12 }
-            }
-          ],
-          totalSpecies: 1250,
-          totalObservations: 125340
-        },
-        2023: {
-          mostCommon: [
-            {
-              taxonId: 2,
-              commonName: 'Australian Magpie',
-              scientificName: 'Gymnorhina tibicen',
-              count: 14200,
-              imageUrl: '/images/kangaroo.png'
-            },
-            {
-              taxonId: 1,
-              commonName: 'Rainbow Lorikeet',
-              scientificName: 'Trichoglossus moluccanus',
-              count: 13750,
-              imageUrl: '/images/koala.png'
-            }
-          ],
-          leastCommon: [
-            {
-              taxonId: 101,
-              commonName: 'Bilby',
-              scientificName: 'Macrotis lagotis',
-              count: 51,
-              imageUrl: '/images/kangaroo.png'
-            }
-          ],
-          totalSpecies: 1180,
-          totalObservations: 118650
-        },
-        trendData: {
-          1: [
-            { year: 2015, count: 8420 },
-            { year: 2016, count: 9150 },
-            { year: 2017, count: 10200 },
-            { year: 2018, count: 11800 },
-            { year: 2019, count: 12950 },
-            { year: 2020, count: 11200 },
-            { year: 2021, count: 12800 },
-            { year: 2022, count: 13200 },
-            { year: 2023, count: 13750 },
-            { year: 2024, count: 15420 }
-          ],
-          2: [
-            { year: 2015, count: 11200 },
-            { year: 2016, count: 11800 },
-            { year: 2017, count: 12400 },
-            { year: 2018, count: 13100 },
-            { year: 2019, count: 13800 },
-            { year: 2020, count: 12900 },
-            { year: 2021, count: 13400 },
-            { year: 2022, count: 13900 },
-            { year: 2023, count: 14200 },
-            { year: 2024, count: 12350 }
-          ],
-          3: [
-            { year: 2015, count: 12400 },
-            { year: 2016, count: 11800 },
-            { year: 2017, count: 11200 },
-            { year: 2018, count: 10800 },
-            { year: 2019, count: 10200 },
-            { year: 2020, count: 9800 },
-            { year: 2021, count: 9600 },
-            { year: 2022, count: 9400 },
-            { year: 2023, count: 9380 },
-            { year: 2024, count: 8920 }
-          ],
-          4: [
-            { year: 2015, count: 5200 },
-            { year: 2016, count: 5800 },
-            { year: 2017, count: 6200 },
-            { year: 2018, count: 6800 },
-            { year: 2019, count: 7200 },
-            { year: 2020, count: 6900 },
-            { year: 2021, count: 7400 },
-            { year: 2022, count: 7800 },
-            { year: 2023, count: 8100 },
-            { year: 2024, count: 8500 }
-          ],
-          5: [
-            { year: 2015, count: 890 },
-            { year: 2016, count: 820 },
-            { year: 2017, count: 750 },
-            { year: 2018, count: 680 },
-            { year: 2019, count: 620 },
-            { year: 2020, count: 580 },
-            { year: 2021, count: 540 },
-            { year: 2022, count: 490 },
-            { year: 2023, count: 450 },
-            { year: 2024, count: 420 }
-          ],
-          6: [
-            { year: 2015, count: 120 },
-            { year: 2016, count: 108 },
-            { year: 2017, count: 95 },
-            { year: 2018, count: 87 },
-            { year: 2019, count: 78 },
-            { year: 2020, count: 72 },
-            { year: 2021, count: 69 },
-            { year: 2022, count: 65 },
-            { year: 2023, count: 62 },
-            { year: 2024, count: 67 }
-          ]
-        }
-      }
+      currentYearData: {
+        mostCommon: [],
+        leastCommon: []
+      },
+      comparisonData: null,
+      selectedSpeciesTrendData: []
     }
   },
-  computed: {
-    currentYearData() {
-      const data = this.mockData[this.selectedYear]
-      return data || {
-        mostCommon: [],
-        leastCommon: [],
-        totalSpecies: 0,
-        totalObservations: 0
-      }
-    },
-    comparisonData() {
-      if (this.analysisMode === 'compare') {
-        const year1Data = this.mockData[this.selectedYear] || {
-          mostCommon: [],
-          leastCommon: [],
-          totalSpecies: 0,
-          totalObservations: 0
-        }
-        const year2Data = this.mockData[this.compareYear] || {
-          mostCommon: [],
-          leastCommon: [],
-          totalSpecies: 0,
-          totalObservations: 0
-        }
-        return {
-          year1: year1Data,
-          year2: year2Data
-        }
-      }
-      return null
-    },
-    selectedSpeciesTrendData() {
-      if (this.selectedSpeciesForTrend) {
-        return this.mockData.trendData[this.selectedSpeciesForTrend.taxonId] || []
-      }
-      return []
-    }
+  async mounted() {
+    await this.loadAvailableYears()
+    await this.loadYearData()
   },
   methods: {
     toggleMobileMenu() {
@@ -305,58 +126,102 @@ export default {
     closeMobileMenu() {
       this.mobileMenuOpen = false
     },
-    handleYearChange(year) {
+    async loadAvailableYears() {
+      try {
+        const years = await api.getAvailableYears()
+        this.availableYears = years
+        if (years.length > 0) {
+          this.selectedYear = years[0]
+          this.compareYear = years[1] || years[0]
+        }
+      } catch (error) {
+        console.error('Error loading available years:', error)
+      }
+    },
+    async handleYearChange(year) {
       this.selectedYear = year
-      this.loadYearData()
+      await this.loadYearData()
     },
-    handleCompareYearChange(year) {
+    async handleCompareYearChange(year) {
       this.compareYear = year
-      this.loadComparisonData()
+      await this.loadComparisonData()
     },
-    handleModeChange(mode) {
+    async handleModeChange(mode) {
       this.analysisMode = mode
       if (mode === 'compare') {
-        this.loadComparisonData()
+        await this.loadComparisonData()
       } else {
-        this.loadYearData()
+        await this.loadYearData()
       }
     },
     handleSpeciesSelected(species) {
       console.log('Species selected:', species)
     },
-    handleViewTrend(species) {
+    async handleViewTrend(species) {
       this.selectedSpeciesForTrend = species
-      this.loadSpeciesTrend(species.taxonId)
+      await this.loadSpeciesTrend(species.commonName)
     },
-    handleSpeciesSearchSelected(species) {
-      console.log('Species search selected:', species, 'taxonId:', species.taxonId)
+    async handleSpeciesSearchSelected(species) {
       this.selectedSpeciesForTrend = species
-      this.loadSpeciesTrend(species.taxonId)
+      await this.loadSpeciesTrend(species.commonName)
     },
-    loadYearData() {
+    async loadYearData() {
       this.loading = true
-      setTimeout(() => {
+      try {
+        const [mostCommon, leastCommon] = await Promise.all([
+          api.getYearlyMostCommon(this.selectedYear),
+          api.getYearlyLeastCommon(this.selectedYear)
+        ])
+
+        this.currentYearData.mostCommon = await this.enrichSpeciesWithImages(mostCommon)
+        this.currentYearData.leastCommon = await this.enrichSpeciesWithImages(leastCommon)
+      } catch (error) {
+        console.error('Error loading year data:', error)
+      } finally {
         this.loading = false
-      }, 800)
+      }
     },
-    loadComparisonData() {
+    async loadComparisonData() {
       this.loading = true
-      setTimeout(() => {
+      try {
+        const data = await api.compareYears(this.selectedYear, this.compareYear)
+
+        data.year1.mostCommon = await this.enrichSpeciesWithImages(data.year1.mostCommon)
+        data.year1.leastCommon = await this.enrichSpeciesWithImages(data.year1.leastCommon)
+        data.year2.mostCommon = await this.enrichSpeciesWithImages(data.year2.mostCommon)
+        data.year2.leastCommon = await this.enrichSpeciesWithImages(data.year2.leastCommon)
+
+        this.comparisonData = data
+      } catch (error) {
+        console.error('Error loading comparison data:', error)
+      } finally {
         this.loading = false
-      }, 1000)
+      }
     },
-    loadSpeciesTrend(taxonId) {
-      console.log('Loading trend for taxonId:', taxonId)
-      console.log('Available trend data:', Object.keys(this.mockData.trendData))
+    async loadSpeciesTrend(commonName) {
       this.trendLoading = true
-      setTimeout(() => {
+      try {
+        const startYear = Math.min(...this.availableYears)
+        const endYear = Math.max(...this.availableYears)
+
+        const trendData = await api.getSpeciesTrendData(commonName, startYear, endYear)
+        this.selectedSpeciesTrendData = trendData
+      } catch (error) {
+        console.error('Error loading species trend:', error)
+        this.selectedSpeciesTrendData = []
+      } finally {
         this.trendLoading = false
-        console.log('Trend loaded for taxonId:', taxonId, 'data:', this.mockData.trendData[taxonId])
-      }, 600)
+      }
+    },
+    async enrichSpeciesWithImages(speciesList) {
+      return await Promise.all(speciesList.map(async (species) => {
+        const imageUrl = await getWikipediaImage(species.commonName)
+        return {
+          ...species,
+          imageUrl: imageUrl || '/images/koala.png'
+        }
+      }))
     }
-  },
-  mounted() {
-    this.loadYearData()
   }
 }
 </script>

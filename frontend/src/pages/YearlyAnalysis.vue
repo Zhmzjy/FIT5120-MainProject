@@ -1,6 +1,6 @@
 <template>
   <div class="yearly-analysis-page">
-    <img src="/images/v2osk-1Z2niiBPg5A-unsplash.jpg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;" alt="background">
+    <img src="/images/epic6.jpg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1;" alt="background">
 
     <TopNavigation @toggleMobileMenu="toggleMobileMenu" />
 

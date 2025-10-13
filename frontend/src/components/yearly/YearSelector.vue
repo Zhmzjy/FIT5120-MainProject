@@ -70,23 +70,6 @@
         </div>
       </div>
     </div>
-
-    <div class="action-buttons">
-      <Button
-        @click="handleAnalyze"
-        type="primary"
-        size="large"
-      >
-        Analyze Data
-      </Button>
-      <Button
-        @click="handleReset"
-        type="secondary"
-        size="medium"
-      >
-        Reset
-      </Button>
-    </div>
   </div>
 </template>
 
@@ -117,38 +100,26 @@ export default {
       required: true
     }
   },
-  emits: ['year-changed', 'compare-year-changed', 'mode-changed', 'analyze', 'reset'],
-  methods: {
-    handleAnalyze() {
-      this.$emit('analyze', {
-        mode: this.mode,
-        selectedYear: this.selectedYear,
-        compareYear: this.compareYear
-      })
-    },
-    handleReset() {
-      this.$emit('reset')
-    }
-  }
+  emits: ['year-changed', 'compare-year-changed', 'mode-changed']
 }
 </script>
 
 <style scoped>
 .year-selector-container {
   background: rgba(255, 255, 255, 0.95);
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-xl);
-  margin-bottom: var(--spacing-xl);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .selector-header {
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: 20px;
 }
 
 .mode-toggle {
   display: flex;
-  gap: var(--spacing-md);
+  gap: 16px;
   justify-content: center;
 }
 
@@ -159,7 +130,7 @@ export default {
 }
 
 .year-controls {
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: 24px;
 }
 
 .single-year-control {
@@ -171,26 +142,26 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-lg);
+  gap: 24px;
 }
 
 .year-input-group {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 8px;
 }
 
 .year-input-group label {
   font-weight: bold;
-  color: var(--color-primary);
+  color: #3b82f6;
   font-size: 0.9rem;
 }
 
 .year-select {
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: 8px 16px;
   border: 2px solid #e2e8f0;
-  border-radius: var(--border-radius-md);
+  border-radius: 8px;
   font-size: 1rem;
   background: white;
   cursor: pointer;
@@ -199,32 +170,26 @@ export default {
 }
 
 .year-select:hover {
-  border-color: var(--color-primary);
+  border-color: #3b82f6;
 }
 
 .year-select:focus {
   outline: none;
-  border-color: var(--color-primary);
+  border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .vs-indicator {
   font-size: 1.5rem;
   font-weight: bold;
-  color: var(--color-primary);
-  padding: var(--spacing-sm);
+  color: #3b82f6;
+  padding: 8px;
   background: #f1f5f9;
   border-radius: 50%;
   width: 50px;
   height: 50px;
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-.action-buttons {
-  display: flex;
-  gap: var(--spacing-md);
   justify-content: center;
 }
 
@@ -236,16 +201,11 @@ export default {
 
   .compare-years-control {
     flex-direction: column;
-    gap: var(--spacing-md);
+    gap: 16px;
   }
 
   .vs-indicator {
     transform: rotate(90deg);
-  }
-
-  .action-buttons {
-    flex-direction: column;
-    align-items: center;
   }
 }
 </style>

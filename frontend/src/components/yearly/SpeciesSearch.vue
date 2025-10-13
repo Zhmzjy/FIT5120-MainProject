@@ -13,6 +13,7 @@
         type="text"
         placeholder="Type species name (e.g., Koala, Rainbow Lorikeet)"
         class="search-input"
+        maxlength="30"
       />
 
       <div v-if="showSuggestions && filteredSpecies.length > 0" class="suggestions-dropdown">

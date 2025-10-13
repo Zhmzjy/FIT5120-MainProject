@@ -69,6 +69,7 @@ export default {
       this.searchQuery = ''
       this.selectedState = ''
       this.selectedConservationStatus = ''
+      this.$emit('resetFilters')
     },
     applyFilters() {
       this.$emit('applyFilters', {

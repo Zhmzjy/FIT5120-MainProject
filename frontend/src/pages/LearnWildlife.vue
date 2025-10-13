@@ -10,6 +10,7 @@
       <aside class="left-sidebar" :class="{ 'mobile-open': mobileMenuOpen }">
         <LeftFilters 
           @applyFilters="handleApplyFilters"
+          @resetFilters="handleResetFilters"
         />
       </aside>
 
@@ -83,6 +84,11 @@ export default {
         region: ''
       }
       this.selectedRegion = null
+      this.$nextTick(() => {
+        if (this.$refs.mapViewRef) {
+          this.$refs.mapViewRef.loadData()
+        }
+      })
     },
     handleApplyFilters(filters) {
       this.activeFilters = { ...filters }

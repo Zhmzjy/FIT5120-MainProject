@@ -60,10 +60,11 @@
       </div>
 
       <SpeciesSearch
+        v-if="analysisMode === 'single'"
         @species-selected="handleSpeciesSearchSelected"
       />
 
-      <div v-if="selectedSpeciesForTrend" class="trend-section">
+      <div v-if="analysisMode === 'single' && selectedSpeciesForTrend" class="trend-section">
         <TrendChart
           :title="`${selectedSpeciesForTrend.commonName} Population Trend`"
           :chartData="selectedSpeciesTrendData"

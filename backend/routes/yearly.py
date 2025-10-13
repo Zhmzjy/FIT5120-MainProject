@@ -1,8 +1,9 @@
 from flask import Blueprint, request, jsonify
-from lib.db import get_db_connection
+from lib.db import DatabaseHelper
 import logging
 
 yearly_bp = Blueprint('yearly', __name__)
+db = DatabaseHelper()
 
 @yearly_bp.route('/most-common')
 def get_yearly_most_common():
@@ -11,34 +12,27 @@ def get_yearly_most_common():
         if not year:
             return jsonify({'error': 'Year parameter is required'}), 400
 
-        connection = get_db_connection()
-        cursor = connection.cursor()
-
         query = """
         SELECT 
             common_name,
             scientific_name,
             SUM(occurrence_count) as total_count
         FROM yearly_wildlife_occurrences
-        WHERE year = %s
+        WHERE year = :year
         GROUP BY common_name, scientific_name
         ORDER BY total_count DESC
         LIMIT 10
         """
 
-        cursor.execute(query, (year,))
-        results = cursor.fetchall()
+        results = db.execute_query(query, {'year': year})
 
         species_list = []
         for row in results:
             species_list.append({
-                'commonName': row[0],
-                'scientificName': row[1],
-                'count': row[2]
+                'commonName': row['common_name'],
+                'scientificName': row['scientific_name'],
+                'count': row['total_count']
             })
-
-        cursor.close()
-        connection.close()
 
         return jsonify(species_list)
 
@@ -53,34 +47,27 @@ def get_yearly_least_common():
         if not year:
             return jsonify({'error': 'Year parameter is required'}), 400
 
-        connection = get_db_connection()
-        cursor = connection.cursor()
-
         query = """
         SELECT 
             common_name,
             scientific_name,
             SUM(occurrence_count) as total_count
         FROM yearly_wildlife_occurrences
-        WHERE year = %s AND occurrence_count > 0
+        WHERE year = :year AND occurrence_count > 0
         GROUP BY common_name, scientific_name
         ORDER BY total_count ASC
         LIMIT 10
         """
 
-        cursor.execute(query, (year,))
-        results = cursor.fetchall()
+        results = db.execute_query(query, {'year': year})
 
         species_list = []
         for row in results:
             species_list.append({
-                'commonName': row[0],
-                'scientificName': row[1],
-                'count': row[2]
+                'commonName': row['common_name'],
+                'scientificName': row['scientific_name'],
+                'count': row['total_count']
             })
-
-        cursor.close()
-        connection.close()
 
         return jsonify(species_list)
 
@@ -97,9 +84,6 @@ def compare_years():
         if not year1 or not year2:
             return jsonify({'error': 'Both year1 and year2 parameters are required'}), 400
 
-        connection = get_db_connection()
-        cursor = connection.cursor()
-
         comparison_data = {
             'year1': {'mostCommon': [], 'leastCommon': [], 'totalSpecies': 0, 'totalObservations': 0},
             'year2': {'mostCommon': [], 'leastCommon': [], 'totalSpecies': 0, 'totalObservations': 0}
@@ -109,39 +93,37 @@ def compare_years():
             most_common_query = """
             SELECT common_name, scientific_name, SUM(occurrence_count) as total_count
             FROM yearly_wildlife_occurrences
-            WHERE year = %s
+            WHERE year = :year
             GROUP BY common_name, scientific_name
             ORDER BY total_count DESC
             LIMIT 5
             """
 
-            cursor.execute(most_common_query, (year,))
-            most_common = cursor.fetchall()
+            most_common = db.execute_query(most_common_query, {'year': year})
 
             for row in most_common:
                 comparison_data[year_key]['mostCommon'].append({
-                    'commonName': row[0],
-                    'scientificName': row[1],
-                    'count': row[2]
+                    'commonName': row['common_name'],
+                    'scientificName': row['scientific_name'],
+                    'count': row['total_count']
                 })
 
             least_common_query = """
             SELECT common_name, scientific_name, SUM(occurrence_count) as total_count
             FROM yearly_wildlife_occurrences
-            WHERE year = %s AND occurrence_count > 0
+            WHERE year = :year AND occurrence_count > 0
             GROUP BY common_name, scientific_name
             ORDER BY total_count ASC
             LIMIT 5
             """
 
-            cursor.execute(least_common_query, (year,))
-            least_common = cursor.fetchall()
+            least_common = db.execute_query(least_common_query, {'year': year})
 
             for row in least_common:
                 comparison_data[year_key]['leastCommon'].append({
-                    'commonName': row[0],
-                    'scientificName': row[1],
-                    'count': row[2]
+                    'commonName': row['common_name'],
+                    'scientificName': row['scientific_name'],
+                    'count': row['total_count']
                 })
 
             stats_query = """
@@ -149,17 +131,14 @@ def compare_years():
                 COUNT(DISTINCT common_name) as total_species,
                 SUM(occurrence_count) as total_observations
             FROM yearly_wildlife_occurrences
-            WHERE year = %s
+            WHERE year = :year
             """
 
-            cursor.execute(stats_query, (year,))
-            stats = cursor.fetchone()
+            stats = db.execute_query(stats_query, {'year': year})
 
-            comparison_data[year_key]['totalSpecies'] = stats[0] or 0
-            comparison_data[year_key]['totalObservations'] = stats[1] or 0
-
-        cursor.close()
-        connection.close()
+            if stats and len(stats) > 0:
+                comparison_data[year_key]['totalSpecies'] = stats[0]['total_species'] or 0
+                comparison_data[year_key]['totalObservations'] = stats[0]['total_observations'] or 0
 
         return jsonify(comparison_data)
 
@@ -177,29 +156,26 @@ def get_species_yearly_trend():
         if not common_name:
             return jsonify({'error': 'common_name parameter is required'}), 400
 
-        connection = get_db_connection()
-        cursor = connection.cursor()
-
         query = """
         SELECT year, SUM(occurrence_count) as total_count
         FROM yearly_wildlife_occurrences
-        WHERE common_name = %s AND year BETWEEN %s AND %s
+        WHERE common_name = :common_name AND year BETWEEN :start_year AND :end_year
         GROUP BY year
         ORDER BY year
         """
 
-        cursor.execute(query, (common_name, start_year, end_year))
-        results = cursor.fetchall()
+        results = db.execute_query(query, {
+            'common_name': common_name,
+            'start_year': start_year,
+            'end_year': end_year
+        })
 
         trend_data = []
         for row in results:
             trend_data.append({
-                'year': row[0],
-                'count': row[1]
+                'year': row['year'],
+                'count': row['total_count']
             })
-
-        cursor.close()
-        connection.close()
 
         return jsonify(trend_data)
 
@@ -210,22 +186,15 @@ def get_species_yearly_trend():
 @yearly_bp.route('/available-years')
 def get_available_years():
     try:
-        connection = get_db_connection()
-        cursor = connection.cursor()
-
         query = """
         SELECT DISTINCT year
         FROM yearly_wildlife_occurrences
         ORDER BY year DESC
         """
 
-        cursor.execute(query)
-        results = cursor.fetchall()
+        results = db.execute_query(query)
 
-        years = [row[0] for row in results]
-
-        cursor.close()
-        connection.close()
+        years = [row['year'] for row in results]
 
         return jsonify(years)
 
@@ -238,36 +207,28 @@ def get_species_list():
     try:
         year = request.args.get('year', type=int)
 
-        connection = get_db_connection()
-        cursor = connection.cursor()
-
         if year:
             query = """
             SELECT DISTINCT common_name, scientific_name
             FROM yearly_wildlife_occurrences
-            WHERE year = %s
+            WHERE year = :year
             ORDER BY common_name
             """
-            cursor.execute(query, (year,))
+            results = db.execute_query(query, {'year': year})
         else:
             query = """
             SELECT DISTINCT common_name, scientific_name
             FROM yearly_wildlife_occurrences
             ORDER BY common_name
             """
-            cursor.execute(query)
-
-        results = cursor.fetchall()
+            results = db.execute_query(query)
 
         species_list = []
         for row in results:
             species_list.append({
-                'commonName': row[0],
-                'scientificName': row[1]
+                'commonName': row['common_name'],
+                'scientificName': row['scientific_name']
             })
-
-        cursor.close()
-        connection.close()
 
         return jsonify(species_list)
 

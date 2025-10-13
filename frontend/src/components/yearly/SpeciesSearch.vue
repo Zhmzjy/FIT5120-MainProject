@@ -40,6 +40,9 @@
 </template>
 
 <script>
+import api from '@/services/api.js'
+import { getWikipediaImage } from '@/utils/wikipediaImage.js'
+
 export default {
   name: 'SpeciesSearch',
   emits: ['species-selected'],
@@ -48,44 +51,7 @@ export default {
       searchQuery: '',
       showSuggestions: false,
       loading: false,
-      allSpecies: [
-        {
-          taxonId: 1,
-          commonName: 'Rainbow Lorikeet',
-          scientificName: 'Trichoglossus moluccanus',
-          imageUrl: '/images/koala.png'
-        },
-        {
-          taxonId: 2,
-          commonName: 'Australian Magpie',
-          scientificName: 'Gymnorhina tibicen',
-          imageUrl: '/images/kangaroo.png'
-        },
-        {
-          taxonId: 3,
-          commonName: 'Koala',
-          scientificName: 'Phascolarctos cinereus',
-          imageUrl: '/images/koala.png'
-        },
-        {
-          taxonId: 4,
-          commonName: 'Kangaroo',
-          scientificName: 'Osphranter rufus',
-          imageUrl: '/images/kangaroo.png'
-        },
-        {
-          taxonId: 5,
-          commonName: 'Tasmanian Devil',
-          scientificName: 'Sarcophilus harrisii',
-          imageUrl: '/images/koala.png'
-        },
-        {
-          taxonId: 6,
-          commonName: 'Bilby',
-          scientificName: 'Macrotis lagotis',
-          imageUrl: '/images/kangaroo.png'
-        }
-      ]
+      allSpecies: []
     }
   },
   computed: {
@@ -99,7 +65,39 @@ export default {
       ).slice(0, 5)
     }
   },
+  async mounted() {
+    await this.loadAllSpecies()
+
+    document.addEventListener('click', (e) => {
+      if (!this.$el.contains(e.target)) {
+        this.showSuggestions = false
+      }
+    })
+  },
   methods: {
+    async loadAllSpecies() {
+      try {
+        this.loading = true
+        const speciesList = await api.getYearlySpeciesList()
+
+        this.allSpecies = await Promise.all(
+          speciesList.map(async (species, index) => {
+            const imageUrl = await getWikipediaImage(species.commonName)
+            return {
+              taxonId: index + 1,
+              commonName: species.commonName,
+              scientificName: species.scientificName,
+              imageUrl: imageUrl || '/images/koala.png'
+            }
+          })
+        )
+      } catch (error) {
+        console.error('Error loading species list:', error)
+        this.allSpecies = []
+      } finally {
+        this.loading = false
+      }
+    },
     handleSearch() {
       this.showSuggestions = true
     },
@@ -108,13 +106,6 @@ export default {
       this.showSuggestions = false
       this.$emit('species-selected', species)
     }
-  },
-  mounted() {
-    document.addEventListener('click', (e) => {
-      if (!this.$el.contains(e.target)) {
-        this.showSuggestions = false
-      }
-    })
   }
 }
 </script>

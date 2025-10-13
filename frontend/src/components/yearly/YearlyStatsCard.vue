@@ -201,16 +201,9 @@ export default {
   padding: var(--spacing-md);
   border: 1px solid #A2E2A2;
   border-radius: var(--border-radius-md);
-  cursor: pointer;
-  transition: all 0.2s ease;
   background: white;
 }
 
-.species-item:hover {
-  border-color: #77BFA3;
-  box-shadow: 0 4px 12px rgba(119, 191, 163, 0.15);
-  transform: translateY(-1px);
-}
 
 .species-rank {
   font-size: 1.25rem;

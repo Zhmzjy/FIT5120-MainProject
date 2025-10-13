@@ -6,6 +6,8 @@
           type="text" 
           v-model="searchQuery" 
           @input="onSearchInput"
+          @keydown.enter="applyFilters"
+          maxlength="30"
           placeholder="🔍 Search animals..."
           class="search-bar"
         />
@@ -36,17 +38,6 @@
           <option value="Present">Present</option>
         </select>
       </div>
-      <div class="filter-group">
-        <label>IBRA Region</label>
-        <select v-model="selectedRegion" class="cartoon-select" @change="onRegionChange">
-          <option value="">All Regions</option>
-          <option value="Australian Alps">Australian Alps</option>
-          <option value="Sydney Basin">Sydney Basin</option>
-          <option value="South Eastern Highlands">South Eastern Highlands</option>
-          <option value="NSW North Coast">NSW North Coast</option>
-          <option value="Murray Darling Depression">Murray Darling Depression</option>
-        </select>
-      </div>
       <div class="filter-actions">
         <button class="reset-btn" @click="resetFilters">Reset All</button>
         <button class="apply-btn" @click="applyFilters">Apply Filters</button>
@@ -62,38 +53,28 @@ export default {
     return {
       searchQuery: '',
       selectedState: '',
-      selectedConservationStatus: '',
-      selectedRegion: ''
+      selectedConservationStatus: ''
     }
   },
   methods: {
     onSearchInput() {
-      // No longer emitting filters on search input
     },
     onStateChange() {
-      // No longer emitting filters on state change
     },
     onConservationChange() {
-      // No longer emitting filters on conservation status change
-    },
-    onRegionChange() {
-      // No longer emitting filters on region change
     },
     emitCurrentFilters() {
-      // No longer emitting filters automatically
     },
     resetFilters() {
       this.searchQuery = ''
       this.selectedState = ''
       this.selectedConservationStatus = ''
-      this.selectedRegion = ''
     },
     applyFilters() {
       this.$emit('applyFilters', {
         search: this.searchQuery,
         state: this.selectedState,
-        conservation: this.selectedConservationStatus,
-        region: this.selectedRegion
+        conservation: this.selectedConservationStatus
       })
     }
   }

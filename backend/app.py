@@ -10,6 +10,7 @@ from routes.conservation import conservation_bp
 from routes.ai_challenge import ai_challenge_bp, init_ai_challenge
 from routes.daily_wildle import daily_wildle_bp, init_daily_wildle
 from routes.audio import audio_bp
+from routes.yearly import yearly_bp
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 CORS(app)
@@ -31,6 +32,7 @@ app.register_blueprint(conservation_bp, url_prefix='/api/conservation')
 app.register_blueprint(ai_challenge_bp, url_prefix='/api/ai-challenge')
 app.register_blueprint(daily_wildle_bp, url_prefix='/api/daily-wildle')
 app.register_blueprint(audio_bp, url_prefix='/api/audio')
+app.register_blueprint(yearly_bp, url_prefix='/api/yearly')
 
 try:
     init_ai_challenge()

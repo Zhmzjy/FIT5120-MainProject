@@ -111,6 +111,10 @@ export default {
   padding: 24px;
   margin-bottom: 24px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+  background-image: linear-gradient(white, white), linear-gradient(135deg, #A2E2A2, #DFF8DF);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
 }
 
 .selector-header {
@@ -124,7 +128,7 @@ export default {
 }
 
 .mode-toggle .active {
-  background: #1e293b !important;
+  background: #77BFA3 !important;
   color: white !important;
   opacity: 1;
 }
@@ -154,13 +158,13 @@ export default {
 
 .year-input-group label {
   font-weight: bold;
-  color: #3b82f6;
+  color: #77BFA3;
   font-size: 0.9rem;
 }
 
 .year-select {
   padding: 8px 16px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid #A2E2A2;
   border-radius: 8px;
   font-size: 1rem;
   background: white;
@@ -170,21 +174,21 @@ export default {
 }
 
 .year-select:hover {
-  border-color: #3b82f6;
+  border-color: #77BFA3;
 }
 
 .year-select:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #77BFA3;
+  box-shadow: 0 0 0 3px rgba(119, 191, 163, 0.2);
 }
 
 .vs-indicator {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #3b82f6;
+  color: #77BFA3;
   padding: 8px;
-  background: #f1f5f9;
+  background: #EAF6EA;
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -201,7 +205,6 @@ export default {
 
   .compare-years-control {
     flex-direction: column;
-    gap: 16px;
   }
 
   .vs-indicator {

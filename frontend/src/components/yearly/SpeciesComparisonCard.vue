@@ -190,6 +190,10 @@ export default {
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-xl);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+  background-image: linear-gradient(white, white), linear-gradient(135deg, #A2E2A2, #DFF8DF);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
 }
 
 .comparison-header {
@@ -216,28 +220,31 @@ export default {
   border-radius: var(--border-radius-pill);
   font-size: 0.875rem;
   font-weight: bold;
+  border: 2px solid;
 }
 
 .year-badge.year1 {
-  background: #3b82f6;
-  color: white;
+  background: white;
+  color: #77BFA3;
+  border-color: #77BFA3;
 }
 
 .year-badge.year2 {
-  background: #10b981;
-  color: white;
+  background: white;
+  color: #FFD9A0;
+  border-color: #FFD9A0;
 }
 
 .vs-text {
   font-size: 1.125rem;
   font-weight: bold;
-  color: #64748b;
+  color: #77BFA3;
 }
 
 .comparison-stats {
   margin-bottom: var(--spacing-xl);
   padding: var(--spacing-lg);
-  background: #f8fafc;
+  background: #EAF6EA;
   border-radius: var(--border-radius-md);
 }
 
@@ -272,11 +279,11 @@ export default {
 }
 
 .year1-value {
-  color: #3b82f6;
+  color: #77BFA3;
 }
 
 .year2-value {
-  color: #10b981;
+  color: #CC8800;
 }
 
 .change-indicator {
@@ -287,13 +294,13 @@ export default {
 }
 
 .change-indicator.increase {
-  background: #dcfce7;
-  color: #166534;
+  background: #EAF6EA;
+  color: #77BFA3;
 }
 
 .change-indicator.decrease {
-  background: #fef2f2;
-  color: #dc2626;
+  background: #FFE8CC;
+  color: #CC8800;
 }
 
 .change-indicator.no-change {
@@ -313,14 +320,16 @@ export default {
   color: #1e293b;
   margin: 0 0 var(--spacing-lg) 0;
   text-align: center;
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid #EAF6EA;
 }
 
 .most-common h4 {
-  color: #22c55e;
+  color: #77BFA3;
 }
 
 .least-common h4 {
-  color: #f97316;
+  color: #CC8800;
 }
 
 .species-comparison-list {
@@ -334,14 +343,15 @@ export default {
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
-  border: 1px solid #e2e8f0;
+  border: 1px solid #A2E2A2;
   border-radius: var(--border-radius-md);
+  background: white;
 }
 
 .species-rank {
   font-size: 0.875rem;
   font-weight: bold;
-  color: #64748b;
+  color: #77BFA3;
   min-width: 20px;
 }
 
@@ -367,6 +377,7 @@ export default {
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+  border: 2px solid #A2E2A2;
 }
 
 .species-details {
@@ -388,13 +399,13 @@ export default {
 
 .comparison-arrow {
   font-size: 1.25rem;
-  color: #64748b;
+  color: #77BFA3;
   min-width: 20px;
   text-align: center;
 }
 
 .different-species {
-  color: #f97316;
+  color: #FFD9A0;
   font-weight: bold;
 }
 
@@ -405,12 +416,17 @@ export default {
 
   .stat-comparison {
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
+  }
+
+  .species-comparison-item {
+    flex-direction: column;
+    gap: var(--spacing-sm);
   }
 
   .species-comparison-content {
     flex-direction: column;
-    gap: var(--spacing-xs);
+    width: 100%;
   }
 
   .comparison-arrow {

@@ -126,6 +126,10 @@ export default {
   padding: 24px;
   margin-bottom: 24px;
   position: relative;
+  border: 2px solid transparent;
+  background-image: linear-gradient(white, white), linear-gradient(135deg, #A2E2A2, #DFF8DF);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
 }
 
 .search-header h3 {
@@ -148,7 +152,7 @@ export default {
 .search-input {
   width: 100%;
   padding: 12px 16px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid #A2E2A2;
   border-radius: 8px;
   font-size: 16px;
   transition: border-color 0.3s ease;
@@ -156,7 +160,8 @@ export default {
 
 .search-input:focus {
   outline: none;
-  border-color: #4299e1;
+  border-color: #77BFA3;
+  box-shadow: 0 0 0 3px rgba(119, 191, 163, 0.2);
 }
 
 .suggestions-dropdown {
@@ -165,12 +170,13 @@ export default {
   left: 0;
   right: 0;
   background: white;
-  border: 1px solid #e2e8f0;
+  border: 2px solid #A2E2A2;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   max-height: 300px;
   overflow-y: auto;
+  margin-top: 4px;
 }
 
 .suggestion-item {
@@ -182,7 +188,7 @@ export default {
 }
 
 .suggestion-item:hover {
-  background-color: #f7fafc;
+  background-color: #EAF6EA;
 }
 
 .species-thumb {
@@ -191,6 +197,7 @@ export default {
   border-radius: 6px;
   object-fit: cover;
   margin-right: 12px;
+  border: 1px solid #A2E2A2;
 }
 
 .species-info {
@@ -219,8 +226,8 @@ export default {
 .loading-spinner {
   width: 20px;
   height: 20px;
-  border: 2px solid #e2e8f0;
-  border-top: 2px solid #4299e1;
+  border: 2px solid #A2E2A2;
+  border-top: 2px solid #77BFA3;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-right: 8px;

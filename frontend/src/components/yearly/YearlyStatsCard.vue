@@ -126,6 +126,10 @@ export default {
   padding: var(--spacing-xl);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   height: fit-content;
+  border: 2px solid transparent;
+  background-image: linear-gradient(white, white), linear-gradient(135deg, #A2E2A2, #DFF8DF);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
 }
 
 .card-header {
@@ -134,7 +138,7 @@ export default {
   align-items: center;
   margin-bottom: var(--spacing-lg);
   padding-bottom: var(--spacing-md);
-  border-bottom: 2px solid #f1f5f9;
+  border-bottom: 2px solid #EAF6EA;
 }
 
 .card-title {
@@ -145,12 +149,13 @@ export default {
 }
 
 .year-badge {
-  background: #3b82f6;
-  color: white;
+  background: white;
+  color: #1e293b;
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--border-radius-pill);
   font-size: 0.875rem;
   font-weight: bold;
+  border: 2px solid #77BFA3;
 }
 
 .stats-summary {
@@ -158,8 +163,9 @@ export default {
   gap: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
   padding: var(--spacing-md);
-  background: #f8fafc;
+  background: white;
   border-radius: var(--border-radius-md);
+  border: 1px solid #A2E2A2;
 }
 
 .summary-item {
@@ -193,22 +199,23 @@ export default {
   align-items: center;
   gap: var(--spacing-md);
   padding: var(--spacing-md);
-  border: 1px solid #e2e8f0;
+  border: 1px solid #A2E2A2;
   border-radius: var(--border-radius-md);
   cursor: pointer;
   transition: all 0.2s ease;
+  background: white;
 }
 
 .species-item:hover {
-  border-color: #3b82f6;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+  border-color: #77BFA3;
+  box-shadow: 0 4px 12px rgba(119, 191, 163, 0.15);
   transform: translateY(-1px);
 }
 
 .species-rank {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #3b82f6;
+  color: #77BFA3;
   min-width: 30px;
 }
 
@@ -218,7 +225,7 @@ export default {
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
-  border: 2px solid #e2e8f0;
+  border: 2px solid #A2E2A2;
 }
 
 .species-image img {
@@ -270,13 +277,13 @@ export default {
 }
 
 .trend-indicator.up {
-  background: #dcfce7;
-  color: #166534;
+  background: #EAF6EA;
+  color: #77BFA3;
 }
 
 .trend-indicator.down {
-  background: #fef2f2;
-  color: #dc2626;
+  background: #FFE8CC;
+  color: #CC8800;
 }
 
 .trend-arrow {
@@ -295,25 +302,21 @@ export default {
   height: 80px;
   text-align: center;
   border-radius: 50%;
-  background: #f1f5f9;
+  background: #EAF6EA;
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
-  .stats-summary {
-    flex-direction: column;
-    gap: var(--spacing-sm);
-  }
-
   .species-item {
-    flex-direction: column;
-    text-align: center;
-    gap: var(--spacing-sm);
+    flex-wrap: wrap;
   }
 
-  .species-stats {
-    flex-direction: column;
-    gap: var(--spacing-xs);
+  .view-trend-btn {
+    width: 100%;
+    margin-top: var(--spacing-sm);
   }
 }
 </style>

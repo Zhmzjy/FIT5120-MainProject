@@ -98,7 +98,7 @@ class ApiService {
   }
 
   async getYearlySpeciesList(year) {
-    return this.request(`/yearly/species?year=${year}`)
+    return this.request(`/yearly/species-list${year ? '?year=' + year : ''}`)
   }
 
   async getAvailableYears() {
@@ -171,6 +171,10 @@ class ApiService {
 
   async getAnimalDetails(name) {
     return this.request(`/audio/details/name/${encodeURIComponent(name)}`)
+  }
+
+  async getSpeciesTrendData(commonName, startYear, endYear) {
+    return this.request(`/yearly/species-trend?common_name=${encodeURIComponent(commonName)}&start_year=${startYear}&end_year=${endYear}`)
   }
 }
 

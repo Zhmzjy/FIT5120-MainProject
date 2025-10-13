@@ -4,7 +4,7 @@ local testing on windows
 -navigate to /ai classifier challenge
 
 docker build -t ai-challenge .
-docker run -p 8000:8000 ai challenge
+docker run -p 8000:8000 ai-challenge
 
 test with browser:
 http://127.0.0.1:8000/docs

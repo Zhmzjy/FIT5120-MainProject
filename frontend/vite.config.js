@@ -11,10 +11,18 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    host: true
+    host: true,
+    
+    historyApiFallback: true
   },
   build: {
     outDir: 'dist',
     assetsDir: 'assets'
+  },
+  
+  preview: {
+    port: 3000,
+    host: true,
+    historyApiFallback: true
   }
 })

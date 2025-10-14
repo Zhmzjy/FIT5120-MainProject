@@ -721,11 +721,13 @@ export default {
 }
 
 .summary-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #E8F5E9 0%, #FFF9C4 50%, #FFECB3 100%);
+  color: #2E7D32;
   padding: 32px;
   border-radius: 20px;
   text-align: center;
+  box-shadow: 0 4px 16px rgba(46, 125, 50, 0.15);
+  border: 2px solid rgba(129, 199, 132, 0.3);
 }
 
 .summary-card h3 {
@@ -733,6 +735,10 @@ export default {
   font-size: 24px;
   font-weight: 700;
   font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+  background: linear-gradient(135deg, #2E7D32 0%, #66BB6A 50%, #FFB74D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .summary-stats {
@@ -750,20 +756,32 @@ export default {
 
 .stat-label {
   font-size: 14px;
-  opacity: 0.9;
+  opacity: 0.8;
+  color: #558B2F;
+  font-weight: 600;
 }
 
 .stat-value {
   font-size: 32px;
   font-weight: 900;
+  background: linear-gradient(135deg, #2E7D32 0%, #66BB6A 50%, #FDD835 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .stat-value.trend-positive {
-  color: #d1fae5;
+  background: linear-gradient(135deg, #2E7D32 0%, #66BB6A 50%, #81C784 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .stat-value.trend-negative {
-  color: #fecaca;
+  background: linear-gradient(135deg, #D84315 0%, #FF6F00 50%, #FFB74D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .accordion-enter-active,

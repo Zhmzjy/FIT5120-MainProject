@@ -1,0 +1,134 @@
+Field,Type,Source,Description
+year,int,ALA Occurrences,Observation/reporting year.
+CommonName,str,ALA Occurrences,Species common name as provided.
+ScientificName,str,ALA Occurrences,Canonical scientific (binomial) name used for joining.
+EPBCThreatStatus,str,ALA Occurrences,"EPBC label (e.g., Present, Vulnerable, Endangered, Critically Endangered)."
+occurrenceCount,int,ALA Occurrences,Count of recorded occurrences in your dataset window.
+taxon_class_ET,category,EltonTraits,High taxonomic class from EltonTraits: Aves (birds) or Mammalia (mammals).
+BodyMass_g_ET,float,EltonTraits,Adult body mass (grams) sourced from EltonTraits BodyMass-Value.
+size_bucket,category,Derived from ElonTraits,"Bucketed body mass: Small (<100g), Medium (100–999g), Large (1,000–9,999g), Very Large (≥10,000g)."
+diet_top,category,Derived from ElonTraits,"Dominant diet component inferred from diet shares (e.g., invertebrates, seed, fruit, fish)."
+foraging_top,category,Derived from ElonTraits,"Dominant foraging stratum (e.g., ground, canopy, aerial, water_surface, underwater)."
+activity_top,category,Derived from ElonTraits,"Most-likely activity state: diurnal, nocturnal, crepuscular (or non-nocturnal fallback for birds)."
+diet_diversity,int,Derived (EltonTraits diet shares),Count of diet categories with proportion > 0.20 (breadth of diet).
+eats_insects,bool,Derived (Diet-Inv),True if Diet-Inv > 0.20 (insectivore component).
+eats_fruit,bool,Derived (Diet-Fruit),True if Diet-Fruit > 0.20 (frugivore component).
+eats_fish,bool,Derived (Diet-Vfish),True if Diet-Vfish > 0.20 (piscivore component).
+omnivore_flag,bool,Derived (diet shares),True if any plant diet > 0.20 AND any animal diet > 0.20.
+foraging_diversity,int,Derived (EltonTraits foraging shares),Count of foraging strata with proportion > 0.20.
+forages_canopy,bool,Derived (ForStrat-canopy),True if ForStrat-canopy > 0.20.
+forages_understory,bool,Derived (ForStrat-understory),True if ForStrat-understory > 0.20.
+forages_ground,bool,Derived (ForStrat-ground),True if ForStrat-ground > 0.20.
+forages_aerial,bool,Derived (ForStrat-aerial),True if ForStrat-aerial > 0.20.
+forages_underwater,bool,Derived (ForStrat-watbelowsurf),True if ForStrat-watbelowsurf > 0.20.
+forages_water_surf,bool,Derived (ForStrat-wataroundsurf),True if ForStrat-wataroundsurf > 0.20.
+activity_diversity,int,Derived (EltonTraits activity shares),"Count of activity states > 0.30 among Nocturnal, Diurnal, Crepuscular."
+is_crepuscular,bool,Derived (Activity-Crepuscular),True if Activity-Crepuscular > 0.30.
+is_cathemeral,bool,Derived (Activity-Diurnal & Activity-Nocturnal),True if both Activity-Diurnal > 0.30 AND Activity-Nocturnal > 0.30.
+can_fly,bool,Derived (taxon_class_ET + bat families),True for all birds (Aves) and bats (Chiroptera families).
+aerial_forager,bool,Derived (ForStrat-aerial),True if ForStrat-aerial > 0.30.
+ground_forager,bool,Derived (ForStrat-ground),True if ForStrat-ground > 0.30.
+wetland_user,bool,Derived (water strata),True if (ForStrat-wataroundsurf + ForStrat-watbelowsurf) > 0.30.
+nocturnal,bool,Derived (Activity-Nocturnal or birds' Nocturnal),True if Activity-Nocturnal > 0.50 (or birds' Nocturnal flag is set).
+can_swim,bool,Derived (wetland/underwater + overrides),True if wetland_user or ForStrat-watbelowsurf > 0.30; manual overrides for species like Platypus.
+specialist_flag,bool,Derived (top shares),True if diet_top_val ≥ 0.80 AND foraging_top_val ≥ 0.80 (after normalization).
+generalist_flag,bool,Derived (diversity),True if diet_diversity ≥ 4 OR foraging_diversity ≥ 3.
+is_marsupial,bool,Derived (MSWFamilyLatin),"True if family matches common marsupial families (e.g., Macropodidae, Phascolarctidae, Vombatidae)."
+is_bat,bool,Derived (MSWFamilyLatin),"True if family matches bat families (e.g., Pteropodidae, Vespertilionidae, Molossidae, Miniopteridae)."
+habitat_forest_woodland,bool,Derived from ALA,True if species occurs in at least one IBRA region mapped to **Forest/Woodland** during the year.
+habitat_grassland_floodplain_savanna,bool,Derived from ALA,True if species occurs in at least one IBRA region mapped to **Grassland/Floodplain/Savanna** during the year.
+habitat_desert_arid_zone,bool,Derived from ALA,True if species occurs in at least one IBRA region mapped to **Desert/Arid Zone** during the year.
+habitat_rainforest_tropical,bool,Derived from ALA,True if species occurs in at least one IBRA region mapped to **Rainforest/Tropical** during the year.
+habitat_coastal_marine,bool,Derived from ALA,True if species occurs in at least one IBRA region mapped to **Coastal/Marine** during the year.
+habitat_alpine_subalpine,bool,Derived from ALA,True if species occurs in at least one IBRA region mapped to **Alpine/Subalpine** during the year.
+habitat_unknown,bool,Derived from ALA,True if species occurs in at least one IBRA region mapped to **Unknown** during the year.
+ibra_south_eastern_queensland,bool,Derived from ALA,True if species occurs in **South Eastern Queensland** IBRA region at least once in the year.
+ibra_murray_darling_depression,bool,Derived from ALA,True if species occurs in **Murray Darling Depression** IBRA region at least once in the year.
+ibra_sydney_basin,bool,Derived from ALA,True if species occurs in **Sydney Basin** IBRA region at least once in the year.
+ibra_south_eastern_highlands,bool,Derived from ALA,True if species occurs in **South Eastern Highlands** IBRA region at least once in the year.
+ibra_riverina,bool,Derived from ALA,True if species occurs in **Riverina** IBRA region at least once in the year.
+ibra_south_east_corner,bool,Derived from ALA,True if species occurs in **South East Corner** IBRA region at least once in the year.
+ibra_south_east_coastal_plain,bool,Derived from ALA,True if species occurs in **South East Coastal Plain** IBRA region at least once in the year.
+ibra_nsw_north_coast,bool,Derived from ALA,True if species occurs in **NSW North Coast** IBRA region at least once in the year.
+ibra_brigalow_belt_south,bool,Derived from ALA,True if species occurs in **Brigalow Belt South** IBRA region at least once in the year.
+ibra_wet_tropics,bool,Derived from ALA,True if species occurs in **Wet Tropics** IBRA region at least once in the year.
+ibra_naracoorte_coastal_plain,bool,Derived from ALA,True if species occurs in **Naracoorte Coastal Plain** IBRA region at least once in the year.
+ibra_nsw_south_western_slopes,bool,Derived from ALA,True if species occurs in **NSW South Western Slopes** IBRA region at least once in the year.
+ibra_southern_volcanic_plain,bool,Derived from ALA,True if species occurs in **Southern Volcanic Plain** IBRA region at least once in the year.
+ibra_brigalow_belt_north,bool,Derived from ALA,True if species occurs in **Brigalow Belt North** IBRA region at least once in the year.
+ibra_victorian_midlands,bool,Derived from ALA,True if species occurs in **Victorian Midlands** IBRA region at least once in the year.
+ibra_eyre_yorke_block,bool,Derived from ALA,True if species occurs in **Eyre Yorke Block** IBRA region at least once in the year.
+ibra_cape_york_peninsula,bool,Derived from ALA,True if species occurs in **Cape York Peninsula** IBRA region at least once in the year.
+ibra_darwin_coastal,bool,Derived from ALA,True if species occurs in **Darwin Coastal** IBRA region at least once in the year.
+ibra_flinders_lofty_block,bool,Derived from ALA,True if species occurs in **Flinders Lofty Block** IBRA region at least once in the year.
+ibra_new_england_tablelands,bool,Derived from ALA,True if species occurs in **New England Tablelands** IBRA region at least once in the year.
+ibra_channel_country,bool,Derived from ALA,True if species occurs in **Channel Country** IBRA region at least once in the year.
+ibra_kanmantoo,bool,Derived from ALA,True if species occurs in **Kanmantoo** IBRA region at least once in the year.
+ibra_central_mackay_coast,bool,Derived from ALA,True if species occurs in **Central Mackay Coast** IBRA region at least once in the year.
+ibra_mulga_lands,bool,Derived from ALA,True if species occurs in **Mulga Lands** IBRA region at least once in the year.
+ibra_darling_riverine_plains,bool,Derived from ALA,True if species occurs in **Darling Riverine Plains** IBRA region at least once in the year.
+ibra_dampierland,bool,Derived from ALA,True if species occurs in **Dampierland** IBRA region at least once in the year.
+ibra_einasleigh_uplands,bool,Derived from ALA,True if species occurs in **Einasleigh Uplands** IBRA region at least once in the year.
+ibra_victoria_bonaparte,bool,Derived from ALA,True if species occurs in **Victoria Bonaparte** IBRA region at least once in the year.
+ibra_furneaux,bool,Derived from ALA,True if species occurs in **Furneaux** IBRA region at least once in the year.
+ibra_pine_creek,bool,Derived from ALA,True if species occurs in **Pine Creek** IBRA region at least once in the year.
+ibra_nandewar,bool,Derived from ALA,True if species occurs in **Nandewar** IBRA region at least once in the year.
+ibra_australian_alps,bool,Derived from ALA,True if species occurs in **Australian Alps** IBRA region at least once in the year.
+ibra_mitchell_grass_downs,bool,Derived from ALA,True if species occurs in **Mitchell Grass Downs** IBRA region at least once in the year.
+ibra_tasmanian_south_east,bool,Derived from ALA,True if species occurs in **Tasmanian South East** IBRA region at least once in the year.
+ibra_macdonnell_ranges,bool,Derived from ALA,True if species occurs in **MacDonnell Ranges** IBRA region at least once in the year.
+ibra_cobar_peneplain,bool,Derived from ALA,True if species occurs in **Cobar Peneplain** IBRA region at least once in the year.
+ibra_swan_coastal_plain,bool,Derived from ALA,True if species occurs in **Swan Coastal Plain** IBRA region at least once in the year.
+ibra_gawler,bool,Derived from ALA,True if species occurs in **Gawler** IBRA region at least once in the year.
+ibra_gulf_plains,bool,Derived from ALA,True if species occurs in **Gulf Plains** IBRA region at least once in the year.
+ibra_simpson_strzelecki_dunefields,bool,Derived from ALA,True if species occurs in **Simpson Strzelecki Dunefields** IBRA region at least once in the year.
+ibra_carnarvon,bool,Derived from ALA,True if species occurs in **Carnarvon** IBRA region at least once in the year.
+ibra_gulf_fall_and_uplands,bool,Derived from ALA,True if species occurs in **Gulf Fall and Uplands** IBRA region at least once in the year.
+ibra_jarrah_forest,bool,Derived from ALA,True if species occurs in **Jarrah Forest** IBRA region at least once in the year.
+ibra_arnhem_coast,bool,Derived from ALA,True if species occurs in **Arnhem Coast** IBRA region at least once in the year.
+ibra_esperance_plains,bool,Derived from ALA,True if species occurs in **Esperance Plains** IBRA region at least once in the year.
+ibra_great_sandy_desert,bool,Derived from ALA,True if species occurs in **Great Sandy Desert** IBRA region at least once in the year.
+ibra_king,bool,Derived from ALA,True if species occurs in **King** IBRA region at least once in the year.
+ibra_broken_hill_complex,bool,Derived from ALA,True if species occurs in **Broken Hill Complex** IBRA region at least once in the year.
+ibra_ord_victoria_plain,bool,Derived from ALA,True if species occurs in **Ord Victoria Plain** IBRA region at least once in the year.
+ibra_stony_plains,bool,Derived from ALA,True if species occurs in **Stony Plains** IBRA region at least once in the year.
+ibra_mount_isa_inlier,bool,Derived from ALA,True if species occurs in **Mount Isa Inlier** IBRA region at least once in the year.
+ibra_pilbara,bool,Derived from ALA,True if species occurs in **Pilbara** IBRA region at least once in the year.
+ibra_daly_basin,bool,Derived from ALA,True if species occurs in **Daly Basin** IBRA region at least once in the year.
+ibra_great_victoria_desert,bool,Derived from ALA,True if species occurs in **Great Victoria Desert** IBRA region at least once in the year.
+ibra_warren,bool,Derived from ALA,True if species occurs in **Warren** IBRA region at least once in the year.
+ibra_tanami,bool,Derived from ALA,True if species occurs in **Tanami** IBRA region at least once in the year.
+ibra_gulf_coastal,bool,Derived from ALA,True if species occurs in **Gulf Coastal** IBRA region at least once in the year.
+ibra_northern_kimberley,bool,Derived from ALA,True if species occurs in **Northern Kimberley** IBRA region at least once in the year.
+ibra_finke,bool,Derived from ALA,True if species occurs in **Finke** IBRA region at least once in the year.
+ibra_desert_uplands,bool,Derived from ALA,True if species occurs in **Desert Uplands** IBRA region at least once in the year.
+ibra_tasmanian_northern_slopes,bool,Derived from ALA,True if species occurs in **Tasmanian Northern Slopes** IBRA region at least once in the year.
+ibra_avon_wheatbelt,bool,Derived from ALA,True if species occurs in **Avon Wheatbelt** IBRA region at least once in the year.
+ibra_pacific_subtropical_islands,bool,Derived from ALA,True if species occurs in **Pacific Subtropical Islands** IBRA region at least once in the year.
+ibra_arnhem_plateau,bool,Derived from ALA,True if species occurs in **Arnhem Plateau** IBRA region at least once in the year.
+ibra_geraldton_sandplains,bool,Derived from ALA,True if species occurs in **Geraldton Sandplains** IBRA region at least once in the year.
+ibra_tasmanian_northern_midlands,bool,Derived from ALA,True if species occurs in **Tasmanian Northern Midlands** IBRA region at least once in the year.
+ibra_tasmanian_southern_ranges,bool,Derived from ALA,True if species occurs in **Tasmanian Southern Ranges** IBRA region at least once in the year.
+ibra_central_kimberley,bool,Derived from ALA,True if species occurs in **Central Kimberley** IBRA region at least once in the year.
+ibra_tiwi_cobourg,bool,Derived from ALA,True if species occurs in **Tiwi Cobourg** IBRA region at least once in the year.
+ibra_nullarbor,bool,Derived from ALA,True if species occurs in **Nullarbor** IBRA region at least once in the year.
+ibra_burt_plain,bool,Derived from ALA,True if species occurs in **Burt Plain** IBRA region at least once in the year.
+ibra_tasmanian_west,bool,Derived from ALA,True if species occurs in **Tasmanian West** IBRA region at least once in the year.
+ibra_davenport_murchison_ranges,bool,Derived from ALA,True if species occurs in **Davenport Murchison Ranges** IBRA region at least once in the year.
+ibra_coolgardie,bool,Derived from ALA,True if species occurs in **Coolgardie** IBRA region at least once in the year.
+ibra_sturt_plateau,bool,Derived from ALA,True if species occurs in **Sturt Plateau** IBRA region at least once in the year.
+ibra_murchison,bool,Derived from ALA,True if species occurs in **Murchison** IBRA region at least once in the year.
+ibra_mallee,bool,Derived from ALA,True if species occurs in **Mallee** IBRA region at least once in the year.
+ibra_central_ranges,bool,Derived from ALA,True if species occurs in **Central Ranges** IBRA region at least once in the year.
+ibra_tasmanian_central_highlands,bool,Derived from ALA,True if species occurs in **Tasmanian Central Highlands** IBRA region at least once in the year.
+ibra_ben_lomond,bool,Derived from ALA,True if species occurs in **Ben Lomond** IBRA region at least once in the year.
+ibra_hampton,bool,Derived from ALA,True if species occurs in **Hampton** IBRA region at least once in the year.
+ibra_yalgoo,bool,Derived from ALA,True if species occurs in **Yalgoo** IBRA region at least once in the year.
+ibra_gascoyne,bool,Derived from ALA,True if species occurs in **Gascoyne** IBRA region at least once in the year.
+ibra_indian_tropical_islands,bool,Derived from ALA,True if species occurs in **Indian Tropical Islands** IBRA region at least once in the year.
+ibra_subantarctic_islands,bool,Derived from ALA,True if species occurs in **Subantarctic Islands** IBRA region at least once in the year.
+ibra_central_arnhem,bool,Derived from ALA,True if species occurs in **Central Arnhem** IBRA region at least once in the year.
+ibra_gibson_desert,bool,Derived from ALA,True if species occurs in **Gibson Desert** IBRA region at least once in the year.
+ibra_little_sandy_desert,bool,Derived from ALA,True if species occurs in **Little Sandy Desert** IBRA region at least once in the year.
+ibra_coral_sea,bool,Derived from ALA,True if species occurs in **Coral Sea** IBRA region at least once in the year.
+ibra_unknown,bool,Derived from ALA,True if species occurs in an IBRA region that is blank or not labelled (filled as 'Unknown').

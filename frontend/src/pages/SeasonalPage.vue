@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <div class="wildlife-analysis-section">
+    <div class="wildlife-analysis-section" ref="analysisSection">
       <div class="section-overlay"></div>
 
       <div class="analysis-container">
@@ -144,21 +144,23 @@
         <polyline points="6,9 12,15 18,9"></polyline>
       </svg>
     </div>
+
+    <Footer />
   </div>
 </template>
 
 <script>
-import SeasonButtonGroup from '../components/seasonal/SeasonButtonGroup.vue'
-import Button from '../components/common/Button.vue'
-import apiService from '../services/api.js'
 import TopNavigation from '../components/common/TopNavigation.vue'
+import SeasonButtonGroup from '../components/seasonal/SeasonButtonGroup.vue'
+import Footer from '../components/common/Footer.vue'
+import api from '../services/api'
 
 export default {
   name: 'SeasonalPage',
   components: {
+    TopNavigation,
     SeasonButtonGroup,
-    Button,
-    TopNavigation
+    Footer
   },
   data() {
   return {
@@ -217,9 +219,9 @@ export default {
       this.loading = true
       try {
         const [kpiData, activityData, topSpeciesData] = await Promise.all([
-          apiService.getSeasonKPI(),
-          apiService.getSeasonActivity(),
-          apiService.getTopSpecies(this.selectedSeason)
+          api.getSeasonKPI(),
+          api.getSeasonActivity(),
+          api.getTopSpecies(this.selectedSeason)
         ])
 
         this.seasonKPI = kpiData
@@ -236,11 +238,12 @@ export default {
     async selectSeason(season) {
       this.selectedSeason = season
       await this.loadTopSpecies(season)
+      this.scrollToAnalysisSection()
     },
 
     async loadTopSpecies(season) {
       try {
-        this.topSpecies = await apiService.getTopSpecies(season)
+        this.topSpecies = await api.getTopSpecies(season)
       } catch (error) {
         console.error('Failed to load top species:', error)
       }
@@ -251,6 +254,13 @@ export default {
         top: window.innerHeight,
         behavior: 'smooth'
       })
+    },
+
+    scrollToAnalysisSection() {
+      const section = this.$refs.analysisSection
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' })
+      }
     },
 
     getSeasonColor() {
@@ -334,7 +344,7 @@ export default {
 <style scoped>
 .seasonal-page {
   width: 100%;
-  min-height: 300vh;
+  min-height: 100vh;
   position: relative;
   font-family: var(--font-cartoon);
   background-size: cover;
@@ -390,8 +400,8 @@ export default {
 
 .wildlife-analysis-section {
   position: relative;
-  min-height: 200vh;
-  overflow: hidden;
+  min-height: auto;
+  padding-bottom: 60px;
 }
 
 .section-overlay {

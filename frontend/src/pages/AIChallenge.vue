@@ -14,20 +14,24 @@
       />
     </div>
 
+    <Footer />
+
     <div v-if="mobileMenuOpen" class="mobile-overlay" @click="closeMobileMenu"></div>
   </div>
 </template>
 
 <script>
-import AIGameContainer from '../components/ai/AIGameContainer.vue'
 import TopNavigation from '../components/common/TopNavigation.vue'
+import AIGameContainer from '../components/ai/AIGameContainer.vue'
+import Footer from '../components/common/Footer.vue'
 import ApiService from '../services/api.js'
 
 export default {
   name: 'AIChallenge',
   components: {
+    TopNavigation,
     AIGameContainer,
-    TopNavigation
+    Footer
   },
   data() {
     return {
@@ -148,14 +152,13 @@ export default {
 
 <style scoped>
 .ai-challenge-page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  position: relative;
   font-family: var(--font-cartoon);
+  padding-bottom: 20px;
 }
 
 .main-content {
-  flex: 1;
+  min-height: calc(100vh - 80px);
   padding: var(--spacing-xl);
   display: flex;
   justify-content: center;

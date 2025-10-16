@@ -30,6 +30,8 @@
       />
     </div>
 
+    <Footer />
+
     <div v-if="mobileMenuOpen" class="mobile-overlay" @click="closeMobileSidebar"></div>
   </div>
 </template>
@@ -40,6 +42,7 @@ import LeftFilters from '../components/wildlife/LeftFilters.vue'
 import RightDrawer from '../components/wildlife/RightDrawer.vue'
 import Button from '../components/common/Button.vue'
 import TopNavigation from '../components/common/TopNavigation.vue'
+import Footer from '../components/common/Footer.vue'
 
 export default {
   name: 'LearnWildlife',
@@ -48,7 +51,8 @@ export default {
     LeftFilters,
     RightDrawer,
     Button,
-    TopNavigation
+    TopNavigation,
+    Footer
   },
   data() {
     return {
@@ -131,10 +135,10 @@ export default {
 
 <style scoped>
 .wildlife-app {
-  height: 100vh;
+  position: relative;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  min-height: 100vh;
   gap: 0;
   border: none;
   margin: 0;
@@ -157,6 +161,7 @@ export default {
   overflow: hidden;
   gap: 0;
   border: none;
+  min-height: calc(100vh - 80px);
 }
 
 .left-sidebar {

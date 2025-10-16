@@ -167,6 +167,32 @@ def game_today():
     try:
         date_str = _game_date_str()
         target = _daily_target()
+
+        suggestions = []
+        seen = set()
+
+        today_name = (target.get("CommonName") or "").strip()
+        if today_name:
+            suggestions.append(today_name)
+            seen.add(today_name)
+
+        n = len(_SPECIES_ROWS)
+        if n > 0:
+            now = _today_au()
+            days_checked = 1  # start from yesterday
+            while len(suggestions) < 10 and days_checked < 365:  # safety cap
+                date = now - dt.timedelta(days=days_checked)
+                ds = date.strftime("%Y-%m-%d")
+                idx = _pick_daily_index(SECRET, ds, n)
+                row = _SPECIES_ROWS[idx]
+                nm = (row.get("CommonName") or "").strip()
+                if nm and nm not in seen:
+                    suggestions.append(nm)
+                    seen.add(nm)
+                days_checked += 1
+        
+        suggestions = sorted(suggestions, key=lambda s: s.casefold())
+        
         return jsonify({
             "game_date": date_str,
             "seconds_until_reset": _seconds_until_reset(),
@@ -180,7 +206,7 @@ def game_today():
                 {"key": "diet", "type": "list", "label": "Diet"},
             ],
             "vocab": {
-                "animals": [r["CommonName"] for r in _SPECIES_ROWS if r.get("CommonName")]
+                "animals": suggestions
             },
         })
     except Exception as e:

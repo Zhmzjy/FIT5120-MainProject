@@ -15,6 +15,8 @@
       />
     </div>
 
+    <Footer />
+
     <div v-if="mobileMenuOpen" class="mobile-overlay" @click="closeMobileMenu"></div>
   </div>
 </template>
@@ -22,13 +24,15 @@
 <script>
 import DailyWildleContainer from '../components/daily/DailyWildleContainer.vue'
 import TopNavigation from '../components/common/TopNavigation.vue'
+import Footer from '../components/common/Footer.vue'
 import ApiService from '../services/api.js'
 
 export default {
   name: 'DailyWildle',
   components: {
     DailyWildleContainer,
-    TopNavigation
+    TopNavigation,
+    Footer
   },
   data() {
     return {

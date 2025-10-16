@@ -61,7 +61,9 @@
 
       <SpeciesSearch
         v-if="analysisMode === 'single'"
+        :availableYears="availableYears"
         @species-selected="handleSpeciesSearchSelected"
+        @year-range-changed="handleYearRangeChanged"
       />
 
       <div v-if="analysisMode === 'single' && selectedSpeciesForTrend" class="trend-section">
@@ -74,6 +76,8 @@
       </div>
     </div>
 
+    <Footer />
+
     <div v-if="mobileMenuOpen" class="mobile-overlay" @click="closeMobileMenu"></div>
   </div>
 </template>
@@ -85,6 +89,7 @@ import YearlyStatsCard from '../components/yearly/YearlyStatsCard.vue'
 import SpeciesComparisonCard from '../components/yearly/SpeciesComparisonCard.vue'
 import TrendChart from '../components/yearly/TrendChart.vue'
 import SpeciesSearch from '../components/yearly/SpeciesSearch.vue'
+import Footer from '../components/common/Footer.vue'
 import api from '../services/api'
 import { getWikipediaImage } from '@/utils/wikipediaImage.js'
 
@@ -96,7 +101,8 @@ export default {
     YearlyStatsCard,
     SpeciesComparisonCard,
     TrendChart,
-    SpeciesSearch
+    SpeciesSearch,
+    Footer
   },
   data() {
     return {
@@ -113,7 +119,22 @@ export default {
         leastCommon: []
       },
       comparisonData: null,
-      selectedSpeciesTrendData: []
+      selectedSpeciesTrendData: [],
+      trendStartYear: null,
+      trendEndYear: null,
+      userSelectedStartYear: null,
+      userSelectedEndYear: null
+    }
+  },
+  watch: {
+    availableYears: {
+      immediate: true,
+      handler(years) {
+        if (years && years.length > 0) {
+          this.trendStartYear = Math.min(...years)
+          this.trendEndYear = Math.max(...years)
+        }
+      }
     }
   },
   async mounted() {
@@ -160,11 +181,28 @@ export default {
     },
     async handleViewTrend(species) {
       this.selectedSpeciesForTrend = species
-      await this.loadSpeciesTrend(species.commonName)
+
+      const startYear = this.userSelectedStartYear || this.trendStartYear
+      const endYear = this.userSelectedEndYear || this.trendEndYear
+
+      await this.loadSpeciesTrendWithRange(species.commonName, startYear, endYear)
     },
-    async handleSpeciesSearchSelected(species) {
-      this.selectedSpeciesForTrend = species
-      await this.loadSpeciesTrend(species.commonName)
+    async handleSpeciesSearchSelected(speciesData) {
+      this.selectedSpeciesForTrend = speciesData
+
+      this.userSelectedStartYear = speciesData.startYear
+      this.userSelectedEndYear = speciesData.endYear
+
+      await this.loadSpeciesTrendWithRange(speciesData.commonName, speciesData.startYear, speciesData.endYear)
+    },
+    handleYearRangeChanged(rangeData) {
+      if (rangeData.startYear === null && rangeData.endYear === null) {
+        this.userSelectedStartYear = null
+        this.userSelectedEndYear = null
+      } else {
+        this.userSelectedStartYear = rangeData.startYear
+        this.userSelectedEndYear = rangeData.endYear
+      }
     },
     async loadYearData() {
       this.loading = true
@@ -205,6 +243,18 @@ export default {
         const startYear = Math.min(...this.availableYears)
         const endYear = Math.max(...this.availableYears)
 
+        const trendData = await api.getSpeciesTrendData(commonName, startYear, endYear)
+        this.selectedSpeciesTrendData = trendData
+      } catch (error) {
+        console.error('Error loading species trend:', error)
+        this.selectedSpeciesTrendData = []
+      } finally {
+        this.trendLoading = false
+      }
+    },
+    async loadSpeciesTrendWithRange(commonName, startYear, endYear) {
+      this.trendLoading = true
+      try {
         const trendData = await api.getSpeciesTrendData(commonName, startYear, endYear)
         this.selectedSpeciesTrendData = trendData
       } catch (error) {

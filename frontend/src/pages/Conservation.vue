@@ -8,6 +8,8 @@
       <ConservationContainer />
     </div>
 
+    <Footer />
+
     <div v-if="mobileMenuOpen" class="mobile-overlay" @click="closeMobileMenu"></div>
   </div>
 </template>
@@ -15,12 +17,14 @@
 <script>
 import ConservationContainer from '../components/conservation/ConservationContainer.vue'
 import TopNavigation from '../components/common/TopNavigation.vue'
+import Footer from '../components/common/Footer.vue'
 
 export default {
   name: 'Conservation',
   components: {
     ConservationContainer,
-    TopNavigation
+    TopNavigation,
+    Footer
   },
   data() {
     return {

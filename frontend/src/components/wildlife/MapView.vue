@@ -415,21 +415,15 @@ export default {
   width: 100%;
   height: 100%;
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .map-container {
-  width: 90%;
-  height: 90%;
-  max-width: 1200px;
-  max-height: 800px;
+  width: 100%;
+  height: 100%;
   border-radius: var(--border-radius-xl);
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   position: relative;
-  margin: auto;
 }
 
 .error-container {
@@ -499,51 +493,50 @@ export default {
 }
 
 .loading-bar {
-  margin-top: var(--spacing-md);
-  width: 100%;
+  width: 200px;
   height: 4px;
   background: rgba(0, 0, 0, 0.1);
-  border-radius: var(--border-radius-sm);
+  border-radius: 2px;
   overflow: hidden;
+  margin-top: var(--spacing-sm);
 }
 
 .loading-progress {
+  width: 100%;
   height: 100%;
-  width: 0;
   background: #007bff;
-  animation: load 2s ease-in-out infinite;
+  animation: progress 1.5s ease-in-out infinite;
 }
 
 .no-data-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  z-index: 10;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  z-index: 20;
+  min-width: 300px;
 }
 
-.no-data-content {
-  text-align: center;
-  padding: var(--spacing-xl);
-  background: white;
-  border-radius: var(--border-radius-lg);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.no-data-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
 }
 
 .no-data-content h3 {
-  margin: 0 0 var(--spacing-md) 0;
-  color: var(--color-text);
+  margin: 0 0 12px 0;
+  color: #333;
+  font-size: 24px;
 }
 
 .no-data-content p {
   margin: 0;
-  color: var(--color-text-secondary);
+  color: #666;
+  font-size: 16px;
 }
 
 @keyframes spin {
@@ -551,9 +544,8 @@ export default {
   100% { transform: rotate(360deg); }
 }
 
-@keyframes load {
-  0% { width: 0%; }
-  50% { width: 50%; }
-  100% { width: 0%; }
+@keyframes progress {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 </style>

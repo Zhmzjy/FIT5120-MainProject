@@ -271,22 +271,32 @@ export default {
 }
 
 .action-button {
-  background: #4CAF50;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
   color: white;
   border: none;
-  padding: 16px 32px;
-  font-size: 16px;
-  border-radius: 12px;
+  padding: 20px 48px;
+  font-size: 20px;
+  border-radius: 16px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   font-family: 'Comic Sans MS', cursive, sans-serif;
-  font-weight: bold;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+  border: 3px solid #2e7d32;
 }
 
 .action-button:hover {
-  background: #45a049;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #45a049 0%, #388e3c 100%);
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 10px 30px rgba(76, 175, 80, 0.6);
+  border-color: #1b5e20;
+}
+
+.action-button:active {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.5);
 }
 
 @media (max-width: 768px) {
@@ -307,6 +317,11 @@ export default {
   .animal-image {
     width: 150px;
     height: 150px;
+  }
+
+  .action-button {
+    padding: 18px 40px;
+    font-size: 18px;
   }
 }
 </style>

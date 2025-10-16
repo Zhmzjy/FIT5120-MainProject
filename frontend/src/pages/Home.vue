@@ -21,6 +21,8 @@
       </div>
     </div>
 
+    <Footer />
+
     <div
       v-if="mobileMenuOpen"
       class="mobile-overlay"
@@ -31,11 +33,13 @@
 
 <script>
 import TopNavigation from '../components/common/TopNavigation.vue'
+import Footer from '../components/common/Footer.vue'
 
 export default {
   name: 'Home',
   components: {
-    TopNavigation
+    TopNavigation,
+    Footer
   },
   data() {
     return {

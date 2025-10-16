@@ -32,6 +32,49 @@
       </div>
     </div>
 
+    <div class="year-filter-section">
+      <div class="filter-header">
+        <h4>Customize Year Range</h4>
+        <p>Select the time period for the trend analysis</p>
+      </div>
+      <div class="year-range-inputs">
+        <div class="year-input-group">
+          <label>Start Year</label>
+          <select v-model="startYear" @change="handleYearChange" class="year-select">
+            <option v-for="year in availableYears" :key="'start-' + year" :value="year">
+              {{ year }}
+            </option>
+          </select>
+        </div>
+        <div class="year-separator">to</div>
+        <div class="year-input-group">
+          <label>End Year</label>
+          <select v-model="endYear" @change="handleYearChange" class="year-select">
+            <option v-for="year in availableYears" :key="'end-' + year" :value="year">
+              {{ year }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div v-if="yearRangeError" class="year-error">
+        {{ yearRangeError }}
+      </div>
+    </div>
+
+    <div class="search-actions">
+      <button
+        @click="handleStartSearch"
+        :disabled="!canStartSearch"
+        class="start-button"
+      >
+
+        Start Analysis
+      </button>
+      <div v-if="activeRangeDisplay" class="active-range-indicator">
+        Current Range: {{ startYear }} - {{ endYear }}
+      </div>
+    </div>
+
     <div v-if="loading" class="search-loading">
       <div class="loading-spinner"></div>
       <p>Searching species...</p>
@@ -45,13 +88,24 @@ import { getWikipediaImage } from '@/utils/wikipediaImage.js'
 
 export default {
   name: 'SpeciesSearch',
-  emits: ['species-selected'],
+  props: {
+    availableYears: {
+      type: Array,
+      default: () => []
+    }
+  },
+  emits: ['species-selected', 'year-range-changed'],
   data() {
     return {
       searchQuery: '',
       showSuggestions: false,
       loading: false,
-      allSpecies: []
+      allSpecies: [],
+      startYear: null,
+      endYear: null,
+      yearRangeError: '',
+      selectedSpeciesData: null,
+      activeRangeDisplay: false
     }
   },
   computed: {
@@ -63,6 +117,34 @@ export default {
         species.commonName.toLowerCase().includes(query) ||
         species.scientificName.toLowerCase().includes(query)
       ).slice(0, 5)
+    },
+    canStartSearch() {
+      return this.selectedSpeciesData &&
+             this.startYear &&
+             this.endYear &&
+             this.startYear <= this.endYear &&
+             !this.yearRangeError
+    }
+  },
+  watch: {
+    availableYears: {
+      immediate: true,
+      handler(years) {
+        if (years && years.length > 0) {
+          this.startYear = Math.min(...years)
+          this.endYear = Math.max(...years)
+        }
+      }
+    },
+    startYear(newVal) {
+      if (newVal && this.endYear) {
+        this.emitYearRangeChange()
+      }
+    },
+    endYear(newVal) {
+      if (newVal && this.startYear) {
+        this.emitYearRangeChange()
+      }
     }
   },
   async mounted() {
@@ -101,10 +183,51 @@ export default {
     handleSearch() {
       this.showSuggestions = true
     },
+    handleYearChange() {
+      if (this.startYear > this.endYear) {
+        this.yearRangeError = 'Start year must be before or equal to end year'
+      } else {
+        this.yearRangeError = ''
+      }
+    },
+    emitYearRangeChange() {
+      if (!this.yearRangeError && this.startYear && this.endYear) {
+        this.$emit('year-range-changed', {
+          startYear: this.startYear,
+          endYear: this.endYear
+        })
+      }
+    },
     selectSpecies(species) {
       this.searchQuery = species.commonName
       this.showSuggestions = false
-      this.$emit('species-selected', species)
+      this.selectedSpeciesData = species
+
+      if (this.startYear > this.endYear) {
+        this.yearRangeError = 'Please fix the year range before viewing trends'
+      }
+    },
+    handleStartSearch() {
+      if (this.canStartSearch) {
+        this.activeRangeDisplay = true
+        this.$emit('species-selected', {
+          ...this.selectedSpeciesData,
+          startYear: this.startYear,
+          endYear: this.endYear
+        })
+      }
+    },
+    handleReset() {
+      if (this.availableYears.length > 0) {
+        this.startYear = Math.min(...this.availableYears)
+        this.endYear = Math.max(...this.availableYears)
+        this.yearRangeError = ''
+        this.activeRangeDisplay = false
+        this.$emit('year-range-changed', {
+          startYear: null,
+          endYear: null
+        })
+      }
     }
   }
 }
@@ -138,6 +261,7 @@ export default {
 
 .search-input-container {
   position: relative;
+  margin-bottom: 24px;
 }
 
 .search-input {
@@ -207,25 +331,160 @@ export default {
   font-style: italic;
 }
 
-.search-loading {
+.year-filter-section {
+  background: #EAF6EA;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.filter-header h4 {
+  margin: 0 0 4px 0;
+  color: #2d3748;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.filter-header p {
+  margin: 0 0 12px 0;
+  color: #718096;
+  font-size: 13px;
+}
+
+.year-range-inputs {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.year-input-group {
+  flex: 1;
+  min-width: 120px;
+}
+
+.year-input-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #4a5568;
+  margin-bottom: 6px;
+}
+
+.year-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #A2E2A2;
+  border-radius: 6px;
+  font-size: 15px;
+  background: white;
+  color: #2d3748;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.year-select:hover {
+  border-color: #77BFA3;
+}
+
+.year-select:focus {
+  outline: none;
+  border-color: #77BFA3;
+  box-shadow: 0 0 0 3px rgba(119, 191, 163, 0.2);
+}
+
+.year-separator {
+  font-weight: 600;
+  color: #4a5568;
+  padding-top: 24px;
+}
+
+.year-error {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: #fed7d7;
+  border: 1px solid #fc8181;
+  border-radius: 6px;
+  color: #c53030;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.search-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.start-button {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  background: #A2E2A2;
+  border: none;
+  border-radius: 6px;
+  color: #2d3748;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.start-button:disabled {
+  background: #CBD5E0;
+  color: #A0AEC0;
+  cursor: not-allowed;
+}
+
+.button-icon {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+.active-range-indicator {
+  font-size: 14px;
+  color: #2d3748;
+  font-weight: 500;
+}
+
+.search-loading {
+  text-align: center;
   padding: 20px;
 }
 
 .loading-spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid #A2E2A2;
-  border-top: 2px solid #77BFA3;
+  width: 40px;
+  height: 40px;
+  border: 4px solid #A2E2A2;
+  border-top-color: #77BFA3;
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  margin-right: 8px;
+  margin: 0 auto 12px;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  to { transform: rotate(360deg); }
+}
+
+.search-loading p {
+  color: #718096;
+  font-size: 14px;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .year-range-inputs {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .year-input-group {
+    width: 100%;
+  }
+
+  .year-separator {
+    padding-top: 0;
+  }
 }
 </style>

@@ -20,11 +20,11 @@
               <span>Listen to animal sounds</span>
             </div>
             <div class="info-item">
-              <img src="https://img.icons8.com/plasticine/100/rick-sanchez.png" alt="rick-sanchez" class="info-icon-img" />
+              <img src="/images/thinking.png" alt="thinking" class="info-icon-img" />
               <span>Choose the correct animal</span>
             </div>
             <div class="info-item">
-              <img src="https://img.icons8.com/plasticine/100/morty-smith.png" alt="morty-smith" class="info-icon-img" />
+              <img src="/images/learning.png" alt="learning" class="info-icon-img" />
               <span>Learn about Australian wildlife</span>
             </div>
           </div>
@@ -88,6 +88,8 @@
       @close="closeDetailModal"
     />
 
+    <Footer />
+
     <div v-if="mobileMenuOpen" class="mobile-overlay" @click="closeMobileMenu"></div>
   </div>
 </template>
@@ -100,6 +102,7 @@ import AnswerOptions from '../components/audio/AnswerOptions.vue'
 import GameResult from '../components/audio/GameResult.vue'
 import GameSummary from '../components/audio/GameSummary.vue'
 import AnimalDetailModal from '../components/audio/AnimalDetailModal.vue'
+import Footer from '../components/common/Footer.vue'
 import api from '../services/api'
 import { getWikipediaImage } from '@/utils/wikipediaImage.js'
 
@@ -112,7 +115,8 @@ export default {
     AnswerOptions,
     GameResult,
     GameSummary,
-    AnimalDetailModal
+    AnimalDetailModal,
+    Footer
   },
   data() {
     return {
